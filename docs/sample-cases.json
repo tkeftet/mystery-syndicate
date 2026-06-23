@@ -1,0 +1,77 @@
+[
+  {
+    "kind": "daily",
+    "availableDate": "2099-01-01",
+    "title": "The Locked Study",
+    "description": "A celebrated author is found dead in his locked study. The door was bolted from the inside — yet someone got out.",
+    "type": "murder",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Edmund Vale",
+      "description": "A reclusive mystery novelist, found slumped over his desk."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Clara Vale",
+        "description": "The victim's wife and sole heir.",
+        "alibi": "Claims she was asleep upstairs all night.",
+        "relationship": "Wife"
+      },
+      {
+        "id": "s2",
+        "name": "Julian Frost",
+        "description": "Edmund's literary agent, recently fired.",
+        "alibi": "Says he left the estate before midnight.",
+        "relationship": "Former agent"
+      },
+      {
+        "id": "s3",
+        "name": "Mara Inkpen",
+        "description": "A ghostwriter who claims Edmund stole her work.",
+        "alibi": "Insists she was at a hotel across town."
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Bolted Door",
+        "description": "The study door was bolted from the inside.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Open Window Latch",
+        "description": "A second-floor window latch was unlatched and scuffed.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "Torn Contract",
+        "description": "A publishing contract torn in half, dated yesterday.",
+        "type": "document",
+        "isRedHerring": true
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "The Housekeeper",
+        "statement": "I heard a window creak around 1 a.m., but the study was always locked."
+      }
+    ],
+    "timeline": [
+      { "id": "t1", "time": "11:30 PM", "description": "Edmund retires to his study and bolts the door." },
+      { "id": "t2", "time": "1:00 AM", "description": "A window creaks on the second floor." },
+      { "id": "t3", "time": "7:00 AM", "description": "The housekeeper finds the study door still bolted." }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "Revenge for being fired and cut out of royalties",
+      "timelineEventId": "t2",
+      "explanation": "Julian never left. He hid, exited through the second-floor window after the murder, and let the bolted door imply an impossible crime."
+    }
+  }
+]

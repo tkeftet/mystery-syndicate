@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($root=\"c:\\\\Users\\\\bakht\\\\Desktop\\\\mobile-games\\\\detective-club\"; $out = & yarn --cwd \"$root\\\\backend\" type-check 2>&1; \"RELEVANT:\"; $out | Select-String -Pattern \"cases|rankings|seed-minis\"; \"TOTAL:\"; \\($out | Select-String -Pattern \"error TS\"\\).Count)"
+    ]
+  }
+}

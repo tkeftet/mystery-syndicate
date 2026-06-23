@@ -1,0 +1,8 @@
+{
+  "name": "@detective-club/shared",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  }
+}
