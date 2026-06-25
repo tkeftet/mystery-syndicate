@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "537103183748",
+    "project_id": "detectiveclub-7d67b",
+    "storage_bucket": "detectiveclub-7d67b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537103183748:android:7e74d2262bd0674b5f77d1",
+        "android_client_info": {
+          "package_name": "com.rumbleinjungle2.detectiveclub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgpmlGvHdnM5WzvSONIwvtGvMoVZ_jLDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

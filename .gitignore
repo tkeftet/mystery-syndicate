@@ -9,8 +9,10 @@ node_modules/
 !.env.example
 *.pem
 *.key
-google-services.json
-GoogleService-Info.plist
+# NOTE: google-services.json / GoogleService-Info.plist are intentionally NOT
+# ignored — EAS Build only uploads git-tracked files, and app.json references
+# google-services.json. These client config files ship inside the app binary
+# anyway (their keys are package-restricted, not real secrets).
 
 # Build output
 dist/
