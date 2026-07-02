@@ -1,0 +1,3203 @@
+[
+  {
+    "kind": "daily",
+    "availableDate": "2026-06-23",
+    "title": "The Last Pour",
+    "description": "A celebrated sommelier collapses at his own tasting gala. The wine was poured for everyone — but only he never rose again.",
+    "type": "murder",
+    "difficulty": "easy",
+    "estimatedMinutes": 5,
+    "maxScore": 800,
+    "victim": {
+      "name": "Hugo Renard",
+      "description": "A famous sommelier, found slumped beside the tasting table."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Delphine Renard",
+        "description": "Hugo's business partner and ex-wife.",
+        "alibi": "Says she was greeting guests at the entrance all evening.",
+        "relationship": "Ex-wife / partner"
+      },
+      {
+        "id": "s2",
+        "name": "Theo Marsh",
+        "description": "A rival critic Hugo publicly humiliated last year.",
+        "alibi": "Claims he never approached the tasting table.",
+        "relationship": "Rival critic"
+      },
+      {
+        "id": "s3",
+        "name": "Anika Bose",
+        "description": "The gala's pourer, who served every glass.",
+        "alibi": "Insists she poured from the same bottle for everyone.",
+        "relationship": "Pourer"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Single Tainted Glass",
+        "description": "Only Hugo's glass shows residue of a bitter compound; others are clean.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Reserved Glass",
+        "description": "Hugo always used his own engraved glass, set aside before the gala.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "Threatening Review",
+        "description": "Theo's draft review calling Hugo a fraud, dated that morning.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Pourer's Gloves",
+        "description": "Anika's serving gloves, with a faint bitter stain on one fingertip.",
+        "type": "physical"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Catering Manager",
+        "statement": "Mr. Renard's personal glass sat on the side table for an hour before he drank from it.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "7:00 PM",
+        "description": "Hugo sets his engraved glass on the side table.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t2",
+        "time": "7:40 PM",
+        "description": "Anika lingers alone near the side table while fetching ice.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "8:15 PM",
+        "description": "Hugo drinks from his reserved glass and collapses.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s3",
+      "motive": "Hugo had discovered Anika was reselling his rare bottles and threatened to expose her.",
+      "timelineEventId": "t2",
+      "explanation": "Only Hugo's reserved glass was poisoned, and the bitter stain on Anika's glove matches the residue. She doctored the one glass she knew only he would use while alone by the side table — the rival's review was just a coincidence of bad timing."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-06-24",
+    "title": "The Vanishing Canvas",
+    "description": "A priceless painting disappears from a sealed gallery between two security sweeps. No alarm sounded, no lock was forced.",
+    "type": "theft",
+    "difficulty": "easy",
+    "estimatedMinutes": 5,
+    "maxScore": 800,
+    "victim": {
+      "name": "The Meridian Gallery",
+      "description": "A boutique gallery whose star piece vanished overnight."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Gregor Vance",
+        "description": "Night security guard on duty.",
+        "alibi": "Says he did his rounds every thirty minutes without fail.",
+        "relationship": "Night guard"
+      },
+      {
+        "id": "s2",
+        "name": "Lena Fox",
+        "description": "The gallery's restorer, granted after-hours access.",
+        "alibi": "Claims she left before the gallery sealed for the night.",
+        "relationship": "Restorer"
+      },
+      {
+        "id": "s3",
+        "name": "Pieter Holt",
+        "description": "A collector who was refused the sale of the painting.",
+        "alibi": "Says he was at a charity dinner across the city.",
+        "relationship": "Collector"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Access Log",
+        "description": "The restorer's keycard registered an exit at 2:14 AM — long after she claims to have left.",
+        "type": "digital"
+      },
+      {
+        "id": "e2",
+        "title": "Empty Frame",
+        "description": "The canvas was cleanly cut from its frame by someone who knew not to damage it.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "Collector's Letter",
+        "description": "Pieter's angry letter demanding the painting be sold to him.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Solvent Trace",
+        "description": "A restorer's solvent was used to loosen the canvas from its backing.",
+        "type": "physical"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Cleaning Contractor",
+        "statement": "I saw the restorer's car still in the lot well past 2 AM.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "10:00 PM",
+        "description": "Gallery seals for the night; restorer signs out.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "2:14 AM",
+        "description": "Restorer's keycard logs a second exit.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "6:00 AM",
+        "description": "Morning sweep finds the empty frame.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "Lena was deep in debt and had a buyer lined up for the canvas.",
+      "timelineEventId": "t2",
+      "explanation": "Lena lied about leaving — her keycard and her car place her in the building at 2 AM. Only her solvent and restorer's skill could free the canvas without damage. The collector's letter is real, but he was at the dinner all night."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-06-25",
+    "title": "Cabin Ten",
+    "description": "A passenger on an overnight train is found dead in his locked sleeper cabin. The conductor swears no one entered after midnight.",
+    "type": "murder",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Sir Roland Ashby",
+      "description": "A retired judge travelling alone in cabin ten."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Mrs. Ashby",
+        "description": "The judge's much younger wife, in the adjoining cabin.",
+        "alibi": "Says she slept through the night and heard nothing.",
+        "relationship": "Wife"
+      },
+      {
+        "id": "s2",
+        "name": "Conductor Bell",
+        "description": "The night conductor with a master key.",
+        "alibi": "Claims he stayed in his booth all night.",
+        "relationship": "Conductor"
+      },
+      {
+        "id": "s3",
+        "name": "Daniel Crewe",
+        "description": "A man Ashby once sentenced, recently released.",
+        "alibi": "Says he was three carriages away in coach class.",
+        "relationship": "Former defendant"
+      },
+      {
+        "id": "s4",
+        "name": "Dr. Pace",
+        "description": "A physician who shared dinner with the judge.",
+        "alibi": "Insists he returned to his own cabin right after dinner.",
+        "relationship": "Dinner companion"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Connecting Door",
+        "description": "The adjoining door between the wife's cabin and cabin ten was unlatched on her side.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Sedative Vial",
+        "description": "An empty sedative vial found in the wife's washbasin.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "Old Court Record",
+        "description": "Crewe's case file, showing Ashby's harsh sentence.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Dinner Glass",
+        "description": "Traces of the same sedative in the judge's after-dinner glass.",
+        "type": "physical"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Coach Steward",
+        "statement": "The released man never left coach class — I'd have seen him pass.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Porter",
+        "statement": "I thought I heard the connecting door in cabin nine click around 1 AM.",
+        "reliability": "uncertain"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "9:30 PM",
+        "description": "The judge takes his after-dinner drink.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t2",
+        "time": "12:30 AM",
+        "description": "The judge, sedated, falls into a deep sleep.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t3",
+        "time": "1:00 AM",
+        "description": "The connecting door clicks; someone enters cabin ten.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t4",
+        "time": "7:00 AM",
+        "description": "The judge is found dead, door still locked from the corridor.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Mrs. Ashby stood to inherit a fortune and was trapped in a loveless marriage.",
+      "timelineEventId": "t3",
+      "explanation": "The corridor door stayed locked because the killer used the adjoining door only she controlled. She sedated the judge at dinner, then slipped through the unlatched connecting door at 1 AM. The ex-convict never left coach class."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-06-26",
+    "title": "The Founder's Code",
+    "description": "A startup's CEO is found dead at his standing desk the night before a make-or-break funding round. Police call it overwork; the board isn't so sure.",
+    "type": "murder",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Marcus Liu",
+      "description": "Founder and CEO, found at his desk after midnight."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Priya Nair",
+        "description": "Co-founder being pushed out before the funding round.",
+        "alibi": "Says she left the office at 8 PM and went home.",
+        "relationship": "Co-founder"
+      },
+      {
+        "id": "s2",
+        "name": "Evan Cole",
+        "description": "Lead engineer passed over for promotion.",
+        "alibi": "Claims he was debugging from home all night.",
+        "relationship": "Lead engineer"
+      },
+      {
+        "id": "s3",
+        "name": "Dana Shaw",
+        "description": "An investor who'd threatened to pull out.",
+        "alibi": "Says she was on a flight that landed at 11 PM.",
+        "relationship": "Investor"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Badge Reentry",
+        "description": "Priya's badge re-entered the building at 11:40 PM, despite her claim she went home.",
+        "type": "digital"
+      },
+      {
+        "id": "e2",
+        "title": "Spiked Coffee",
+        "description": "The victim's mug contained a fatal dose of a cardiac drug.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "Resignation Email",
+        "description": "A drafted resignation Evan never sent.",
+        "type": "digital",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Pharmacy Record",
+        "description": "A prescription for that exact cardiac drug filled under Priya's name.",
+        "type": "document"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Night Janitor",
+        "statement": "I saw the co-founder come back in late and head to the founder's office.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "8:00 PM",
+        "description": "Priya leaves the office, badging out.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "11:40 PM",
+        "description": "Priya badges back in and visits the CEO's office.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "12:30 AM",
+        "description": "Marcus drinks his coffee and collapses.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Marcus was about to use the funding round to force Priya out and erase her stake.",
+      "timelineEventId": "t2",
+      "explanation": "Priya's badge proves she lied about going home, the janitor saw her enter his office, and the cardiac drug was filled in her name. Evan's unsent resignation shows frustration, not murder."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-06-27",
+    "title": "The Empty Vault",
+    "description": "A jeweler opens his shop to find the safe untouched, the alarm armed — and a million in diamonds gone.",
+    "type": "theft",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Bertrand & Sons Jewelers",
+      "description": "A family jeweler whose diamond stock vanished from a sealed vault."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Old Bertrand",
+        "description": "The owner, heavily insured against theft.",
+        "alibi": "Says he was home with family all evening.",
+        "relationship": "Owner"
+      },
+      {
+        "id": "s2",
+        "name": "Colette Reyes",
+        "description": "The new vault clerk, hired three weeks ago.",
+        "alibi": "Claims she locked up at six and left.",
+        "relationship": "Vault clerk"
+      },
+      {
+        "id": "s3",
+        "name": "Sami Okafor",
+        "description": "An alarm technician who serviced the system that week.",
+        "alibi": "Says his service call ended at noon.",
+        "relationship": "Alarm technician"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Alarm Logs",
+        "description": "The alarm was disarmed and rearmed at 6:05 PM using the master code — known only to the owner.",
+        "type": "digital"
+      },
+      {
+        "id": "e2",
+        "title": "Insurance Policy",
+        "description": "A policy doubled in value two weeks before the theft, signed by the owner.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Technician's Toolkit",
+        "description": "A tool left behind by the alarm technician.",
+        "type": "physical",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Vault Camera Gap",
+        "description": "The vault camera was looped for exactly six minutes at 6 PM — a trick needing the master account.",
+        "type": "digital"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Clerk Colette",
+        "statement": "Only Mr. Bertrand has the master code. I just have the door key.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "6:00 PM",
+        "description": "Colette locks the front door and leaves.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "6:05 PM",
+        "description": "The alarm is disarmed with the master code and the camera looped.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "9:00 AM",
+        "description": "Bertrand 'discovers' the empty vault.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Bertrand was drowning in debt and recently doubled the insurance payout.",
+      "timelineEventId": "t2",
+      "explanation": "Only the owner's master code could disarm the alarm and loop the camera, and he'd just doubled the policy. He staged the theft after the clerk left. The technician's tool is an innocent leftover."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-06-28",
+    "title": "Low Tide",
+    "description": "A lighthouse keeper vanishes during a calm night. The lamp still turned, the logbook lay open — but the man was gone.",
+    "type": "disappearance",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Callum Reed",
+      "description": "The lighthouse keeper, missing since the night watch."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Ferry Captain Dunn",
+        "description": "Ran the last boat to the mainland that night.",
+        "alibi": "Says his final crossing was empty of passengers.",
+        "relationship": "Ferry captain"
+      },
+      {
+        "id": "s2",
+        "name": "Marina Reed",
+        "description": "Callum's sister, who wanted him to sell the family cottage.",
+        "alibi": "Claims she was on the mainland the whole week.",
+        "relationship": "Sister"
+      },
+      {
+        "id": "s3",
+        "name": "Otto Veil",
+        "description": "A relief keeper who wanted Callum's post.",
+        "alibi": "Says he was asleep in the keeper's annex.",
+        "relationship": "Relief keeper"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Logbook Entry",
+        "description": "The last entry, in Callum's hand, notes 'O. arrived early — odd.'",
+        "type": "document"
+      },
+      {
+        "id": "e2",
+        "title": "Annex Bed",
+        "description": "The relief keeper's bed was made and cold, never slept in.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "Ferry Manifest",
+        "description": "The ferry manifest, listing no passengers on the last crossing.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Dragging Marks",
+        "description": "Scuff marks from the lamp room toward the rocks, beside the relief keeper's boot print.",
+        "type": "physical"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Coastguard Watch",
+        "statement": "I saw the lamp-room light moving strangely around 2 AM, like a struggle.",
+        "reliability": "uncertain"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "11:00 PM",
+        "description": "Callum logs that the relief keeper arrived early.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "2:00 AM",
+        "description": "The lamp-room light moves erratically.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "6:00 AM",
+        "description": "The keeper is found missing, his post abandoned.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s3",
+      "motive": "Otto wanted the permanent keeper's post and the cottage that came with it.",
+      "timelineEventId": "t2",
+      "explanation": "Callum's own log records Otto arriving early, the unslept bed exposes his alibi as a lie, and his boot print sits beside the drag marks to the rocks. The empty ferry manifest is a dead end — Otto never left the island."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-06-29",
+    "title": "The Spoiled Batch",
+    "description": "A pharmaceutical plant's flagship drug fails quality control days before shipment. Someone tampered with the line — and it wasn't an accident.",
+    "type": "sabotage",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Halcyon Pharmaceuticals",
+      "description": "A drug maker whose key batch was deliberately contaminated."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Dr. Wells",
+        "description": "Head chemist whose rival formula was rejected.",
+        "alibi": "Says he was presenting at a conference that day.",
+        "relationship": "Head chemist"
+      },
+      {
+        "id": "s2",
+        "name": "Renata Cruz",
+        "description": "Line supervisor recently demoted.",
+        "alibi": "Claims she clocked out before the night shift.",
+        "relationship": "Line supervisor"
+      },
+      {
+        "id": "s3",
+        "name": "Tomas Geld",
+        "description": "A short-seller betting the company's stock would crash.",
+        "alibi": "Says he never set foot in the plant.",
+        "relationship": "Short-seller"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Clean-Room Badge",
+        "description": "Renata's badge accessed the clean room at 11 PM, hours after she claims she left.",
+        "type": "digital"
+      },
+      {
+        "id": "e2",
+        "title": "Contaminant Source",
+        "description": "The contaminant came from a supervisor-only storage locker.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "Short Position",
+        "description": "Records of Tomas's large bet against the stock.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Override Log",
+        "description": "A line override entered with the supervisor's credentials at 11:20 PM.",
+        "type": "digital"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Conference Organizer",
+        "statement": "Dr. Wells was on stage at our event until late evening.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "7:00 PM",
+        "description": "Renata's shift officially ends.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "11:00 PM",
+        "description": "Renata's badge enters the clean room.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "11:20 PM",
+        "description": "A line override is entered with her credentials.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "Renata wanted revenge for her demotion and to make her replacement look incompetent.",
+      "timelineEventId": "t2",
+      "explanation": "Renata's badge and credentials drove the override hours after she claimed to leave, and the contaminant came from a locker only a supervisor could open. The chemist was verifiably on stage; the short-seller's bet is suspicious but he never entered the plant."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-06-30",
+    "title": "Curtain Call",
+    "description": "A leading actor dies mid-performance after drinking from a stage prop. The theatre was packed — and the poison was meant only for him.",
+    "type": "murder",
+    "difficulty": "hard",
+    "estimatedMinutes": 7,
+    "maxScore": 1200,
+    "victim": {
+      "name": "Julian Hart",
+      "description": "The celebrated lead, who collapsed during the third act."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Vivian Sloane",
+        "description": "His co-star and former lover, demoted to a smaller role.",
+        "alibi": "Says she was waiting in the wings for her cue.",
+        "relationship": "Co-star"
+      },
+      {
+        "id": "s2",
+        "name": "Marco Reni",
+        "description": "The understudy who'd go on if Julian fell.",
+        "alibi": "Claims he was in his dressing room the whole act.",
+        "relationship": "Understudy"
+      },
+      {
+        "id": "s3",
+        "name": "Frances Dell",
+        "description": "The prop master who prepared the stage goblet.",
+        "alibi": "Says she filled the goblet with water as always.",
+        "relationship": "Prop master"
+      },
+      {
+        "id": "s4",
+        "name": "Director Pohl",
+        "description": "Director whose production Julian threatened to quit.",
+        "alibi": "Says he was in the booth giving lighting cues.",
+        "relationship": "Director"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "The Goblet",
+        "description": "The stage goblet held poison, swapped in after the prop master's check.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Understudy's Contract",
+        "description": "Marco's contract pays a large bonus if he performs a lead role this season.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Love Letters",
+        "description": "Old letters between Julian and Vivian, recently returned unopened.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Wings Access",
+        "description": "Only someone passing the prop table between acts could swap the goblet — the understudy crossed it to reach the stage-left door.",
+        "type": "testimonial"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Stagehand",
+        "statement": "I saw the understudy by the prop table during the second interval, though he claims he never left his room.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Dresser",
+        "statement": "Miss Sloane never left the wings; I was pinning her costume the whole time.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "8:30 PM",
+        "description": "Frances fills the goblet with water and sets it on the prop table.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "9:10 PM",
+        "description": "During the interval, the understudy is seen at the prop table.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "9:40 PM",
+        "description": "Julian drinks from the goblet on stage and collapses.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "Marco's contract paid a fortune if he finally performed a lead — and Julian never missed a show.",
+      "timelineEventId": "t2",
+      "explanation": "The goblet was clean when the prop master set it, but the understudy was seen at the prop table during the interval — the only window to swap it — and his contract gave him every reason. Vivian was pinned in the wings the whole time, and the old letters mislead."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-01",
+    "title": "The Numbers Don't Lie",
+    "description": "An accountant blows the whistle on a charity, then drowns in his bathtub the night before testifying. Verdict: accident. Evidence: otherwise.",
+    "type": "murder",
+    "difficulty": "hard",
+    "estimatedMinutes": 7,
+    "maxScore": 1200,
+    "victim": {
+      "name": "Harold Finch",
+      "description": "A charity accountant found drowned the night before he was to testify."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Eleanor Vaskle",
+        "description": "Charity director who'd lose everything if the fraud surfaced.",
+        "alibi": "Says she was at a donor gala until midnight.",
+        "relationship": "Charity director"
+      },
+      {
+        "id": "s2",
+        "name": "Greg Finch",
+        "description": "Harold's brother, named in his will.",
+        "alibi": "Claims he was asleep at home.",
+        "relationship": "Brother"
+      },
+      {
+        "id": "s3",
+        "name": "Nurse Adeyemi",
+        "description": "A home nurse with a key to Harold's flat.",
+        "alibi": "Says she finished her visit at 8 PM.",
+        "relationship": "Home nurse"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Bruised Wrists",
+        "description": "Harold's wrists show grip bruises — he was held under.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Gala Photos",
+        "description": "Time-stamped photos place the director leaving the gala at 9:30 PM, not midnight.",
+        "type": "digital"
+      },
+      {
+        "id": "e3",
+        "title": "The Will",
+        "description": "Harold's will leaving a modest sum to his brother.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Forged Ledgers",
+        "description": "The very ledgers Harold copied to expose the director's embezzlement.",
+        "type": "document"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Doorman",
+        "statement": "A woman in a gala dress came to Mr. Finch's building around 10 PM.",
+        "reliability": "uncertain"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Gala Photographer",
+        "statement": "The director slipped out far earlier than she told police.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "9:30 PM",
+        "description": "The director leaves the gala early.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "10:00 PM",
+        "description": "A woman in a gala dress visits Harold's building.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "11:00 PM",
+        "description": "Harold is drowned in his bath.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Harold's testimony would expose the director's embezzlement and send her to prison.",
+      "timelineEventId": "t2",
+      "explanation": "The gala photos shatter the director's midnight alibi, the doorman places a woman in a gala dress at Harold's at 10 PM, and his copied ledgers were the threat she had to bury. The brother's small inheritance is no motive at all."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-02",
+    "title": "The Quiet Ward",
+    "description": "A patient dies overnight in a hospital ward where the monitors were mysteriously muted. The chart says natural causes; the machines say tampering.",
+    "type": "murder",
+    "difficulty": "hard",
+    "estimatedMinutes": 7,
+    "maxScore": 1200,
+    "victim": {
+      "name": "Walter Crane",
+      "description": "A wealthy patient recovering from minor surgery, found dead at dawn."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Dr. Halsey",
+        "description": "Crane's physician, named in a generous bequest.",
+        "alibi": "Says he left the hospital at 7 PM.",
+        "relationship": "Physician"
+      },
+      {
+        "id": "s2",
+        "name": "Nurse Pinto",
+        "description": "The night nurse assigned to the ward.",
+        "alibi": "Claims the monitors were working when she last checked.",
+        "relationship": "Night nurse"
+      },
+      {
+        "id": "s3",
+        "name": "Sandra Crane",
+        "description": "Walter's daughter, who visited late.",
+        "alibi": "Says she left before visiting hours ended.",
+        "relationship": "Daughter"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Muted Alarms",
+        "description": "The bedside monitor alarms were silenced from the nurse's station console at 3 AM.",
+        "type": "digital"
+      },
+      {
+        "id": "e2",
+        "title": "IV Additive",
+        "description": "An overdose of a heart medication introduced into the IV line.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "The Bequest",
+        "description": "A will leaving Dr. Halsey a research grant.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Station Login",
+        "description": "Nurse Pinto's login was the only one active at the station when the alarms were muted.",
+        "type": "digital"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Orderly",
+        "statement": "Only the assigned nurse sits at that station console overnight.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Visitor Log",
+        "statement": "The daughter signed out at 8:45 PM, well before the death.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "8:45 PM",
+        "description": "The daughter signs out and leaves.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "3:00 AM",
+        "description": "Monitor alarms are muted from the nurse's station.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "3:20 AM",
+        "description": "An overdose enters Walter's IV line.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "Nurse Pinto had been quietly paid by a relative cut out of the will to ensure Walter never woke.",
+      "timelineEventId": "t2",
+      "explanation": "The alarms were muted from the station where only Pinto's login was active, and only she could reach the IV unnoticed. The daughter had left hours earlier and the doctor's bequest is a legitimate grant, not a motive."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-03",
+    "title": "House Money",
+    "description": "A high-roller wins big at a private casino, then is found dead in his suite. His chips are missing; his luck, it seems, ran out.",
+    "type": "murder",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Vincent Doyle",
+      "description": "A gambler found dead in his hotel suite after a record win."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Pit Boss Karras",
+        "description": "Casino floor manager whose tables took heavy losses.",
+        "alibi": "Says he was working the floor all night.",
+        "relationship": "Pit boss"
+      },
+      {
+        "id": "s2",
+        "name": "Lola Vane",
+        "description": "A companion who accompanied Vincent upstairs.",
+        "alibi": "Claims she left the suite right after a drink.",
+        "relationship": "Companion"
+      },
+      {
+        "id": "s3",
+        "name": "Dealer Mishra",
+        "description": "A dealer Vincent had gotten fired weeks earlier.",
+        "alibi": "Says he hasn't set foot in the casino since.",
+        "relationship": "Former dealer"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Two Glasses",
+        "description": "Two champagne glasses in the suite; only one holds a sedative.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Keycard Entry",
+        "description": "Lola's guest keycard was the only entry to the suite after Vincent's.",
+        "type": "digital"
+      },
+      {
+        "id": "e3",
+        "title": "Termination Notice",
+        "description": "The dealer's firing notice, signed at Vincent's request.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Missing Chips",
+        "description": "Vincent's winning chips, gone — later traced to a cash-out under a false name matching Lola's description.",
+        "type": "physical"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Floor Camera Log",
+        "statement": "The fired dealer never entered the building that night.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "1:00 AM",
+        "description": "Vincent and Lola go up to the suite.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "1:30 AM",
+        "description": "Vincent drinks the sedative-laced champagne.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "2:00 AM",
+        "description": "A false-name cash-out drains Vincent's chips.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "Lola wanted Vincent's record winnings for herself.",
+      "timelineEventId": "t2",
+      "explanation": "Lola's keycard was the only entry after Vincent's, one of the two glasses she poured was drugged, and the chips were cashed out under a false name matching her. The fired dealer never even entered the casino."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-04",
+    "title": "The Phantom Withdrawal",
+    "description": "A small-town bank reports a seven-figure transfer to an offshore account. The signatures are perfect, the paper trail flawless — and entirely fake.",
+    "type": "fraud",
+    "difficulty": "hard",
+    "estimatedMinutes": 7,
+    "maxScore": 1200,
+    "victim": {
+      "name": "Harbor Mutual Bank",
+      "description": "A community bank drained by a single forged transfer."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Manager Ostrov",
+        "description": "Branch manager with sole authority over large transfers.",
+        "alibi": "Says the transfer order came from head office.",
+        "relationship": "Branch manager"
+      },
+      {
+        "id": "s2",
+        "name": "Teller Bright",
+        "description": "A teller drowning in gambling debt.",
+        "alibi": "Claims she only processes small deposits.",
+        "relationship": "Teller"
+      },
+      {
+        "id": "s3",
+        "name": "IT Contractor Voss",
+        "description": "Hired to upgrade the bank's transfer software.",
+        "alibi": "Says his contract ended a week before the transfer.",
+        "relationship": "IT contractor"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Approval Timestamp",
+        "description": "The transfer was approved at 6:50 AM, before opening — when only the manager has system access.",
+        "type": "digital"
+      },
+      {
+        "id": "e2",
+        "title": "Offshore Account",
+        "description": "The destination account traces back to a shell company registered to the manager's cousin.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Debt Notices",
+        "description": "The teller's stack of overdue gambling debts.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Software Audit",
+        "description": "The transfer software was unmodified — the order was placed manually with manager credentials.",
+        "type": "digital"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Head Office Clerk",
+        "statement": "No such transfer order was ever issued from head office.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "6:50 AM",
+        "description": "The transfer is approved before the branch opens.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "9:00 AM",
+        "description": "The branch opens; staff arrive.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t3",
+        "time": "11:00 AM",
+        "description": "The fraudulent transfer is discovered.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Ostrov funneled the money to a shell company he secretly controlled through his cousin.",
+      "timelineEventId": "t1",
+      "explanation": "The transfer was approved before opening when only the manager had access, the software was untouched, and the offshore account leads to his own family shell. Head office never issued any order. The teller's debts are a red herring — she can't authorize large transfers."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-05",
+    "title": "The Cellar Door",
+    "description": "A vineyard heir is found dead in the wine cellar during the harvest festival. The family closes ranks; the truth ferments below.",
+    "type": "murder",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Lucien Mercier",
+      "description": "The estate's heir, found at the foot of the cellar stairs."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Camille Mercier",
+        "description": "Lucien's sister, who'd inherit if he died.",
+        "alibi": "Says she was hosting guests in the courtyard.",
+        "relationship": "Sister"
+      },
+      {
+        "id": "s2",
+        "name": "Estate Manager Roux",
+        "description": "Manager Lucien planned to fire for skimming.",
+        "alibi": "Claims he was checking the fermentation tanks alone.",
+        "relationship": "Estate manager"
+      },
+      {
+        "id": "s3",
+        "name": "Vintner Sabel",
+        "description": "A rival vintner courting the estate's contracts.",
+        "alibi": "Says he never left the tasting tent.",
+        "relationship": "Rival vintner"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Head Wound",
+        "description": "Lucien was struck before falling; the angle rules out an accidental tumble.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Skimming Ledger",
+        "description": "Hidden accounts showing the manager diverting estate funds.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Inheritance Clause",
+        "description": "The estate's succession papers naming the sister next in line.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Cellar Key",
+        "description": "The cellar was locked from outside; only the manager carried that key during the festival.",
+        "type": "physical"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Festival Guests",
+        "statement": "Camille was pouring wine in the courtyard the entire afternoon.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Cellar Hand",
+        "statement": "Mr. Roux had the only cellar key on his belt that day.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "3:00 PM",
+        "description": "Lucien tells the manager he's reviewing the accounts.",
+        "involvedSuspects": [
+          "s1",
+          "s2"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "4:00 PM",
+        "description": "The manager follows Lucien into the cellar and locks the door.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "6:00 PM",
+        "description": "Lucien is found dead at the foot of the stairs.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "Lucien had found the manager's skimming and was about to fire and report him.",
+      "timelineEventId": "t2",
+      "explanation": "Only the manager held the cellar key that locked the door, the hidden ledger gave him a desperate motive, and the wound shows Lucien was struck. The sister was pouring wine in full view of guests, and her inheritance is incidental."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-06",
+    "title": "The Server Room",
+    "description": "A data center suffers a catastrophic wipe hours before a security audit. The backups are gone too — erased by someone who knew exactly where they were.",
+    "type": "sabotage",
+    "difficulty": "hard",
+    "estimatedMinutes": 7,
+    "maxScore": 1200,
+    "victim": {
+      "name": "Cipherline Data Center",
+      "description": "A hosting firm whose core servers and backups were wiped."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Admin Tang",
+        "description": "Senior sysadmin facing dismissal for negligence.",
+        "alibi": "Says he was off-site on call.",
+        "relationship": "Senior admin"
+      },
+      {
+        "id": "s2",
+        "name": "Auditor Reyes",
+        "description": "The external auditor scheduled to inspect the systems.",
+        "alibi": "Claims she hadn't been given access yet.",
+        "relationship": "Auditor"
+      },
+      {
+        "id": "s3",
+        "name": "Intern Cho",
+        "description": "A new intern with temporary credentials.",
+        "alibi": "Says he left at 5 PM and badged out.",
+        "relationship": "Intern"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Wipe Command",
+        "description": "A wipe script was run at 2 AM using the senior admin's root credentials.",
+        "type": "digital"
+      },
+      {
+        "id": "e2",
+        "title": "Backup Knowledge",
+        "description": "Only the senior admin knew the off-network location of the backups, which were also destroyed.",
+        "type": "testimonial"
+      },
+      {
+        "id": "e3",
+        "title": "Intern Badge-Out",
+        "description": "The intern's badge log showing a 5 PM exit.",
+        "type": "digital",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "VPN Session",
+        "description": "A VPN session from the admin's home IP was active at the time of the wipe.",
+        "type": "digital"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Facilities Log",
+        "statement": "The auditor was never issued an access badge before the incident.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "5:00 PM",
+        "description": "The intern badges out for the day.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "2:00 AM",
+        "description": "A VPN session opens from the admin's home and runs the wipe.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "8:00 AM",
+        "description": "Staff arrive to find the systems and backups erased.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Tang wiped the systems to destroy evidence of his negligence before the audit could expose it.",
+      "timelineEventId": "t2",
+      "explanation": "The wipe used his root credentials over a VPN from his own home, and only he knew where the off-network backups lived — explaining why they vanished too. The auditor never had access, and the intern's clean badge-out clears him."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-07",
+    "title": "The Understudy's Alibi",
+    "description": "A ballet patron is poisoned at an after-party. Everyone drank from the same punch bowl — yet only she fell ill.",
+    "type": "murder",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Margot Lyle",
+      "description": "A wealthy arts patron who collapsed at the gala after-party."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Director Ames",
+        "description": "Company director whose funding Margot had just cut.",
+        "alibi": "Says he was making a speech when she fell ill.",
+        "relationship": "Company director"
+      },
+      {
+        "id": "s2",
+        "name": "Niece Pearl",
+        "description": "Margot's niece and sole heir.",
+        "alibi": "Claims she was fetching Margot a fresh drink.",
+        "relationship": "Niece"
+      },
+      {
+        "id": "s3",
+        "name": "Caterer Voss",
+        "description": "Hired caterer who ran the punch bowl.",
+        "alibi": "Says she served everyone from the same ladle.",
+        "relationship": "Caterer"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Personal Glass",
+        "description": "Margot drank from a glass brought to her, not from the bowl; that glass held poison.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Heir's Debts",
+        "description": "The niece's mounting debts and a recent loan against her future inheritance.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Funding Letter",
+        "description": "Margot's letter cutting the company's funding.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Cloakroom Vial",
+        "description": "An empty vial found in the niece's coat pocket at the cloakroom.",
+        "type": "physical"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Bartender",
+        "statement": "Everyone drank from the bowl except Mrs. Lyle, who had a glass brought to her by her niece.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "10:00 PM",
+        "description": "The director begins his thank-you speech.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "10:10 PM",
+        "description": "The niece brings Margot a personal glass of punch.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "10:20 PM",
+        "description": "Margot drinks and collapses.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "Buried in debt, the niece couldn't wait for her inheritance any longer.",
+      "timelineEventId": "t2",
+      "explanation": "Margot alone drank from a personal glass her niece carried over, the vial turned up in the niece's coat, and her debts gave her the motive. The director was mid-speech in front of everyone, and the funding letter only looks damning."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-08",
+    "title": "Black Run",
+    "description": "A ski instructor is found dead off-piste at a luxury resort. The slopes were closed for weather — so who lured him out into the storm?",
+    "type": "murder",
+    "difficulty": "hard",
+    "estimatedMinutes": 7,
+    "maxScore": 1200,
+    "victim": {
+      "name": "Niko Brandt",
+      "description": "A ski instructor found in a ravine below a closed run."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Resort Owner Falk",
+        "description": "Owner Niko was about to sue over a covered-up accident.",
+        "alibi": "Says he was in his office reviewing bookings.",
+        "relationship": "Resort owner"
+      },
+      {
+        "id": "s2",
+        "name": "Instructor Greta",
+        "description": "A colleague competing for the head-instructor post.",
+        "alibi": "Claims she was teaching a private lesson indoors.",
+        "relationship": "Fellow instructor"
+      },
+      {
+        "id": "s3",
+        "name": "Guest Albrecht",
+        "description": "A guest whose reckless skiing Niko had reported.",
+        "alibi": "Says he was at the spa all afternoon.",
+        "relationship": "Resort guest"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Lift Override",
+        "description": "The closed chairlift was manually overridden at 3 PM using the owner's key.",
+        "type": "digital"
+      },
+      {
+        "id": "e2",
+        "title": "Cut Safety Line",
+        "description": "The rope marking the closed run was cut, not blown down.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "Spa Sign-In",
+        "description": "The guest's spa sign-in sheet for that afternoon.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Lawsuit Notice",
+        "description": "Niko's pending lawsuit against the resort owner over a hushed-up injury.",
+        "type": "document"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Lift Operator",
+        "statement": "Only the owner has the key to override a closed lift.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Lesson Guest",
+        "statement": "Greta was indoors teaching me until the storm cleared.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "2:30 PM",
+        "description": "Niko tells the owner the lawsuit will proceed.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "3:00 PM",
+        "description": "The closed lift is overridden with the owner's key; Niko rides up.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "3:30 PM",
+        "description": "Niko goes off the closed run where the safety line was cut.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Niko's lawsuit would expose the owner's cover-up and ruin the resort.",
+      "timelineEventId": "t2",
+      "explanation": "The lift was overridden with the owner's unique key right after Niko confirmed the lawsuit, and the safety line was deliberately cut to send him into the ravine. Greta was teaching indoors and the guest's spa sign-in holds up."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-09",
+    "title": "The Missing Manuscript",
+    "description": "A reclusive author's only copy of her finished novel vanishes the day before the deadline. She suspects theft; her publisher suspects a stunt.",
+    "type": "theft",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Iris Calloway",
+      "description": "A bestselling author whose sole manuscript disappeared."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Editor Pruitt",
+        "description": "Editor who'd profit from a bidding war over the 'lost' book.",
+        "alibi": "Says he was in meetings across town.",
+        "relationship": "Editor"
+      },
+      {
+        "id": "s2",
+        "name": "Assistant Wren",
+        "description": "Iris's assistant, secretly writing her own competing novel.",
+        "alibi": "Claims she was filing correspondence in the study.",
+        "relationship": "Assistant"
+      },
+      {
+        "id": "s3",
+        "name": "Nephew Cole",
+        "description": "A nephew who keeps asking Iris for money.",
+        "alibi": "Says he hadn't visited in weeks.",
+        "relationship": "Nephew"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Study Access",
+        "description": "Only the assistant was alone in the locked study where the manuscript was kept.",
+        "type": "testimonial"
+      },
+      {
+        "id": "e2",
+        "title": "Copied Pages",
+        "description": "Drafts on the assistant's laptop reusing distinctive passages from Iris's novel.",
+        "type": "digital"
+      },
+      {
+        "id": "e3",
+        "title": "Loan Texts",
+        "description": "The nephew's texts begging Iris for a loan.",
+        "type": "digital",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Shredder Residue",
+        "description": "Strips of the original manuscript found in the study shredder.",
+        "type": "physical"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Housekeeper",
+        "statement": "Miss Wren was the only one with the study key besides Miss Calloway.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "1:00 PM",
+        "description": "Iris leaves the manuscript in the locked study and goes out.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t2",
+        "time": "2:30 PM",
+        "description": "The assistant is alone in the study 'filing'.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "5:00 PM",
+        "description": "Iris returns to find the manuscript gone.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "Wren was stealing Iris's work for her own novel and destroyed the original to hide the theft.",
+      "timelineEventId": "t2",
+      "explanation": "Only the assistant had study access while Iris was out, her laptop reuses the novel's passages, and shredded strips of the original turned up in the room. The nephew's pleading texts have nothing to do with it."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-10",
+    "title": "The Election Night",
+    "description": "A mayoral candidate dies of an overdose on election night, hours from victory. His campaign calls it a tragic relapse. His doctor disagrees.",
+    "type": "murder",
+    "difficulty": "expert",
+    "estimatedMinutes": 9,
+    "maxScore": 1500,
+    "victim": {
+      "name": "Councilman Reyes",
+      "description": "A reform candidate found dead in his hotel suite on election night."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Campaign Manager Doyle",
+        "description": "Manager who'd be jobless if a scandal Reyes planned to confess broke.",
+        "alibi": "Says he was managing the watch-party downstairs.",
+        "relationship": "Campaign manager"
+      },
+      {
+        "id": "s2",
+        "name": "Rival Aide Frost",
+        "description": "An aide to the opposing candidate, seen near the suite.",
+        "alibi": "Claims he was delivering a concession draft.",
+        "relationship": "Rival's aide"
+      },
+      {
+        "id": "s3",
+        "name": "Dr. Sena",
+        "description": "Reyes's personal physician with access to his medication.",
+        "alibi": "Says she administered only his usual dose at 7 PM.",
+        "relationship": "Physician"
+      },
+      {
+        "id": "s4",
+        "name": "Spouse Reyes",
+        "description": "The candidate's spouse, recently learning of an affair.",
+        "alibi": "Says they were greeting donors all evening.",
+        "relationship": "Spouse"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Dosage Mismatch",
+        "description": "The fatal drug was a controlled medication Reyes wasn't prescribed — but his physician could obtain.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Suite Service Log",
+        "description": "Room service shows a single 'medication delivery' to the suite at 9 PM, signed by Dr. Sena.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Affair Messages",
+        "description": "Messages revealing Reyes's affair, known to the spouse.",
+        "type": "digital",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Hidden Liability",
+        "description": "Records that Reyes intended to disclose a malpractice settlement he'd quietly funded for Dr. Sena.",
+        "type": "document"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Hotel Floor Camera",
+        "statement": "Only the physician entered the suite between 8 and 10 PM; the rival's aide left a folder at the front desk and never went up.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Donor",
+        "statement": "The candidate's spouse was downstairs with us all night.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "7:00 PM",
+        "description": "Dr. Sena gives Reyes his routine dose.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "9:00 PM",
+        "description": "A 'medication delivery' signed by Dr. Sena reaches the suite.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "9:30 PM",
+        "description": "Reyes ingests the fatal dose.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t4",
+        "time": "11:00 PM",
+        "description": "Reyes is found dead as results come in.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s3",
+      "motive": "Reyes was about to publicly disclose the malpractice settlement he'd funded for Dr. Sena, which would have ended her career.",
+      "timelineEventId": "t2",
+      "explanation": "The fatal drug was one only the physician could obtain, the 9 PM delivery to the suite bears her signature, and the floor camera shows only she entered. Reyes's planned disclosure of her malpractice was the motive. The affair messages and the rival's aide are dead ends — the spouse was downstairs and the aide never went up."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-11",
+    "title": "The Charity Gala",
+    "description": "A foundation's auction proceeds vanish overnight from a 'secure' lockbox. The donors want answers; the board wants it kept quiet.",
+    "type": "theft",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "The Brightwater Foundation",
+      "description": "A charity whose auction cash disappeared from its lockbox."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Treasurer Hale",
+        "description": "Foundation treasurer who alone set the lockbox code.",
+        "alibi": "Says she handed the box to security at 11 PM.",
+        "relationship": "Treasurer"
+      },
+      {
+        "id": "s2",
+        "name": "Security Guard Pace",
+        "description": "Guard who watched the box overnight.",
+        "alibi": "Claims the box never left his sight.",
+        "relationship": "Security guard"
+      },
+      {
+        "id": "s3",
+        "name": "Volunteer Reed",
+        "description": "A volunteer who helped count the cash.",
+        "alibi": "Says she left right after counting.",
+        "relationship": "Volunteer"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Untouched Lock",
+        "description": "The lockbox shows no tampering — it was opened with the correct code.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Code Access",
+        "description": "Only the treasurer knew the code; it was never shared with security.",
+        "type": "testimonial"
+      },
+      {
+        "id": "e3",
+        "title": "Guard's Record",
+        "description": "An old theft note on the guard's employment file.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Deposit Slip",
+        "description": "A personal deposit by the treasurer the next morning, matching the missing sum.",
+        "type": "document"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Guard Pace",
+        "statement": "The box stayed locked all night. I was never given the code.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "11:00 PM",
+        "description": "The treasurer hands the locked box to security.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "6:30 AM",
+        "description": "The treasurer collects the box 'to deposit it'.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "9:00 AM",
+        "description": "The board finds the box empty.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "The treasurer was quietly covering her own embezzlement and took the cash to balance the books.",
+      "timelineEventId": "t2",
+      "explanation": "The box was opened with the correct code only the treasurer knew, and her personal deposit the next morning matches the missing sum exactly. The guard never had the code, and his old file note is a red herring."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-12",
+    "title": "The Garden Party",
+    "description": "A matriarch dies sipping tea in her rose garden, surrounded by family. The pot was shared; her cup was not.",
+    "type": "murder",
+    "difficulty": "hard",
+    "estimatedMinutes": 7,
+    "maxScore": 1200,
+    "victim": {
+      "name": "Agatha Thorne",
+      "description": "An elderly matriarch found dead at her garden tea."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Son Edmund",
+        "description": "A son she'd threatened to disinherit.",
+        "alibi": "Says he was pruning roses at the far end.",
+        "relationship": "Son"
+      },
+      {
+        "id": "s2",
+        "name": "Companion Hartley",
+        "description": "Her live-in companion who served the tea.",
+        "alibi": "Claims she poured every cup from the same pot.",
+        "relationship": "Companion"
+      },
+      {
+        "id": "s3",
+        "name": "Granddaughter Liv",
+        "description": "A granddaughter desperate for tuition money.",
+        "alibi": "Says she was inside fetching biscuits.",
+        "relationship": "Granddaughter"
+      },
+      {
+        "id": "s4",
+        "name": "Dr. Pell",
+        "description": "The family doctor who'd prescribed Agatha's heart pills.",
+        "alibi": "Says he arrived only after she collapsed.",
+        "relationship": "Family doctor"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Sugar Bowl",
+        "description": "Agatha alone took sugar; the bowl held a crushed overdose of her heart medication.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Disinheritance Draft",
+        "description": "A new will draft cutting out the son, found in Agatha's desk.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Tuition Bill",
+        "description": "The granddaughter's overdue tuition notice.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Pill Supply",
+        "description": "Agatha's heart pills, with a week's worth missing, last handled by the companion who managed her medication.",
+        "type": "physical"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Gardener",
+        "statement": "Only Mrs. Thorne sweetened her tea; she kept her own sugar bowl beside her.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Kitchen Maid",
+        "statement": "The companion is the only one who handles the old lady's pills.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "3:00 PM",
+        "description": "The companion sets out the tea and Agatha's private sugar bowl.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "3:20 PM",
+        "description": "Agatha sweetens and drinks her tea.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t3",
+        "time": "3:40 PM",
+        "description": "Agatha collapses among the roses.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "The companion had been skimming from Agatha's accounts and feared exposure once the new will brought lawyers in.",
+      "timelineEventId": "t1",
+      "explanation": "The poison was crushed heart pills in the private sugar bowl only Agatha used, that bowl was set out by the companion, and she alone managed the medication that went missing. The son's disinheritance and the granddaughter's tuition are tempting but unconnected to the one cup that was tampered with."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-13",
+    "title": "The Test Flight",
+    "description": "A prototype drone crashes during a defense contract demo, costing the company the deal. The black box says it wasn't pilot error.",
+    "type": "sabotage",
+    "difficulty": "hard",
+    "estimatedMinutes": 7,
+    "maxScore": 1200,
+    "victim": {
+      "name": "Aerex Systems",
+      "description": "A defense startup whose prototype was sabotaged mid-demo."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Engineer Voll",
+        "description": "Lead engineer passed over for the project lead.",
+        "alibi": "Says he was in the control tent monitoring telemetry.",
+        "relationship": "Lead engineer"
+      },
+      {
+        "id": "s2",
+        "name": "Pilot Sereno",
+        "description": "The demo pilot blamed for the crash.",
+        "alibi": "Claims the controls stopped responding.",
+        "relationship": "Test pilot"
+      },
+      {
+        "id": "s3",
+        "name": "Investor Kahn",
+        "description": "An investor who'd shorted the company.",
+        "alibi": "Says he watched from the visitor stand.",
+        "relationship": "Investor"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Firmware Patch",
+        "description": "A last-minute firmware patch was uploaded an hour before the flight from the engineer's workstation.",
+        "type": "digital"
+      },
+      {
+        "id": "e2",
+        "title": "Black Box Data",
+        "description": "Telemetry shows controls were fine until a hidden command triggered the failure.",
+        "type": "digital"
+      },
+      {
+        "id": "e3",
+        "title": "Short Filing",
+        "description": "The investor's filing betting against the company.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Commit History",
+        "description": "The malicious command was committed under the engineer's developer signature.",
+        "type": "digital"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Junior Coder",
+        "statement": "Voll pushed a 'quick fix' right before the demo and told no one what it changed.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "9:00 AM",
+        "description": "The engineer uploads a last-minute firmware patch.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "10:00 AM",
+        "description": "The demo begins; the drone flies normally.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "10:15 AM",
+        "description": "A hidden command triggers the crash.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Voll sabotaged the demo to discredit the colleague chosen over him for project lead.",
+      "timelineEventId": "t1",
+      "explanation": "The malicious command was committed under the engineer's signature and slipped in via his last-minute patch, and the black box shows the controls were fine until it fired — clearing the pilot. The investor's short bet is suspicious but he never touched the code."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-14",
+    "title": "The Inheritance",
+    "description": "An estate lawyer is found dead the morning he was to read a contested will. The safe holding the document stands open and empty.",
+    "type": "murder",
+    "difficulty": "expert",
+    "estimatedMinutes": 9,
+    "maxScore": 1500,
+    "victim": {
+      "name": "Gerald Pruun",
+      "description": "An estate lawyer found dead beside his open office safe."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Heir Beatrice",
+        "description": "An heir who'd lose everything under the new will.",
+        "alibi": "Says she was home awaiting the reading.",
+        "relationship": "Heir"
+      },
+      {
+        "id": "s2",
+        "name": "Clerk Ovet",
+        "description": "The lawyer's clerk, who knew the safe combination.",
+        "alibi": "Claims he arrived after the body was found.",
+        "relationship": "Clerk"
+      },
+      {
+        "id": "s3",
+        "name": "Partner Sill",
+        "description": "A law partner Pruun was about to report for fraud.",
+        "alibi": "Says he was prepping for court across town.",
+        "relationship": "Law partner"
+      },
+      {
+        "id": "s4",
+        "name": "Estranged Son",
+        "description": "Pruun's estranged son, recently back in town.",
+        "alibi": "Says he hadn't spoken to his father in years.",
+        "relationship": "Estranged son"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Open Safe",
+        "description": "The safe was opened with the correct combination, not forced; only the lawyer and his clerk knew it.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Fraud Dossier",
+        "description": "A dossier Pruun had compiled accusing his partner of embezzling client funds, due to be filed that week.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Disinheritance Letter",
+        "description": "The new will draft cutting out an heir.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Court Calendar",
+        "description": "The court docket showing the partner's 'case' was actually adjourned — he had no hearing that morning.",
+        "type": "document"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Clerk Ovet",
+        "statement": "Mr. Sill came in early and went straight to Mr. Pruun's office, though he told everyone he was at court.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Building Camera",
+        "statement": "The clerk arrived after the ambulance; the heir never entered the building.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "7:30 AM",
+        "description": "The partner enters Pruun's office despite claiming to be at court.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "7:45 AM",
+        "description": "The safe is opened with the combination and the fraud dossier taken.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "8:00 AM",
+        "description": "Pruun is struck down; the will is gone too.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t4",
+        "time": "8:30 AM",
+        "description": "The body is discovered.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s3",
+      "motive": "Pruun was about to file a dossier proving the partner had embezzled client funds, which meant prison and disbarment.",
+      "timelineEventId": "t1",
+      "explanation": "The partner lied about being at court — the docket shows his hearing was adjourned — yet the clerk saw him go straight to Pruun's office, where the safe was opened and the fraud dossier removed along with the will to muddy the motive. The disinherited heir never entered the building, and the clerk arrived only after the ambulance."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-15",
+    "title": "The Food Critic",
+    "description": "A feared restaurant critic dies after a tasting menu at the city's hottest restaurant. Every course was shared family-style — except the one plated just for him.",
+    "type": "murder",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Lionel Cresp",
+      "description": "A powerful food critic who collapsed after a tasting menu."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Chef Aubert",
+        "description": "Head chef whose career a bad review would end.",
+        "alibi": "Says he never left the pass, plating every dish.",
+        "relationship": "Head chef"
+      },
+      {
+        "id": "s2",
+        "name": "Maître d' Sol",
+        "description": "Front-of-house manager who served Cresp personally.",
+        "alibi": "Claims he only carried plates from the pass.",
+        "relationship": "Maître d'"
+      },
+      {
+        "id": "s3",
+        "name": "Sous-chef Yi",
+        "description": "A sous-chef Cresp had ruined at a previous restaurant.",
+        "alibi": "Says she worked the cold station all night.",
+        "relationship": "Sous-chef"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Solo Plate",
+        "description": "Cresp's signature course was plated individually; it alone contained a toxic dose of foraged mushroom.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Old Grudge",
+        "description": "Records of how Cresp's review destroyed the sous-chef's former restaurant.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e3",
+        "title": "Foraging Log",
+        "description": "The sous-chef's personal foraging log listing the toxic mushroom species.",
+        "type": "document"
+      },
+      {
+        "id": "e4",
+        "title": "Cold Station",
+        "description": "Cresp's solo course was assembled at the cold station — the sous-chef's post — not the hot pass.",
+        "type": "testimonial"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Line Cook",
+        "statement": "The critic's special plate came off the cold station, not the chef's pass.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "8:30 PM",
+        "description": "The sous-chef assembles Cresp's individual course at the cold station.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "8:45 PM",
+        "description": "The maître d' delivers the plate to Cresp.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "9:10 PM",
+        "description": "Cresp collapses at his table.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s3",
+      "motive": "Cresp had destroyed the sous-chef's previous restaurant, and she'd waited years for revenge.",
+      "timelineEventId": "t1",
+      "explanation": "The poisoned course was the one plated solo at the cold station — her post — and her own foraging log lists the exact toxic mushroom. The maître d' merely carried the plate, and the documented grudge, far from clearing her, points right at her."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-16",
+    "title": "The Locked Laboratory",
+    "description": "A research scientist is found dead inside a biolab that logs every entry. The door records show no one came or went all night.",
+    "type": "murder",
+    "difficulty": "expert",
+    "estimatedMinutes": 9,
+    "maxScore": 1500,
+    "victim": {
+      "name": "Dr. Imani Royce",
+      "description": "A scientist found dead inside a sealed, access-logged lab."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Lab Partner Dorn",
+        "description": "A partner who'd be sole author on their breakthrough if she died.",
+        "alibi": "Says his badge log proves he left at 6 PM and never returned.",
+        "relationship": "Lab partner"
+      },
+      {
+        "id": "s2",
+        "name": "Director Mott",
+        "description": "The institute director under pressure to cut her funding.",
+        "alibi": "Claims he was at a board dinner.",
+        "relationship": "Institute director"
+      },
+      {
+        "id": "s3",
+        "name": "Technician Vale",
+        "description": "A technician Royce had caught falsifying data.",
+        "alibi": "Says he was off that evening.",
+        "relationship": "Technician"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Badge Log",
+        "description": "The door log shows the lab partner badged out at 6 PM and no one entered after.",
+        "type": "digital",
+        "isRedHerring": true
+      },
+      {
+        "id": "e2",
+        "title": "Timed Gas Release",
+        "description": "A toxic gas was released from the fume hood on a timer set before 6 PM.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "Authorship Email",
+        "description": "An email where the partner pressures Royce to drop her name from the paper.",
+        "type": "digital"
+      },
+      {
+        "id": "e4",
+        "title": "Hood Controls",
+        "description": "The fume-hood timer was programmed from the partner's bench terminal at 5:50 PM.",
+        "type": "digital"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Security Desk",
+        "statement": "No one entered the lab after 6 PM — the system would have flagged it.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Board Member",
+        "statement": "The director was at our dinner the entire evening.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "5:50 PM",
+        "description": "The fume-hood timer is programmed from the partner's terminal.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "6:00 PM",
+        "description": "The partner badges out, leaving Royce alone.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "9:00 PM",
+        "description": "The timer releases the gas; Royce, working late, succumbs.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Royce refused to drop her name from their breakthrough paper; with her gone, the partner would be sole author.",
+      "timelineEventId": "t1",
+      "explanation": "The killer didn't need to be present — the gas was on a timer set from the partner's own terminal at 5:50 PM, so he could badge out at 6 and let the locked-room logs 'prove' his innocence. The very badge log that seems to clear him is the red herring. The director was at his dinner all night."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-17",
+    "title": "The Pawned Heirloom",
+    "description": "A family's heirloom necklace turns up in a pawnshop, reported stolen weeks earlier. Someone in the household has been lying.",
+    "type": "theft",
+    "difficulty": "easy",
+    "estimatedMinutes": 5,
+    "maxScore": 800,
+    "victim": {
+      "name": "The Calloway Family",
+      "description": "A family whose heirloom necklace was secretly pawned."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Daughter Mae",
+        "description": "A daughter with secret credit-card debt.",
+        "alibi": "Says she hasn't touched the safe in months.",
+        "relationship": "Daughter"
+      },
+      {
+        "id": "s2",
+        "name": "Housekeeper Dot",
+        "description": "The long-time housekeeper with safe access.",
+        "alibi": "Claims she only dusts the study.",
+        "relationship": "Housekeeper"
+      },
+      {
+        "id": "s3",
+        "name": "Uncle Ray",
+        "description": "An uncle staying with the family between jobs.",
+        "alibi": "Says he was out job-hunting all week.",
+        "relationship": "Uncle"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Pawn Ticket",
+        "description": "The pawn ticket bears a signature and ID matching the daughter.",
+        "type": "document"
+      },
+      {
+        "id": "e2",
+        "title": "Debt Statement",
+        "description": "The daughter's overdue credit-card balance, cleared the day after the pawn.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Housekeeper's Keys",
+        "description": "The housekeeper's ring of household keys.",
+        "type": "physical",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Shop Camera",
+        "description": "Pawnshop footage of a young woman matching the daughter selling the necklace.",
+        "type": "digital"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Pawnbroker",
+        "statement": "A young woman pawned it and signed the ticket herself.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "Monday",
+        "description": "The necklace is reported missing from the safe.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t2",
+        "time": "Tuesday",
+        "description": "A young woman pawns the necklace and signs the ticket.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "Wednesday",
+        "description": "The daughter's debt is suddenly cleared.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Mae pawned the heirloom to clear her secret debts, then reported it stolen to cover herself.",
+      "timelineEventId": "t2",
+      "explanation": "The pawn ticket carries the daughter's signature and ID, the shop footage matches her, and her debt was paid off the very next day. The housekeeper's keys are a distraction — she had access but no motive and never appears on camera."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-18",
+    "title": "The Regatta",
+    "description": "A yacht club commodore drowns during the season's biggest race. Ruled an accident — until the rigging tells a different story.",
+    "type": "murder",
+    "difficulty": "hard",
+    "estimatedMinutes": 7,
+    "maxScore": 1200,
+    "victim": {
+      "name": "Commodore Hale",
+      "description": "The yacht club commodore, drowned after falling overboard mid-race."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "First Mate Brandt",
+        "description": "Crewman Hale was about to expel for cheating.",
+        "alibi": "Says he was trimming the foresail when Hale fell.",
+        "relationship": "First mate"
+      },
+      {
+        "id": "s2",
+        "name": "Rival Skipper Dace",
+        "description": "A rival who'd finally win the cup with Hale gone.",
+        "alibi": "Claims he was a half-mile back on his own boat.",
+        "relationship": "Rival skipper"
+      },
+      {
+        "id": "s3",
+        "name": "Club Treasurer Finn",
+        "description": "A treasurer Hale suspected of fixing club accounts.",
+        "alibi": "Says he was ashore at the finish line.",
+        "relationship": "Club treasurer"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Sawn Harness",
+        "description": "Hale's safety harness clip was partly sawn through, set to fail under load.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Expulsion Notice",
+        "description": "Hale's drafted notice expelling the first mate for race-fixing.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Cup Standings",
+        "description": "Standings showing the rival skipper would win if Hale didn't finish.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Rigging Duty",
+        "description": "The first mate was solely responsible for checking Hale's harness before the race.",
+        "type": "testimonial"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Deckhand",
+        "statement": "Brandt rigged the commodore's harness himself that morning, like always.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "Morning",
+        "description": "The first mate prepares Hale's harness before the race.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "Midrace",
+        "description": "A hard gust loads the harness and the sawn clip fails.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t3",
+        "time": "Afternoon",
+        "description": "Hale goes overboard and drowns.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Hale was about to expel the first mate for race-fixing, ending his sailing career.",
+      "timelineEventId": "t1",
+      "explanation": "The first mate alone rigged Hale's harness that morning and had every reason to silence him before the expulsion. The clip was deliberately sawn to fail under load. The rival skipper's standings are a red herring — he was a half-mile away and never near the rigging."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-19",
+    "title": "The Whistle in the Dark",
+    "description": "A factory foreman vanishes the night before he was to testify about safety violations. His truck is found at the plant; he is not.",
+    "type": "disappearance",
+    "difficulty": "medium",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": "Sam Ortega",
+      "description": "A factory foreman who vanished before a safety hearing."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Plant Owner Krell",
+        "description": "Owner facing ruin if the violations came to light.",
+        "alibi": "Says he left the plant at 6 PM.",
+        "relationship": "Plant owner"
+      },
+      {
+        "id": "s2",
+        "name": "Coworker Diaz",
+        "description": "A coworker who'd be blamed for the violations instead.",
+        "alibi": "Claims he was on the night line the whole shift.",
+        "relationship": "Coworker"
+      },
+      {
+        "id": "s3",
+        "name": "Union Rep Boyd",
+        "description": "A union rep who'd argued with Ortega over the testimony.",
+        "alibi": "Says he was at the union hall.",
+        "relationship": "Union rep"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Gate Log",
+        "description": "The plant gate shows the owner's car re-entering at 9 PM, contradicting his story.",
+        "type": "digital"
+      },
+      {
+        "id": "e2",
+        "title": "Wiped Office",
+        "description": "Ortega's office was emptied of safety documents the same night.",
+        "type": "physical"
+      },
+      {
+        "id": "e3",
+        "title": "Union Dispute",
+        "description": "Notes of the union rep's heated argument with Ortega.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Loading Dock Drag",
+        "description": "Drag marks from Ortega's office to the owner's private loading dock.",
+        "type": "physical"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Night Guard",
+        "statement": "The owner came back after hours and went to his private dock, which only he uses.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "6:00 PM",
+        "description": "The owner claims to leave for the night.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "9:00 PM",
+        "description": "The owner's car re-enters the plant.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "9:30 PM",
+        "description": "Ortega's office is cleared and drag marks lead to the private dock.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "Ortega's testimony about safety violations would have shut down the plant and exposed the owner to criminal charges.",
+      "timelineEventId": "t2",
+      "explanation": "The gate log destroys the owner's alibi, the guard saw him head to his private dock where the drag marks lead, and the safety documents vanished with Ortega. The union rep merely argued with him and was at the hall all night."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-20",
+    "title": "The Counterfeit Masterpiece",
+    "description": "A museum's prized antiquity is exposed as a forgery. The original was authentic when it arrived — so somewhere along the way, it was switched.",
+    "type": "fraud",
+    "difficulty": "hard",
+    "estimatedMinutes": 7,
+    "maxScore": 1200,
+    "victim": {
+      "name": "The National Antiquities Museum",
+      "description": "A museum whose genuine artifact was swapped for a fake."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Curator Devlin",
+        "description": "Curator with mounting private debts.",
+        "alibi": "Says he never handles the artifacts alone.",
+        "relationship": "Curator"
+      },
+      {
+        "id": "s2",
+        "name": "Conservator Park",
+        "description": "Conservator who had the piece for 'cleaning'.",
+        "alibi": "Claims she returned it exactly as received.",
+        "relationship": "Conservator"
+      },
+      {
+        "id": "s3",
+        "name": "Donor Greaves",
+        "description": "A donor who'd lent and wanted the piece back.",
+        "alibi": "Says he was abroad the whole month.",
+        "relationship": "Donor"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Custody Record",
+        "description": "The artifact was authentic on intake and signed solely into the conservator's custody for cleaning.",
+        "type": "document"
+      },
+      {
+        "id": "e2",
+        "title": "Forger Receipt",
+        "description": "A receipt from a known forger's studio, paid from the conservator's account.",
+        "type": "document"
+      },
+      {
+        "id": "e3",
+        "title": "Loan Agreement",
+        "description": "The donor's agreement to reclaim the piece.",
+        "type": "document",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Microscopy Report",
+        "description": "Lab analysis dating the swap to the exact window the conservator held the piece.",
+        "type": "digital"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Registrar",
+        "statement": "Only the conservator had the piece between intake and display.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "Week 1",
+        "description": "The authentic artifact is signed into the conservator's custody.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "Week 2",
+        "description": "The conservator pays a forger's studio.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "Week 3",
+        "description": "The forgery is returned and put on display.",
+        "involvedSuspects": [
+          "s2"
+        ]
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "The conservator sold the genuine artifact and replaced it with a commissioned fake to pocket the difference.",
+      "timelineEventId": "t2",
+      "explanation": "The piece was authentic until it entered the conservator's sole custody, the forger's receipt was paid from her account, and lab dating pins the swap to her window. The curator never had it alone, and the donor was abroad all month."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-21",
+    "title": "The Reunion",
+    "description": "Five old friends gather at a remote cabin; by morning, the host is dead. Snowed in, no signal, no way out — the killer is still at the table.",
+    "type": "murder",
+    "difficulty": "expert",
+    "estimatedMinutes": 10,
+    "maxScore": 1500,
+    "victim": {
+      "name": "Owen Frame",
+      "description": "The host of the reunion, found dead in the snowed-in cabin."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Cara",
+        "description": "Owen's ex, whom he'd publicly humiliated years ago.",
+        "alibi": "Says she went to bed early with a migraine.",
+        "relationship": "Ex-girlfriend"
+      },
+      {
+        "id": "s2",
+        "name": "Miles",
+        "description": "A friend Owen had bankrupted in a bad investment.",
+        "alibi": "Claims he was reading by the fire alone.",
+        "relationship": "Old friend"
+      },
+      {
+        "id": "s3",
+        "name": "Tessa",
+        "description": "Owen's business partner, secretly being bought out.",
+        "alibi": "Says she was on a call in the loft — though there was no signal.",
+        "relationship": "Business partner"
+      },
+      {
+        "id": "s4",
+        "name": "Glen",
+        "description": "Owen's brother, long resentful of the family money.",
+        "alibi": "Says he was chopping firewood outside.",
+        "relationship": "Brother"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Nightcap Mug",
+        "description": "Owen's bedtime cocoa, the only drink he took alone, was laced with antifreeze.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "No Signal",
+        "description": "The cabin had no cell signal all night — Tessa's 'call' alibi is impossible.",
+        "type": "testimonial"
+      },
+      {
+        "id": "e3",
+        "title": "Buyout Papers",
+        "description": "Documents showing Owen was quietly forcing Tessa out of their company for pennies.",
+        "type": "document"
+      },
+      {
+        "id": "e4",
+        "title": "Old Photo",
+        "description": "A photo of Owen humiliating Cara at a party years ago.",
+        "type": "physical",
+        "isRedHerring": true
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Glen",
+        "statement": "Tessa made the cocoa for Owen and carried it up to him herself.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Cara",
+        "statement": "There's never any signal up here — nobody could have been on a call.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "10:00 PM",
+        "description": "Tessa makes Owen's nightly cocoa and brings it up.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "10:30 PM",
+        "description": "Tessa claims to take a call in the loft.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "11:00 PM",
+        "description": "Owen drinks the cocoa and dies in the night.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s3",
+      "motive": "Owen was forcing Tessa out of the company they built for a fraction of its worth; killing him voided the buyout.",
+      "timelineEventId": "t1",
+      "explanation": "Tessa alone made and delivered the poisoned cocoa, her 'phone call' alibi is impossible with no signal, and the buyout papers gave her the strongest motive of all. The old photo of Cara's humiliation is there to mislead — a grudge, but not the hand that poured the cocoa."
+    }
+  },
+  {
+    "kind": "daily",
+    "availableDate": "2026-07-22",
+    "title": "The Last Broadcast",
+    "description": "A radio host is found dead in his soundproof booth at the end of a live overnight show. The mic was hot, the door locked, the studio empty.",
+    "type": "murder",
+    "difficulty": "expert",
+    "estimatedMinutes": 9,
+    "maxScore": 1500,
+    "victim": {
+      "name": "Dex Mallory",
+      "description": "A late-night radio host found dead in his locked broadcast booth."
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": "Producer Lane",
+        "description": "Producer Dex was about to replace with a cheaper host.",
+        "alibi": "Says he ran the board from the control room all night.",
+        "relationship": "Producer"
+      },
+      {
+        "id": "s2",
+        "name": "Sponsor Quill",
+        "description": "A sponsor Dex had threatened to expose on air.",
+        "alibi": "Claims he was home listening to the show.",
+        "relationship": "Sponsor"
+      },
+      {
+        "id": "s3",
+        "name": "Intern Bex",
+        "description": "An intern Dex routinely berated.",
+        "alibi": "Says she left after setting up the booth.",
+        "relationship": "Intern"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": "Booth Water",
+        "description": "The host's water bottle, refilled before air, contained a slow-acting poison.",
+        "type": "physical"
+      },
+      {
+        "id": "e2",
+        "title": "Control Room Glass",
+        "description": "The producer had the only direct line of sight and key access to the booth from the control room.",
+        "type": "testimonial"
+      },
+      {
+        "id": "e3",
+        "title": "On-Air Threat",
+        "description": "A recording of Dex threatening to expose the sponsor.",
+        "type": "digital",
+        "isRedHerring": true
+      },
+      {
+        "id": "e4",
+        "title": "Replacement Contract",
+        "description": "A signed contract hiring a cheaper host to take over Dex's slot next month.",
+        "type": "document"
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": "Intern Bex",
+        "statement": "I set up the booth and went home; only the producer has the booth key after that.",
+        "reliability": "reliable"
+      },
+      {
+        "id": "w2",
+        "witnessName": "Station Log",
+        "statement": "The booth door was locked from the control side the entire broadcast.",
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": "11:00 PM",
+        "description": "The intern sets up the booth and leaves.",
+        "involvedSuspects": [
+          "s3"
+        ]
+      },
+      {
+        "id": "t2",
+        "time": "11:30 PM",
+        "description": "The producer refills the host's water before air.",
+        "involvedSuspects": [
+          "s1"
+        ]
+      },
+      {
+        "id": "t3",
+        "time": "12:00 AM",
+        "description": "The show goes live; Dex drinks through the night.",
+        "involvedSuspects": []
+      },
+      {
+        "id": "t4",
+        "time": "4:00 AM",
+        "description": "The signal goes dead; Dex is found slumped at the mic.",
+        "involvedSuspects": []
+      }
+    ],
+    "solution": {
+      "suspectId": "s1",
+      "motive": "The producer had already signed a cheaper replacement and needed Dex gone before his contract renewed.",
+      "timelineEventId": "t2",
+      "explanation": "The producer refilled the poisoned water bottle right before air, held the only key and sight line to the locked booth, and had a signed deal to replace Dex. The booth stayed locked from his side all night, ruling out the others. The sponsor threat is the red herring — he was home listening."
+    }
+  }
+]

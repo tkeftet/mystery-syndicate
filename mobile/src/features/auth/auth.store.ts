@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import type { UserPrivateProfile } from "@detective-club/shared";
+import type { UserPrivateProfile } from "@mystery-syndicate/shared";
 import { queryClient } from "../../services/queryClient";
 import { identify, resetAnalytics } from "../../services/analytics";
 import { setMonitoringUser, clearMonitoringUser } from "../../services/monitoring";

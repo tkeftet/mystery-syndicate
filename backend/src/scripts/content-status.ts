@@ -65,7 +65,7 @@ async function run() {
   });
   const chapters = await Case.countDocuments({ kind: "chapter" });
 
-  logger.info("──────── Detective Club — Content Runway ────────");
+  logger.info("──────── Mystery Syndicate — Content Runway ────────");
   logger.info(`Today (UTC):            ${today}`);
   logger.info(`Daily cases (total):    ${totalDaily}`);
   logger.info(`Daily runway (contig.): ${runway} day(s)  [warn <${WARN_DAYS}, critical <${CRITICAL_DAYS}]`);

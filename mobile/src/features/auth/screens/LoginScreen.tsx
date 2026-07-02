@@ -93,7 +93,7 @@ export function LoginScreen({ navigation }: Props) {
         </LinearGradient>
         <Text style={styles.kicker}>EST. MIDNIGHT</Text>
         <Text style={styles.title}>
-          Detective <Text style={styles.titleAccent}>Club</Text>
+          Mystery <Text style={styles.titleAccent}>Syndicate</Text>
         </Text>
         <Text style={styles.subtitle}>Sign in to solve today's case</Text>
       </View>

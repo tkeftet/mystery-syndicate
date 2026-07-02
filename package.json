@@ -1,5 +1,5 @@
 {
-  "name": "detective-club",
+  "name": "mystery-syndicate",
   "private": true,
   "workspaces": [
     "mobile",
@@ -7,8 +7,8 @@
     "shared"
   ],
   "scripts": {
-    "mobile": "yarn workspace @detective-club/mobile start",
-    "backend": "yarn workspace @detective-club/backend dev",
+    "mobile": "yarn workspace @mystery-syndicate/mobile start",
+    "backend": "yarn workspace @mystery-syndicate/backend dev",
     "lint": "yarn workspaces run lint",
     "type-check": "yarn workspaces run type-check"
   },

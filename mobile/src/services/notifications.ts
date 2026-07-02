@@ -4,7 +4,7 @@ import * as Notifications from "expo-notifications";
 import { apiClient } from "./api";
 
 /**
- * Push notification registration for the Detective Club app.
+ * Push notification registration for the Mystery Syndicate app.
  *
  * NOTE: remote push requires a development build (EAS) — it does NOT work in
  * Expo Go on SDK 53+. `registerForPushNotificationsAsync` is written to fail

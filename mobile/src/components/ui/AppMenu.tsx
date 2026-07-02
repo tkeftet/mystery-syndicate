@@ -21,8 +21,8 @@ type MenuItem = {
 };
 
 const ITEMS: MenuItem[] = [
-  { icon: "sparkles", label: "Customize", route: "CustomizeProfile" },
-  { icon: "calendar", label: "Daily Reward", route: "DailyLogin" },
+  // Customize lives on the Profile screen; Daily Reward has a Home banner —
+  // both removed here to keep this a focused "more" menu.
   { icon: "people", label: "Friends", route: "Friends" },
   { icon: "scales", label: "Agency", route: "Agencies" },
   { icon: "trophy", label: "Achievements", route: "Achievements" },

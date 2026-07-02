@@ -1,5 +1,15 @@
 import { Platform } from "react-native";
+import Constants, { ExecutionEnvironment } from "expo-constants";
 import { track, AnalyticsEvent } from "./analytics";
+
+/**
+ * react-native-google-mobile-ads is a native module absent from Expo Go. Under
+ * the new architecture, even `require()`-ing it evaluates a TurboModule spec
+ * that throws an uncatchable "RNGoogleMobileAdsModule could not be found"
+ * invariant. So in Expo Go we skip loading it entirely (ads simply no-op).
+ */
+const isExpoGo =
+  Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 
 /** Best-effort placement label parsed from customData ({type:"..."}). */
 function adPlacement(customData?: string): string {
@@ -26,6 +36,7 @@ function adPlacement(customData?: string): string {
 declare const __DEV__: boolean;
 
 function loadAdsModule(): any | null {
+  if (isExpoGo) return null;
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     return require("react-native-google-mobile-ads");

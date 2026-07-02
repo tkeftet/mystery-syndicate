@@ -1,0 +1,8 @@
+# Controls what EAS Build uploads (overrides .gitignore for the build archive).
+# Everything NOT listed here is uploaded — including google-services.json, which
+# is gitignored but required by app.json's android.googleServicesFile.
+node_modules/
+.expo/
+.env
+.env.*
+web-build/

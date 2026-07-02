@@ -1,10 +1,10 @@
-# Privacy Policy — Detective Club
+# Privacy Policy — Mystery Syndicate
 
 **Last updated: June 22, 2026**
 
-This Privacy Policy explains how Detective Club ("we", "us", "the app") collects,
-uses, and shares information when you use our mobile game. By using Detective
-Club, you agree to this policy.
+This Privacy Policy explains how Mystery Syndicate ("we", "us", "the app") collects,
+uses, and shares information when you use our mobile game. By using Mystery
+Syndicate, you agree to this policy.
 
 > **Contact:** [YOUR_CONTACT_EMAIL]
 > Replace this with the email you want users and the app stores to contact you at.
@@ -89,7 +89,7 @@ time.
 
 ## 7. Children's Privacy
 
-Detective Club is not directed to children under 13 (or under the minimum age of
+Mystery Syndicate is not directed to children under 13 (or under the minimum age of
 digital consent in your country). We do not knowingly collect personal data from
 children. If you believe a child has provided us data, contact us and we will
 delete it.

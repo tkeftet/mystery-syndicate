@@ -8,9 +8,24 @@
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://agile-many-unprotected.ngrok-free.dev/api/v1",
+        "EXPO_PUBLIC_SOCKET_URL": "https://agile-many-unprotected.ngrok-free.dev",
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
+      }
     },
-    "production": {}
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://agile-many-unprotected.ngrok-free.dev/api/v1",
+        "EXPO_PUBLIC_SOCKET_URL": "https://agile-many-unprotected.ngrok-free.dev",
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
+      }
+    }
   },
   "submit": {
     "production": {}

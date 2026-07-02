@@ -31,7 +31,7 @@ jobs:
     needs: type-check
     env:
       # Set this repository secret to enable the smoke test against a throwaway
-      # DB (the script uses dbName "detective-club-smoketest" and drops it after).
+      # DB (the script uses dbName "mystery-syndicate-smoketest" and drops it after).
       MONGODB_URI: ${{ secrets.MONGODB_URI }}
       NODE_ENV: test
     steps:

@@ -351,6 +351,49 @@ export async function deleteAgency(actorId: string) {
   return { ok: true };
 }
 
+/**
+ * Remove a user from their agency as part of full account deletion.
+ * - Leader with other members → leadership auto-transfers to the highest-ranked,
+ *   then highest-contributing, remaining member.
+ * - Sole member/leader → the agency (and its members + join requests) is deleted.
+ * - Regular member → membership removed and the member count decremented.
+ * Any outstanding join request the user made elsewhere is also cleared.
+ * Never throws on "not in an agency" — deletion must be unconditional.
+ */
+export async function removeMemberForAccountDeletion(
+  userId: string,
+): Promise<void> {
+  await AgencyJoinRequest.deleteMany({ userId });
+  const m = await getMembership(userId);
+  if (!m) return;
+
+  if (m.role === "leader") {
+    const others = await AgencyMember.find({
+      agencyId: m.agencyId,
+      userId: { $ne: userId },
+    });
+    if (others.length === 0) {
+      await Promise.all([
+        Agency.deleteOne({ _id: m.agencyId }),
+        AgencyMember.deleteMany({ agencyId: m.agencyId }),
+        AgencyJoinRequest.deleteMany({ agencyId: m.agencyId }),
+      ]);
+      return;
+    }
+    const successor = others.sort(
+      (a, b) =>
+        ROLE_RANK[b.role] - ROLE_RANK[a.role] ||
+        b.contributionTotal - a.contributionTotal,
+    )[0];
+    successor.role = "leader";
+    await successor.save();
+    await Agency.updateOne({ _id: m.agencyId }, { leaderId: successor.userId });
+  }
+
+  await m.deleteOne();
+  await Agency.updateOne({ _id: m.agencyId }, { $inc: { memberCount: -1 } });
+}
+
 // ── Leaderboard ──────────────────────────────────────────────────────────────
 
 export async function getLeaderboard(scope: "weekly" | "global" = "weekly", limit = 100) {

@@ -16,7 +16,7 @@ import { track, AnalyticsEvent } from "../../../services/analytics";
 const SLIDES: { icon: IconName; title: string; description: string }[] = [
   {
     icon: "search",
-    title: "Welcome to Detective Club",
+    title: "Welcome to Mystery Syndicate",
     description:
       "Every day a new mystery case awaits you. Investigate evidence, question suspects, and solve the crime.",
   },

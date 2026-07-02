@@ -3,7 +3,7 @@ import type {
   CaseType,
   CaseDifficulty,
   CaseStatus,
-} from "@detective-club/shared";
+} from "../../shared/types/domain.types";
 
 export interface ICase extends Document {
   title: string;

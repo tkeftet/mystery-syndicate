@@ -1,4 +1,4 @@
-# Detective Club — Production Readiness Audit & Launch Plan
+# Mystery Syndicate — Production Readiness Audit & Launch Plan
 
 > Status: pre-launch audit. Grounded in the actual codebase (not the feature list).
 > Last updated: 2026-06-22.
@@ -10,7 +10,7 @@
 - **No `ErrorBoundary`** → **Fixed** (`mobile/src/components/ErrorBoundary.tsx`, wired in `App.tsx`).
 - **AdMob still on TEST ad unit IDs** (`mobile/src/services/ads.ts` `REWARDED_AD_UNIT_ID` undefined).
 - **No automated tests** beyond `backend/src/scripts/smoke.ts`.
-- ~~**4 pre-existing backend TS errors**~~ **FIXED** (auth `jsonwebtoken` `expiresIn` typing ×2 via `SignOptions["expiresIn"]` cast; `case.model`/`user.model` now import types from `@detective-club/shared`). Backend type-check is now 0 errors and `yarn type-check` is green across all workspaces.
+- ~~**4 pre-existing backend TS errors**~~ **FIXED** (auth `jsonwebtoken` `expiresIn` typing ×2 via `SignOptions["expiresIn"]` cast; `case.model`/`user.model` now import types from `@mystery-syndicate/shared`). Backend type-check is now 0 errors and `yarn type-check` is green across all workspaces.
 
 ---
 
@@ -32,7 +32,7 @@
 **Strengths:** `Promise.allSettled` progression fan-out, single-flight JWT refresh, helmet + rate limit, isolated schedulers, server-authoritative dates/anti-cheat.
 
 ## Phase 2 — Launch Checklist
-- **Account:** deletion (required), guest→permanent linking, Apple Sign In (if social), password reset, email-optional handling.
+- **Account:** ~~deletion (required)~~ **DONE** (`DELETE /users/me` + Privacy Settings "Delete account" flow; full cascade verified), guest→permanent linking, Apple Sign In (if social), password reset, email-optional handling.
 - **Gameplay:** daily case never errors (done), re-entrancy guards, victim/briefing on all case kinds (done).
 - **Ads:** real IDs, UMP/GDPR consent, iOS ATT, SSV verified in prod, frequency caps, no-fill handling.
 - **Notifications:** permission priming, deep-link routing, quiet hours/opt-out, `CRON_TZ` set.
@@ -99,5 +99,5 @@ Sequencing: W1–2 critical; W3–4 high + alpha(10); W5–6 beta(100); W7–8 s
 - **Content runway pipeline** (avoids daily-loop starvation):
   - `yarn content:status` — reports contiguous daily-case runway from today + mini/mega/chapter counts; warns <30 days, **exits non-zero <7 days** (CI/cron-friendly). `backend/src/scripts/content-status.ts`.
   - `yarn content:import <file.json>` — validates authored cases (required fields + solution integrity) and upserts idempotently; **aborts entirely on any validation error** (verified). `backend/src/scripts/content-import.ts`. Authoring format: `docs/sample-cases.json`.
-  - **FINDING:** daily runway is currently **0** — the 10 seeded daily cases have past `availableDate`s, so today serves a repeat via the fallback. Fix: author cases (clone `sample-cases.json`, set upcoming dates) → `yarn content:import`; target 90 days; run `content:status` in a daily cron to alert before gaps.
+  - ~~**FINDING:** daily runway is currently **0**~~ **PARTIALLY FIXED (2026-06-23):** authored + imported a 30-day daily batch (`backend/content/daily-cases-batch-01.json`, 2026-06-23→2026-07-22; all 5 crime types; difficulty curve easy 3 / medium 12 / hard 10 / expert 5; each fair-play with a red herring + supported solution). `content:status` now reports **30 days** and exits 0. **Remaining:** extend toward the 90-day target (author batch-02+), seed minis (`content:status` shows minis=0), and run `content:status` in a daily cron to alert before gaps.
 - **Baseline TS errors fixed + CI workflow added.** All 4 long-standing backend type errors resolved; added `mobile` `type-check` script + `shared/tsconfig.json` so root `yarn type-check` is green across mobile+backend+shared. New `.github/workflows/ci.yml`: type-checks all workspaces on push/PR, plus an optional backend smoke job that runs when a `MONGODB_URI` repo secret is set (throwaway DB, dropped after). NOTE: repo isn't a git repo yet — `git init` + push to GitHub to activate CI.

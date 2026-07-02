@@ -656,7 +656,10 @@ export function InvestigationScreen({ navigation, route }: Props) {
       visible
       transparent
       animationType="fade"
-      onRequestClose={() => navigation.navigate("Home")}
+      onRequestClose={() => {
+        setResult(null);
+        navigation.navigate("Home");
+      }}
     >
       <View style={styles.resultPopupOverlay}>
         <View
@@ -840,7 +843,10 @@ export function InvestigationScreen({ navigation, route }: Props) {
           <GradientButton
             label="Back to Home"
             style={styles.doneButton}
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => {
+              setResult(null);
+              navigation.navigate("Home");
+            }}
           />
         </View>
       </View>

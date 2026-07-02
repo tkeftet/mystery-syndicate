@@ -21,7 +21,7 @@ export async function testPushController(
       .filter((t): t is string => !!t);
 
     await sendToTokens(tokens, {
-      title: "🔔 Detective Club test",
+      title: "🔔 Mystery Syndicate test",
       body: "Push notifications are working! 🎉",
       data: { type: "test" },
     });

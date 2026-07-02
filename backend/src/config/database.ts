@@ -12,7 +12,7 @@ export async function connectDatabase() {
   );
 
   await mongoose.connect(uri, {
-    dbName: "detective-club",
+    dbName: "mystery-syndicate",
     maxPoolSize: 10,
     tls: true,
     tlsAllowInvalidCertificates: true,

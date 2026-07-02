@@ -1,5 +1,5 @@
 import { apiClient } from "../../services/api";
-import type { UserPrivateProfile } from "@detective-club/shared";
+import type { UserPrivateProfile } from "@mystery-syndicate/shared";
 
 interface AuthResponse {
   accessToken: string;

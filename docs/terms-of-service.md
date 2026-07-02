@@ -1,8 +1,8 @@
-# Terms of Service — Detective Club
+# Terms of Service — Mystery Syndicate
 
 **Last updated: June 22, 2026**
 
-These Terms govern your use of the Detective Club mobile game ("the app"). By
+These Terms govern your use of the Mystery Syndicate mobile game ("the app"). By
 downloading or using the app, you agree to these Terms.
 
 > **Contact:** [YOUR_CONTACT_EMAIL]

@@ -11,7 +11,12 @@ const API_URL =
 export const apiClient = axios.create({
   baseURL: API_URL,
   timeout: 10_000,
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+    // Bypass ngrok's free-tier HTML interstitial so responses stay JSON.
+    // Harmless on non-ngrok hosts (they ignore the unknown header).
+    "ngrok-skip-browser-warning": "true",
+  },
 });
 
 apiClient.interceptors.request.use(async (config) => {
@@ -38,7 +43,7 @@ async function refreshAccessToken(): Promise<string> {
   const { data } = await axios.post(
     `${API_URL}/auth/refresh`,
     { refreshToken },
-    { timeout: 10_000 },
+    { timeout: 10_000, headers: { "ngrok-skip-browser-warning": "true" } },
   );
 
   const newAccessToken: string = data.data.accessToken;

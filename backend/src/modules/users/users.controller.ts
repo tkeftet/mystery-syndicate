@@ -1,6 +1,7 @@
 import type { Response, NextFunction } from "express";
 import type { AuthRequest } from "../auth";
 import { User } from "./user.model";
+import { deleteAccount } from "./users.service";
 import { Investigation } from "../investigations/investigation.model";
 import { Case } from "../cases/case.model";
 import { NotFoundError, ValidationError } from "../../shared/errors/AppError";
@@ -108,6 +109,19 @@ export async function updatePushTokenController(
     }
 
     await User.findByIdAndUpdate(req.userId, { pushToken: token });
+    res.json({ success: true });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteMyAccountController(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    await deleteAccount(req.userId!);
     res.json({ success: true });
   } catch (err) {
     next(err);

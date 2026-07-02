@@ -15,8 +15,11 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { colors, typography, spacing, radii } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon } from "../../../components/ui";
+import { AppPopup } from "../../../components/ui/AppPopup";
 import { usePrivacy } from "../friends.hooks";
 import { updatePrivacyApi } from "../friends.service";
+import { deleteAccountApi } from "../../profile/profile.service";
+import { useAuthStore } from "../../auth/auth.store";
 import { showAdPrivacyOptions } from "../../../services/ads";
 
 type Nav = NativeStackNavigationProp<AppStackParamList>;
@@ -28,10 +31,30 @@ export function PrivacySettingsScreen() {
   const queryClient = useQueryClient();
   const { data: privacy, isLoading } = usePrivacy();
   const [local, setLocal] = useState<any>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     if (privacy && !local) setLocal(privacy);
   }, [privacy, local]);
+
+  async function handleDeleteAccount() {
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await deleteAccountApi();
+      // Auth flips to logged-out; the navigator swaps to the auth flow and this
+      // screen unmounts. clearAuth also wipes tokens, caches, and analytics id.
+      await useAuthStore.getState().clearAuth();
+    } catch (e: any) {
+      setDeleting(false);
+      setDeleteError(
+        e?.response?.data?.message ??
+          "Couldn't delete your account. Please try again.",
+      );
+    }
+  }
 
   async function patch(next: Record<string, unknown>) {
     setLocal((p: any) => ({ ...p, ...next }));
@@ -116,8 +139,53 @@ export function PrivacySettingsScreen() {
           <Text style={styles.hint}>
             Review or change your consent for personalized ads.
           </Text>
+
+          <Text style={styles.sectionLabel}>ACCOUNT</Text>
+          <TouchableOpacity
+            style={styles.dangerRow}
+            onPress={() => {
+              setDeleteError(null);
+              setConfirmDelete(true);
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.dangerLabel}>Delete account</Text>
+            <Icon name="arrowRight" size={16} color={colors.coral} />
+          </TouchableOpacity>
+          <Text style={styles.hint}>
+            Permanently deletes your account, progress, friends, and purchases.
+            This can&apos;t be undone.
+          </Text>
         </ScrollView>
       )}
+
+      <AppPopup
+        visible={confirmDelete}
+        variant="danger"
+        title="Delete account?"
+        message={
+          deleteError ??
+          "This permanently erases your profile, progress, friends, and purchases. This cannot be undone."
+        }
+        onClose={() => {
+          if (!deleting) setConfirmDelete(false);
+        }}
+        buttons={[
+          {
+            label: "Cancel",
+            variant: "secondary",
+            onPress: () => {
+              if (!deleting) setConfirmDelete(false);
+            },
+          },
+          {
+            label: "Delete",
+            variant: "danger",
+            loading: deleting,
+            onPress: handleDeleteAccount,
+          },
+        ]}
+      />
     </View>
   );
 }
@@ -236,5 +304,21 @@ const styles = StyleSheet.create({
     borderColor: colors.border.subtle,
     paddingHorizontal: spacing[4],
     paddingVertical: spacing[3],
+  },
+  dangerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: colors.bg.secondary,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    borderColor: colors.coral + "55",
+    paddingHorizontal: spacing[4],
+    paddingVertical: spacing[3],
+  },
+  dangerLabel: {
+    fontFamily: typography.families.medium,
+    fontSize: typography.sizes.base,
+    color: colors.coral,
   },
 });

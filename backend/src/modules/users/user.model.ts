@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 import bcrypt from "bcryptjs";
-import type { UserRank } from "@detective-club/shared";
+import type { UserRank } from "../../shared/types/domain.types";
 
 export interface IUser extends Document {
   username: string;

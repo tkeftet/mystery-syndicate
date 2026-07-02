@@ -1,9 +1,9 @@
 {
-  "name": "@detective-club/mobile",
-  "version": "1.0.0",
+  "name": "@mystery-syndicate/mobile",
+  "version": "1.0.1",
   "main": "index.ts",
   "scripts": {
-    "start": "expo start",
+    "start": "expo start --tunnel",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",

@@ -2,7 +2,7 @@
  * Smoke test — exercises the core progression chain end-to-end and reports
  * PASS/FAIL. Run:  yarn smoke
  *
- * Runs against a THROWAWAY database (detective-club-smoketest) which is dropped
+ * Runs against a THROWAWAY database (mystery-syndicate-smoketest) which is dropped
  * at the end, so it never touches real data. Verifies that one case submission
  * still fans out correctly to: account XP/coins, Season-Pass XP + level, and
  * challenge progress — and that claims work and are idempotent.
@@ -70,11 +70,11 @@ async function run() {
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error("MONGODB_URI not set");
   await mongoose.connect(uri, {
-    dbName: "detective-club-smoketest",
+    dbName: "mystery-syndicate-smoketest",
     tls: true,
     tlsAllowInvalidCertificates: true,
   });
-  logger.info("Smoke test DB connected (detective-club-smoketest).");
+  logger.info("Smoke test DB connected (mystery-syndicate-smoketest).");
 
   try {
     // ── Fixtures ──

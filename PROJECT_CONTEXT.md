@@ -1,4 +1,10 @@
-# Detective Club — Project Context
+# Mystery Syndicate — Project Context
+
+> Formerly "Detective Club" (renamed 2026-06-25 — Play Store name was taken).
+> App display name = **Mystery Syndicate**; Android/iOS id = **`com.doomedgamesstudio.mysterysyndicate`** (studio: doomedgamesstudio). Done pre-launch, so the permanent package id is safe to set now.
+> **Also renamed (full internal rebrand):** `@mystery-syndicate/*` workspace package names (root + mobile/backend/shared), Mongo `dbName` `mystery-syndicate` (+ `mystery-syndicate-smoketest`), and the Atlas connection appName. The Mongo dbName change points at a fresh DB — daily cases were re-imported; re-run other seeds (`yarn seed:all`) if that data is wanted.
+> **Kept as-is:** EAS slug `mobile`, EAS owner `rumbleinjungle2` (the Expo build account — distinct from the Play developer account), the **repo folder** `detective-club/` (rename manually if wanted — it's also hard-coded in `.claude/settings.local.json`), and the Firebase project id `detectiveclub-7d67b`.
+> **Follow-ups before push/prod ads:** `google-services.json` `package_name` was updated to match, but its Firebase project (`detectiveclub-7d67b`) + the AdMob app are still under the old identity — regenerate `google-services.json` from a Firebase project under the studio and reconcile the AdMob app's package before enabling FCM push / serving real ads.
 
 ## Overview
 
@@ -15,7 +21,7 @@ Mobile detective game (React Native Expo + Node.js backend). Players solve daily
 ### Backend modules (all working)
 
 - `modules/auth` — register, login, refresh token, guest mode. JWT access (15min) + refresh (30d).
-- `modules/users` — get my profile (`/users/me`), case history (`/users/me/history`), public profile (`/users/:userId/public`)
+- `modules/users` — get my profile (`/users/me`), case history (`/users/me/history`), public profile (`/users/:userId/public`), push token (`POST /users/me/push-token`), **account deletion (`DELETE /users/me` → `users.service.deleteAccount`)**. Deletion is a store/GDPR requirement: it settles agency membership first (`agencies.service.removeMemberForAccountDeletion` — auto-transfers leadership to the highest-ranked/contributing remaining member, or tears the agency down if the user was the sole member), then purges every user-keyed collection (investigations, season/pass progress, event participation, achievements, challenge progress, ad rewards, daily-login, friendships both directions, profile likes given+received), then the `User` doc. Refresh tokens are stateless JWTs (no session table), so removing the user locks out lingering tokens. Mobile clears local auth via `clearAuth()` on success. Verified by a throwaway-DB cascade test (18 checks).
 - `modules/cases` — daily case (`/cases/today`), recent cases with solve status (`/cases/recent`), case by id (`/cases/:id`)
 - `modules/investigations` — start, get investigation, submit accusation, use hint, sync progress (`PATCH /investigations/:caseId/progress` — batch-saves inspected evidence / reviewed suspect / reviewed statement ids, no-op if `status === 'completed'`; replaces the old per-tap POST endpoints). `submitAccusation` also returns `isPerfect` (boolean — correct accusation with every clue inspected, every suspect questioned, and 0 hints used) and `redHerringStats` (`{ total, avoided, fooledBy: string[] }`). A decoy only counts as `fooledBy` when the accusation was **wrong** AND the player inspected it — a correct accusation means you saw through every red herring, so `fooledBy` is always empty on a correct/perfect run (otherwise the "all clues inspected" Perfect badge would contradict the tracker, since red herrings are themselves evidence). These are computed on submit and not persisted, so they show only on the fresh result screen, not when revisiting a completed case.
 - `modules/streaks` — daily streak tracking + rewards at day 1/3/7/30/100
@@ -72,7 +78,7 @@ Mobile detective game (React Native Expo + Node.js backend). Players solve daily
 
 ## Testing
 
-- **`yarn smoke`** (backend, `scripts/smoke.ts`) — dependency-free smoke test. Spins up a throwaway DB (`detective-club-smoketest`, dropped at the end), creates a user + case + active pass + challenge, runs `submitAccusation`, and asserts the full progression fan-out: account XP/coins, Season-Pass XP + level, challenge progress, challenge claim → Season XP, pass-level claim → coins, claim idempotency, and locked-level guard. Exits non-zero on any failure (CI-friendly). Run it after touching the case-submit hot path or any cross-cutting hook (`grantXpAndCoins`, `awardSeasonXp`, `recordChallengeEvent`).
+- **`yarn smoke`** (backend, `scripts/smoke.ts`) — dependency-free smoke test. Spins up a throwaway DB (`mystery-syndicate-smoketest`, dropped at the end), creates a user + case + active pass + challenge, runs `submitAccusation`, and asserts the full progression fan-out: account XP/coins, Season-Pass XP + level, challenge progress, challenge claim → Season XP, pass-level claim → coins, claim idempotency, and locked-level guard. Exits non-zero on any failure (CI-friendly). Run it after touching the case-submit hot path or any cross-cutting hook (`grantXpAndCoins`, `awardSeasonXp`, `recordChallengeEvent`).
 
 ## Known env / setup details
 
@@ -92,10 +98,10 @@ Mobile detective game (React Native Expo + Node.js backend). Players solve daily
 ## File Locations Reference
 
 ```
-detective-club/
+mystery-syndicate/
 ├── backend/src/modules/
 │   ├── auth/          (auth.service, .controller, .router, .middleware, .validator)
-│   ├── users/          (users.controller, .router, user.model)
+│   ├── users/          (users.controller, .router, users.service — account deletion cascade, user.model)
 │   ├── cases/           (case.model, cases.seed, cases.service, .controller, .router)
 │   ├── investigations/  (investigation.model, investigations.service, .controller, .router)
 │   ├── streaks/         (streaks.service)
@@ -124,7 +130,7 @@ detective-club/
 │   ├── features/events/        (events.service, .hooks, eventHelpers, screens/EventList+EventDetail+EventLeaderboard)
 │   ├── features/seasons/       (seasons.service, .hooks, screens/SeasonMap+SeasonLeaderboard)
 │   ├── features/play/          (PlayHubScreen — Story Arc + Mega Cases hub for the Play tab)
-│   ├── features/friends/       (friends.service, .hooks, screens/Friends+PrivacySettings)
+│   ├── features/friends/       (friends.service, .hooks, screens/Friends+PrivacySettings — PrivacySettings has the "ACCOUNT → Delete account" flow: danger AppPopup confirm → deleteAccountApi → clearAuth)
 │   ├── features/pass/          (pass.service, .hooks, screens/SeasonPassHub+PassRewards — battle pass)
 │   ├── features/challenges/    (challenges.service, .hooks, screens/ChallengeCenter)
 │   ├── features/achievements/  (achievements.service, .hooks, screens/Achievements)

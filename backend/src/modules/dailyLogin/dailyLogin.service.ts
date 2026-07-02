@@ -303,7 +303,7 @@ export async function notifyRewardAvailable(): Promise<void> {
   if (tokens.length === 0) return;
   await sendToTokens(tokens, {
     title: "🎁 Your daily reward is ready",
-    body: "Open Detective Club and claim today's login reward.",
+    body: "Open Mystery Syndicate and claim today's login reward.",
     data: { screen: "DailyLogin" },
   });
   logger.info(`notifyRewardAvailable: pushed to ${tokens.length} players.`);
