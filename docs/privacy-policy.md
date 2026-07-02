@@ -1,3 +1,7 @@
+---
+title: Privacy Policy — Mystery Syndicate
+---
+
 # Privacy Policy — Mystery Syndicate
 
 **Last updated: June 22, 2026**
@@ -6,7 +10,7 @@ This Privacy Policy explains how Mystery Syndicate ("we", "us", "the app") colle
 uses, and shares information when you use our mobile game. By using Mystery
 Syndicate, you agree to this policy.
 
-> **Contact:** [YOUR_CONTACT_EMAIL]
+> **Contact:** [bakhti.oussamaa@gmail.com]
 > Replace this with the email you want users and the app stores to contact you at.
 
 ## 1. Information We Collect
@@ -84,7 +88,7 @@ analytics data are retained for a limited period per our providers' policies.
 Depending on where you live (e.g., under GDPR or U.S. state privacy laws) you may
 have the right to access, correct, or delete your personal data, and to withdraw
 consent. You can **delete your account and associated data from within the app**,
-or contact us at [YOUR_CONTACT_EMAIL] and we will respond within a reasonable
+or contact us at [bakhti.oussamaa@gmail.com] and we will respond within a reasonable
 time.
 
 ## 7. Children's Privacy
@@ -107,4 +111,4 @@ updated" date above and, where appropriate, notify you in the app.
 
 ## 10. Contact
 
-Questions about this policy: **[YOUR_CONTACT_EMAIL]**
+Questions about this policy: **[bakhti.oussamaa@gmail.com]**

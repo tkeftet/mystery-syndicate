@@ -1,3 +1,7 @@
+---
+title: Terms of Service — Mystery Syndicate
+---
+
 # Terms of Service — Mystery Syndicate
 
 **Last updated: June 22, 2026**
@@ -5,7 +9,7 @@
 These Terms govern your use of the Mystery Syndicate mobile game ("the app"). By
 downloading or using the app, you agree to these Terms.
 
-> **Contact:** [YOUR_CONTACT_EMAIL]
+> **Contact:** [bakhti.oussamaa@gmail.com]
 
 ## 1. Eligibility
 
@@ -68,4 +72,4 @@ acceptance. We will update the "Last updated" date above.
 
 ## 11. Contact
 
-Questions about these Terms: **[YOUR_CONTACT_EMAIL]**
+Questions about these Terms: **[bakhti.oussamaa@gmail.com]**
