@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   Switch,
   ActivityIndicator,
+  Linking,
 } from "react-native";
+import { PRIVACY_POLICY_URL, TERMS_URL } from "../../../constants/links";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
@@ -139,6 +141,25 @@ export function PrivacySettingsScreen() {
           <Text style={styles.hint}>
             Review or change your consent for personalized ads.
           </Text>
+
+          <Text style={styles.sectionLabel}>LEGAL</Text>
+          <TouchableOpacity
+            style={styles.linkRow}
+            onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.toggleLabel}>Privacy Policy</Text>
+            <Icon name="arrowRight" size={16} color={colors.text.muted} />
+          </TouchableOpacity>
+          <View style={{ height: spacing[2] }} />
+          <TouchableOpacity
+            style={styles.linkRow}
+            onPress={() => Linking.openURL(TERMS_URL)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.toggleLabel}>Terms of Service</Text>
+            <Icon name="arrowRight" size={16} color={colors.text.muted} />
+          </TouchableOpacity>
 
           <Text style={styles.sectionLabel}>ACCOUNT</Text>
           <TouchableOpacity

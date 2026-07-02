@@ -8,7 +8,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Linking,
 } from "react-native";
+import { PRIVACY_POLICY_URL, TERMS_URL } from "../../../constants/links";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/AuthNavigator";
 import { colors, typography, spacing, radii } from "../../../theme";
@@ -62,7 +64,7 @@ export function RegisterScreen({ navigation }: Props) {
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={styles.kicker}>NEW RECRUIT</Text>
         <Text style={styles.title}>
-          Join the <Text style={styles.titleAccent}>Club</Text>
+          Join the <Text style={styles.titleAccent}>Syndicate</Text>
         </Text>
         <Text style={styles.subtitle}>Create your detective profile</Text>
 
@@ -101,6 +103,24 @@ export function RegisterScreen({ navigation }: Props) {
             onPress={handleRegister}
             style={styles.primaryButton}
           />
+
+          <Text style={styles.legal}>
+            By creating an account you agree to our{" "}
+            <Text
+              style={styles.legalLink}
+              onPress={() => Linking.openURL(TERMS_URL)}
+            >
+              Terms
+            </Text>{" "}
+            and{" "}
+            <Text
+              style={styles.legalLink}
+              onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
+            >
+              Privacy Policy
+            </Text>
+            .
+          </Text>
 
           <TouchableOpacity
             style={styles.backButton}
@@ -154,6 +174,18 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: spacing[3],
+  },
+  legal: {
+    fontFamily: typography.families.body,
+    fontSize: typography.sizes.xs,
+    color: colors.text.muted,
+    textAlign: "center",
+    lineHeight: typography.sizes.xs * 1.5,
+    marginTop: spacing[1],
+  },
+  legalLink: {
+    color: colors.amber,
+    textDecorationLine: "underline",
   },
   input: {
     backgroundColor: colors.bg.secondary,

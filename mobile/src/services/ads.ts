@@ -48,7 +48,7 @@ function loadAdsModule(): any | null {
 // Real AdMob rewarded ad unit IDs (used only in production builds; dev always
 // uses Google's TestIds below). iOS not set up yet → falls back to a test ad.
 const REWARDED_AD_UNIT_ID: string | undefined = Platform.select({
-  android: "ca-app-pub-4852018051700634/3163139947",
+  android: "ca-app-pub-4852018051700634/9595557050",
   ios: undefined,
 });
 
