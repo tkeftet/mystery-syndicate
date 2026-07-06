@@ -429,8 +429,25 @@ export function HomeScreen() {
                   <View style={styles.solvedBanner}>
                     <View>
                       <View style={styles.solvedTextRow}>
-                        <Icon name="check" size={15} color={colors.green} />
-                        <Text style={styles.solvedText}>SOLVED</Text>
+                        <Icon
+                          name={todayInvestigation.isCorrect ? "check" : "close"}
+                          size={15}
+                          color={
+                            todayInvestigation.isCorrect
+                              ? colors.green
+                              : colors.coral
+                          }
+                        />
+                        <Text
+                          style={[
+                            styles.solvedText,
+                            !todayInvestigation.isCorrect && {
+                              color: colors.coral,
+                            },
+                          ]}
+                        >
+                          {todayInvestigation.isCorrect ? "SOLVED" : "MISSED"}
+                        </Text>
                       </View>
                       <Text style={styles.solvedScore}>
                         +{todayInvestigation.score} pts

@@ -14,7 +14,10 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.doomedgamesstudio.mysterysyndicate"
+      "bundleIdentifier": "com.doomedgamesstudio.mysterysyndicate",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.doomedgamesstudio.mysterysyndicate",
