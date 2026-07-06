@@ -21,9 +21,13 @@ jobs:
             echo "BACKEND_URL secret not set — nothing to ping."
             exit 1
           fi
-          # Strip any trailing slashes so we never produce a "//health" URL.
-          url="${BACKEND_URL%/}"
-          while [ "${url%/}" != "$url" ]; do url="${url%/}"; done
+          # Normalize the secret so the final URL is always <origin>/health,
+          # no matter how it was entered (trailing spaces, CR, slashes, or a
+          # trailing "/health" the user already appended).
+          url="$(printf '%s' "$BACKEND_URL" | tr -d '\r\n' | sed 's/[[:space:]]*$//; s/^[[:space:]]*//')"
+          while [ "${url%/}" != "$url" ]; do url="${url%/}"; done   # strip trailing slashes
+          url="${url%/health}"                                       # drop a trailing /health if present
+          while [ "${url%/}" != "$url" ]; do url="${url%/}"; done   # and any slash it exposed
           echo "Pinging $url/health"
           code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 --retry 3 --retry-delay 10 "$url/health")
           echo "HTTP $code"
