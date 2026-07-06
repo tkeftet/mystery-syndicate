@@ -19,6 +19,7 @@
     "seed:all": "yarn seed:minis && yarn seed:events && yarn seed:season && yarn seed:pass && yarn seed:challenges && yarn seed:achievements",
     "content:status": "set NODE_OPTIONS=--openssl-legacy-provider && ts-node-dev --transpile-only src/scripts/content-status.ts",
     "content:import": "set NODE_OPTIONS=--openssl-legacy-provider && ts-node-dev --transpile-only src/scripts/content-import.ts",
+    "content:launch": "set NODE_OPTIONS=--openssl-legacy-provider && ts-node-dev --transpile-only src/scripts/seed-launch-content.ts",
     "smoke": "set NODE_OPTIONS=--openssl-legacy-provider && ts-node-dev --transpile-only src/scripts/smoke.ts"
   },
   "dependencies": {
