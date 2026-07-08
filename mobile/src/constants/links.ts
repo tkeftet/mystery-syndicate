@@ -4,6 +4,6 @@
  * docs/terms-of-service.md). Use the privacy URL in the Play Console listing too.
  */
 export const PRIVACY_POLICY_URL =
-  "https://tkeftet.github.io/mystery-syndicate/privacy-policy.html";
+  "https://tkeftet.github.io/mystery_syndicate/privacy-policy.html";
 export const TERMS_URL =
-  "https://tkeftet.github.io/mystery-syndicate/terms-of-service.html";
+  "https://tkeftet.github.io/mystery_syndicate/terms-of-service.html";

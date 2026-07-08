@@ -244,8 +244,11 @@ export async function adEliminateSuspect(userId: string, caseId: string) {
     .filter((s) => s.id !== guiltySuspectId && !cleared.includes(s.id))
     .map((s) => s.id);
 
-  if (candidates.length === 0) {
-    throw new ValidationError("No suspects left to eliminate.");
+  // Keep the choice non-trivial: never let ad-eliminations clear every innocent
+  // (which would leave only the culprit). Always leave at least one innocent
+  // besides the guilty party so the final accusation is still a real decision.
+  if (candidates.length <= 1) {
+    throw new ValidationError("No more suspects can be eliminated.");
   }
 
   const clearedId = candidates[Math.floor(Math.random() * candidates.length)];
@@ -306,6 +309,29 @@ export async function claimDoubleReward(userId: string, caseId: string) {
   const levelUp = await grantXpAndCoins(userId, bonusXp, bonusCoins);
 
   return { bonusXp, bonusCoins, levelUp };
+}
+
+/**
+ * Redeem a rewarded-ad help for a case and return the updated investigation.
+ *
+ * This is the client-callable, authenticated path used right after a rewarded ad
+ * finishes (the ad SDK's `onRewarded`), so the reward applies instantly instead
+ * of waiting on AdMob's async SSV callback. The suspect/red-herring choice stays
+ * server-side (the solution is never sent to the client), and each reward keeps
+ * its own guard (no innocents left / already doubled), so this cannot trivialize
+ * a case. Rewarded ads remain opt-in; the only thing not proven here is that the
+ * ad played to completion — an acceptable trade for a low-stakes gameplay help.
+ */
+export async function redeemAdReward(
+  userId: string,
+  caseId: string,
+  type: string,
+) {
+  if (type === "eliminate") await adEliminateSuspect(userId, caseId);
+  else if (type === "reveal") await adRevealRedHerring(userId, caseId);
+  else if (type === "double") await claimDoubleReward(userId, caseId);
+  else throw new ValidationError(`Unknown ad reward type "${type}"`);
+  return getInvestigation(userId, caseId);
 }
 
 export async function syncProgress(

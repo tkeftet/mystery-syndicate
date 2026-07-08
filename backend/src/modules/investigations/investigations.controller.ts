@@ -62,6 +62,23 @@ export async function useHintController(
   }
 }
 
+export async function adRewardController(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const inv = await service.redeemAdReward(
+      req.userId!,
+      req.params.caseId,
+      req.body.type,
+    );
+    res.json({ success: true, data: inv });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function syncProgressController(
   req: AuthRequest,
   res: Response,

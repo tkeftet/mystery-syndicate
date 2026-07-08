@@ -56,4 +56,4 @@ then deleted. Aggregated or anonymized data that can no longer be linked to you
 may be retained.
 
 For more detail on what we collect and why, see our
-[Privacy Policy](https://tkeftet.github.io/mystery-syndicate/privacy-policy.html).
+[Privacy Policy](https://tkeftet.github.io/mystery_syndicate/privacy-policy.html).

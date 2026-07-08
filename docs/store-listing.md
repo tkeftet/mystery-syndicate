@@ -59,7 +59,7 @@ The case is open, Detective. Can you solve it?
 - **In-app purchases:** none yet (cosmetics are coin-based).
 - **Content rating:** complete the IARC questionnaire → likely Teen (mild crime themes, no gore).
 - **Target audience:** 13+.
-- **Privacy Policy URL:** https://tkeftet.github.io/mystery-syndicate/privacy-policy.html
+- **Privacy Policy URL:** https://tkeftet.github.io/mystery_syndicate/privacy-policy.html
 
 ---
 

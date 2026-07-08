@@ -26,7 +26,7 @@ import {
 } from "../investigation.service";
 
 import { getMyProfileApi } from "../../profile/profile.service";
-import { useHintApi } from "../investigation.service";
+import { useHintApi, redeemAdRewardApi } from "../investigation.service";
 import {
   participateEventApi,
   submitEventApi,
@@ -495,136 +495,108 @@ export function InvestigationScreen({ navigation, route }: Props) {
     }
   }
 
-  // ── Rewarded-ad helpers (SSV) ───────────────────────────────────────────
-  // Rewards are granted server-side by AdMob's verified callback, so after the
-  // ad earns we poll the investigation until the server-applied change shows up,
-  // then reconcile local state. `type` is forwarded to the SSV callback so the
-  // backend knows which reward to grant for this user + case.
+  // ── Rewarded-ad helpers ─────────────────────────────────────────────────
+  // After the ad earns, the help is redeemed via an authenticated call that
+  // applies it instantly and returns the updated investigation. The suspect /
+  // red-herring choice stays server-side (the solution never reaches the
+  // client). We intentionally don't send an SSV user_id, so AdMob's async
+  // callback won't also grant it — this direct path is the single source of
+  // truth for case helps (streak-save still uses SSV; see DailyLoginScreen).
   async function runRewardedAd(
     type: "eliminate" | "reveal" | "double",
   ): Promise<boolean> {
     setWatchingAd(true);
     try {
-      return await showRewardedAd({
-        userId: profile?.id,
-        customData: JSON.stringify({ caseId, type }),
-      });
+      // customData carries only the placement label for ad analytics; with no
+      // user_id, the SSV callback has nothing to grant.
+      return await showRewardedAd({ customData: JSON.stringify({ type }) });
     } finally {
       setWatchingAd(false);
     }
   }
 
-  async function pollInvestigation(
-    predicate: (inv: any) => boolean,
-    tries = 8,
-    intervalMs = 1200,
-  ): Promise<any | null> {
-    for (let i = 0; i < tries; i++) {
-      try {
-        const inv = await getInvestigationApi(caseId);
-        if (inv && predicate(inv)) return inv;
-      } catch {
-        // ignore and retry
-      }
-      await new Promise((r) => setTimeout(r, intervalMs));
-    }
-    return null;
-  }
-
-  const SSV_PENDING_POPUP: PopupState = {
+  const APPLYING_POPUP: PopupState = {
     variant: "info",
     icon: "hint",
     title: "Applying reward…",
-    message: "Confirming your reward — this only takes a moment.",
+    message: "One moment.",
   };
+
+  const adRewardError = (err: any): PopupState => ({
+    variant: "warning",
+    title: "Couldn't apply reward",
+    message:
+      err?.response?.data?.error?.message ?? "Please try again in a moment.",
+  });
 
   async function handleAdEliminate() {
     const before = clearedSuspectIds;
     const earned = await runRewardedAd("eliminate");
     if (!earned) return;
-    setPopup(SSV_PENDING_POPUP);
-    const inv = await pollInvestigation(
-      (i) => (i.clearedSuspectIds?.length ?? 0) > before.length,
-    );
-    if (!inv) {
+    setPopup(APPLYING_POPUP);
+    try {
+      const inv = await redeemAdRewardApi(caseId, "eliminate");
+      const cleared: string[] = inv?.clearedSuspectIds ?? [];
+      cleared.forEach((id) => markSuspectCleared(id));
+      const newId = cleared.find((id) => !before.includes(id));
+      if (newId && selectedSuspect?.id === newId) setSelectedSuspect(null);
+      const name = case_.suspects?.find((s: any) => s.id === newId)?.name;
       setPopup({
-        variant: "warning",
-        title: "Taking longer than usual",
-        message: "Your reward will apply shortly. Reopen the case if needed.",
+        variant: "success",
+        icon: "hint",
+        title: "Suspect Cleared!",
+        message: name ? `${name} is innocent.` : "A suspect was cleared.",
       });
-      return;
+    } catch (err) {
+      setPopup(adRewardError(err));
     }
-    const newId = (inv.clearedSuspectIds as string[]).find(
-      (id) => !before.includes(id),
-    );
-    inv.clearedSuspectIds.forEach((id: string) => markSuspectCleared(id));
-    if (newId && selectedSuspect?.id === newId) setSelectedSuspect(null);
-    const name = case_.suspects?.find((s: any) => s.id === newId)?.name;
-    setPopup({
-      variant: "success",
-      icon: "hint",
-      title: "Suspect Cleared!",
-      message: name ? `${name} is innocent.` : "A suspect was cleared.",
-    });
   }
 
   async function handleAdRevealHerring() {
     const before = revealedRedHerringIds;
     const earned = await runRewardedAd("reveal");
     if (!earned) return;
-    setPopup(SSV_PENDING_POPUP);
-    const inv = await pollInvestigation(
-      (i) => (i.revealedRedHerringIds?.length ?? 0) > before.length,
-    );
-    if (!inv) {
+    setPopup(APPLYING_POPUP);
+    try {
+      const inv = await redeemAdRewardApi(caseId, "reveal");
+      const revealed: string[] = inv?.revealedRedHerringIds ?? [];
+      revealed.forEach((id) => markRedHerringRevealed(id));
+      const newId = revealed.find((id) => !before.includes(id));
+      const title = case_.evidence?.find((e: any) => e.id === newId)?.title;
       setPopup({
         variant: "warning",
-        title: "Taking longer than usual",
-        message: "Your reward will apply shortly. Reopen the case if needed.",
+        icon: "warning",
+        title: "Red Herring Exposed",
+        message: title
+          ? `"${title}" is a decoy — don't let it mislead you.`
+          : "A red herring was exposed.",
       });
-      return;
+    } catch (err) {
+      setPopup(adRewardError(err));
     }
-    const newId = (inv.revealedRedHerringIds as string[]).find(
-      (id) => !before.includes(id),
-    );
-    inv.revealedRedHerringIds.forEach((id: string) =>
-      markRedHerringRevealed(id),
-    );
-    const title = case_.evidence?.find((e: any) => e.id === newId)?.title;
-    setPopup({
-      variant: "warning",
-      icon: "warning",
-      title: "Red Herring Exposed",
-      message: title
-        ? `"${title}" is a decoy — don't let it mislead you.`
-        : "A red herring was exposed.",
-    });
   }
 
   async function handleDoubleReward() {
     const earned = await runRewardedAd("double");
     if (!earned) return;
-    setPopup(SSV_PENDING_POPUP);
-    const inv = await pollInvestigation((i) => i.rewardDoubled === true);
-    if (!inv) {
+    setPopup(APPLYING_POPUP);
+    try {
+      const inv = await redeemAdRewardApi(caseId, "double");
+      if (!inv?.rewardDoubled) throw new Error("Reward not doubled");
+      setRewardDoubled(true);
+      setResult((r: any) => (r ? { ...r, score: (r.score ?? 0) * 2 } : r));
+      queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
+      queryClient.invalidateQueries({ queryKey: ["cases"] });
+      refetchProfile();
       setPopup({
-        variant: "warning",
-        title: "Taking longer than usual",
-        message: "Your doubled reward will apply shortly.",
+        variant: "success",
+        icon: "coin",
+        title: "Reward Doubled!",
+        message: "Your XP and coins for this case were doubled.",
       });
-      return;
+    } catch (err) {
+      setPopup(adRewardError(err));
     }
-    setRewardDoubled(true);
-    setResult((r: any) => (r ? { ...r, score: (r.score ?? 0) * 2 } : r));
-    queryClient.invalidateQueries({ queryKey: ["profile", "me"] });
-    queryClient.invalidateQueries({ queryKey: ["cases"] });
-    refetchProfile();
-    setPopup({
-      variant: "success",
-      icon: "coin",
-      title: "Reward Doubled!",
-      message: "Your XP and coins for this case were doubled.",
-    });
   }
 
   if (isLoading || initialLoading) {

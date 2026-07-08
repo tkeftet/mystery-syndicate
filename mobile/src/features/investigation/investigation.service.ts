@@ -26,9 +26,20 @@ export async function useHintApi(caseId: string) {
   return data.data;
 }
 
-// NOTE: ad rewards are granted server-side via AdMob SSV (not a client call).
-// After a rewarded ad earns, the client re-reads investigation/profile state to
-// pick up the server-granted reward — see InvestigationScreen.
+/**
+ * Redeem a rewarded-ad help after the ad earns. Authenticated; the server picks
+ * the innocent suspect / red herring (solution never leaves the server) and
+ * returns the updated investigation immediately — no SSV round-trip to wait on.
+ */
+export async function redeemAdRewardApi(
+  caseId: string,
+  type: "eliminate" | "reveal" | "double",
+) {
+  const { data } = await apiClient.post(`/investigations/${caseId}/ad-reward`, {
+    type,
+  });
+  return data.data;
+}
 
 export async function syncProgressApi(
   caseId: string,
