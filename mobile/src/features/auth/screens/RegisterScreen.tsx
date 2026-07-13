@@ -31,9 +31,29 @@ export function RegisterScreen({ navigation }: Props) {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleRegister() {
+  function validateFields(): string | null {
     if (!username || !email || !password) {
-      setError("Please fill in all fields");
+      return "Please fill in all fields";
+    }
+    if (username.length < 3 || username.length > 20) {
+      return "Username must be between 3 and 20 characters";
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      return "Username can only contain letters, numbers, underscores";
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return "Please enter a valid email address";
+    }
+    if (password.length < 8) {
+      return "Password must be at least 8 characters";
+    }
+    return null;
+  }
+
+  async function handleRegister() {
+    const validationError = validateFields();
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -49,7 +69,6 @@ export function RegisterScreen({ navigation }: Props) {
       await setAuth(user, accessToken, refreshToken);
       track(AnalyticsEvent.USER_REGISTERED, { method: "email" });
     } catch (err: any) {
-      console.warn("Register error:", JSON.stringify(err?.response?.data));
       setError(err?.response?.data?.error?.message ?? "Registration failed");
     } finally {
       setLoading(false);

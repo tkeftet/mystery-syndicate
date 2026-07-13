@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ValidationError } from "../../shared/errors/AppError";
 
 export const registerSchema = z.object({
   username: z
@@ -28,9 +29,8 @@ export const refreshSchema = z.object({
 export function validate<T>(schema: z.ZodSchema<T>, data: unknown): T {
   const result = schema.safeParse(data);
   if (!result.success) {
-    const details = result.error.flatten().fieldErrors;
-    const message = Object.values(details).flat()[0] ?? "Validation failed";
-    throw { statusCode: 422, code: "VALIDATION_ERROR", message, details };
+    const message = result.error.issues[0]?.message ?? "Validation failed";
+    throw new ValidationError(message);
   }
   return result.data;
 }
