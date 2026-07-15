@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   },
   accent: {
     position: "absolute",
-    left: 0,
+    start: 0,
     top: 0,
     bottom: 0,
     width: 3,

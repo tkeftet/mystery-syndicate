@@ -10,10 +10,12 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/AuthNavigator";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii, gradients, shadows } from "../../../theme";
-import { Icon, GradientButton } from "../../../components/ui";
+import { Icon, GradientButton, LanguagePicker } from "../../../components/ui";
 import { useAuthStore } from "../auth.store";
 import { loginApi, guestApi } from "../auth.service";
 import { track, AnalyticsEvent } from "../../../services/analytics";
@@ -23,6 +25,8 @@ type Props = {
 };
 
 export function LoginScreen({ navigation }: Props) {
+  const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const { setAuth } = useAuthStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,7 +45,7 @@ export function LoginScreen({ navigation }: Props) {
 
   async function handleLogin() {
     if (!email || !password) {
-      setError("Please fill in all fields");
+      setError(t("auth.fillAllFields"));
       return;
     }
 
@@ -56,7 +60,7 @@ export function LoginScreen({ navigation }: Props) {
       await setAuth(user, accessToken, refreshToken);
       track(AnalyticsEvent.USER_LOGGED_IN, { method: "email" });
     } catch (err: any) {
-      setError(err?.response?.data?.error?.message ?? "Login failed");
+      setError(err?.response?.data?.error?.message ?? t("auth.loginFailed"));
     } finally {
       setLoading(false);
     }
@@ -71,7 +75,7 @@ export function LoginScreen({ navigation }: Props) {
       await setAuth(user, accessToken, refreshToken);
       track(AnalyticsEvent.USER_REGISTERED, { method: "guest" });
     } catch {
-      setError("Failed to create guest account");
+      setError(t("auth.guestFailed"));
     } finally {
       setLoading(false);
     }
@@ -82,6 +86,10 @@ export function LoginScreen({ navigation }: Props) {
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
+      <LanguagePicker
+        style={[styles.langBar, { top: insets.top + spacing[2] }]}
+      />
+
       <View style={styles.brand}>
         <LinearGradient
           colors={gradients.seal}
@@ -95,22 +103,20 @@ export function LoginScreen({ navigation }: Props) {
         <Text style={styles.title}>
           Mystery <Text style={styles.titleAccent}>Syndicate</Text>
         </Text>
-        <Text style={styles.subtitle}>Sign in to solve today's case</Text>
+        <Text style={styles.subtitle}>{t("auth.loginSubtitle")}</Text>
       </View>
 
       {sessionExpired && (
         <View style={styles.notice}>
           <Icon name="warning" size={15} color={colors.amber} />
-          <Text style={styles.noticeText}>
-            Your session expired. Please sign in again.
-          </Text>
+          <Text style={styles.noticeText}>{t("auth.sessionExpired")}</Text>
         </View>
       )}
 
       <View style={styles.form}>
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          placeholder={t("auth.emailPlaceholder")}
           placeholderTextColor={colors.text.muted}
           value={email}
           onChangeText={setEmail}
@@ -119,7 +125,7 @@ export function LoginScreen({ navigation }: Props) {
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder={t("auth.passwordPlaceholder")}
           placeholderTextColor={colors.text.muted}
           value={password}
           onChangeText={setPassword}
@@ -129,7 +135,7 @@ export function LoginScreen({ navigation }: Props) {
         {error ? <Text style={styles.error}>{error}</Text> : null}
 
         <GradientButton
-          label="Sign In"
+          label={t("auth.signIn")}
           loading={loading}
           onPress={handleLogin}
           style={styles.primaryButton}
@@ -139,11 +145,15 @@ export function LoginScreen({ navigation }: Props) {
           style={styles.secondaryButton}
           onPress={() => navigation.navigate("Register")}
         >
-          <Text style={styles.secondaryButtonText}>Create Account</Text>
+          <Text style={styles.secondaryButtonText}>
+            {t("auth.createAccount")}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.guestButton} onPress={handleGuest}>
-          <Text style={styles.guestButtonText}>Continue as Guest</Text>
+          <Text style={styles.guestButtonText}>
+            {t("auth.continueAsGuest")}
+          </Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -156,6 +166,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bg.primary,
     justifyContent: "center",
     padding: spacing[6],
+  },
+  langBar: {
+    position: "absolute",
+    left: spacing[6],
+    right: spacing[6],
   },
   brand: { alignItems: "center", marginBottom: spacing[8] },
   logo: {

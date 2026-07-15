@@ -42,9 +42,11 @@
           "iosAppId": "ca-app-pub-3940256099942544~1458002511"
         }
       ],
-      "@sentry/react-native"
+      "@sentry/react-native",
+      "expo-localization"
     ],
     "extra": {
+      "supportsRTL": true,
       "eas": {
         "projectId": "fec8fbe7-8cc6-4811-a3bd-508868f60b1d"
       },

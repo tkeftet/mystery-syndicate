@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   levelChip: {
     position: "absolute",
     bottom: -6,
-    right: -6,
+    end: -6,
     minWidth: 26,
     height: 26,
     paddingHorizontal: 4,

@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon, GradientButton } from "../../../components/ui";
@@ -20,6 +21,7 @@ import { createAgencyApi } from "../agencies.service";
 type Nav = NativeStackNavigationProp<AppStackParamList>;
 
 export function CreateAgencyScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const queryClient = useQueryClient();
@@ -36,7 +38,9 @@ export function CreateAgencyScreen() {
       queryClient.invalidateQueries({ queryKey: ["agency"] });
       navigation.goBack();
     } catch (err: any) {
-      setError(err?.response?.data?.error?.message ?? "Could not create agency.");
+      setError(
+        err?.response?.data?.error?.message ?? t("agencies.couldNotCreate"),
+      );
     } finally {
       setBusy(false);
     }
@@ -49,26 +53,28 @@ export function CreateAgencyScreen() {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.kicker}>// NEW AGENCY</Text>
-          <Text style={styles.headerTitle}>Create Agency</Text>
+          <Text style={styles.kicker}>{t("agencies.newAgencyKicker")}</Text>
+          <Text style={styles.headerTitle}>
+            {t("agencies.createAgencyTitle")}
+          </Text>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.label}>NAME</Text>
+        <Text style={styles.label}>{t("agencies.nameLabel")}</Text>
         <TextInput
           style={styles.input}
-          placeholder="e.g. Shadow Hunters"
+          placeholder={t("agencies.namePlaceholder")}
           placeholderTextColor={colors.text.muted}
           value={name}
           onChangeText={setName}
           maxLength={24}
         />
 
-        <Text style={styles.label}>DESCRIPTION</Text>
+        <Text style={styles.label}>{t("agencies.descriptionLabel")}</Text>
         <TextInput
           style={[styles.input, styles.textarea]}
-          placeholder="What's your agency about?"
+          placeholder={t("agencies.descriptionPlaceholder")}
           placeholderTextColor={colors.text.muted}
           value={description}
           onChangeText={setDescription}
@@ -76,7 +82,7 @@ export function CreateAgencyScreen() {
           maxLength={200}
         />
 
-        <Text style={styles.label}>JOINING</Text>
+        <Text style={styles.label}>{t("agencies.joiningLabel")}</Text>
         <View style={styles.segment}>
           {(["public", "request"] as const).map((p) => {
             const active = privacy === p;
@@ -87,7 +93,9 @@ export function CreateAgencyScreen() {
                 onPress={() => setPrivacy(p)}
               >
                 <Text style={[styles.segText, active && styles.segTextActive]}>
-                  {p === "public" ? "PUBLIC" : "BY REQUEST"}
+                  {p === "public"
+                    ? t("agencies.public")
+                    : t("agencies.byRequest")}
                 </Text>
               </TouchableOpacity>
             );
@@ -95,12 +103,12 @@ export function CreateAgencyScreen() {
         </View>
         <Text style={styles.hint}>
           {privacy === "public"
-            ? "Anyone can join instantly."
-            : "Players must request and be approved by an officer."}
+            ? t("agencies.publicHint")
+            : t("agencies.requestHint")}
         </Text>
 
         <GradientButton
-          label="Create Agency"
+          label={t("agencies.createAgency")}
           style={styles.cta}
           loading={busy}
           disabled={name.trim().length < 3}
@@ -111,7 +119,7 @@ export function CreateAgencyScreen() {
       <AppPopup
         visible={!!error}
         variant="danger"
-        title="Couldn't create"
+        title={t("agencies.couldNotCreateTitle")}
         message={error ?? ""}
         onClose={() => setError(null)}
       />

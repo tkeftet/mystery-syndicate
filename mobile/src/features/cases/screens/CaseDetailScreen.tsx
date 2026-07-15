@@ -12,7 +12,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteProp } from "@react-navigation/native";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
+import { useTranslation } from "react-i18next";
+import i18n from "../../../i18n";
 import { colors, typography, spacing, radii } from "../../../theme";
+import { DIFFICULTY_CONFIG } from "../../../constants/difficulty";
 import {
   Icon,
   GradientButton,
@@ -31,17 +34,8 @@ type Props = {
   route: RouteProp<AppStackParamList, "CaseDetail">;
 };
 
-const DIFFICULTY_CONFIG: Record<
-  string,
-  { label: string; color: string; level: number }
-> = {
-  easy: { label: "EASY", color: colors.green, level: 1 },
-  medium: { label: "MEDIUM", color: colors.warning, level: 2 },
-  hard: { label: "HARD", color: colors.coral, level: 3 },
-  expert: { label: "EXPERT", color: "#B58BD6", level: 4 },
-};
-
 export function CaseDetailScreen({ navigation, route }: Props) {
+  const { t } = useTranslation();
   const { caseId } = route.params;
   const insets = useSafeAreaInsets();
   const { data: case_, isLoading } = useCaseById(caseId);
@@ -69,7 +63,7 @@ export function CaseDetailScreen({ navigation, route }: Props) {
   if (!case_) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorText}>Case not found.</Text>
+        <Text style={styles.errorText}>{t("cases.caseNotFound")}</Text>
       </View>
     );
   }
@@ -84,7 +78,7 @@ export function CaseDetailScreen({ navigation, route }: Props) {
         >
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
-        <Text style={styles.appBarTitle}>CASE FILE</Text>
+        <Text style={styles.appBarTitle}>{t("cases.appBarTitle")}</Text>
         <View style={styles.iconTile}>
           <Icon name="search" size={17} color={colors.amber} />
         </View>
@@ -98,7 +92,9 @@ export function CaseDetailScreen({ navigation, route }: Props) {
         {/* ── Case Header ── */}
         <View style={styles.caseHeader}>
           <Pill label={case_.type} icon={caseTypeIcon(case_.type)} />
-          {diff && <DifficultyPips level={diff.level} label={diff.label} />}
+          {diff && (
+            <DifficultyPips level={diff.level} label={t(diff.labelKey)} />
+          )}
         </View>
 
         <Text style={styles.caseTitle}>{case_.title}</Text>
@@ -106,19 +102,35 @@ export function CaseDetailScreen({ navigation, route }: Props) {
 
         {/* ── Meta ── */}
         <View style={styles.metaRow}>
-          <Meta icon="clock" text={`${case_.estimatedMinutes} min`} />
+          <Meta
+            icon="clock"
+            text={t("home.minutesCount", { count: case_.estimatedMinutes })}
+          />
           <Dot />
-          <Meta icon="trophy" text={`${case_.maxScore} pts`} />
+          <Meta
+            icon="trophy"
+            text={t("cases.pointsCount", { count: case_.maxScore })}
+          />
           <Dot />
-          <Meta icon="people" text={`${case_.suspects?.length} suspects`} />
+          <Meta
+            icon="people"
+            text={t("home.suspectsCount", {
+              count: case_.suspects?.length ?? 0,
+            })}
+          />
           <Dot />
-          <Meta icon="search" text={`${case_.evidence?.length} clues`} />
+          <Meta
+            icon="search"
+            text={t("home.cluesCount", { count: case_.evidence?.length ?? 0 })}
+          />
         </View>
 
         {/* ── Victim ── */}
         {case_.victim?.name && (
           <>
-            <SectionLabel style={styles.flushLabel}>VICTIM</SectionLabel>
+            <SectionLabel style={styles.flushLabel}>
+              {t("cases.victim")}
+            </SectionLabel>
             <SurfaceCard style={styles.card}>
               <View style={styles.cardNameRow}>
                 <Icon name="user" size={16} color={colors.amberLight} />
@@ -133,7 +145,7 @@ export function CaseDetailScreen({ navigation, route }: Props) {
 
         {/* ── Suspects Preview ── */}
         <SectionLabel style={styles.flushLabel}>
-          {`SUSPECTS · ${case_.suspects?.length ?? 0}`}
+          {t("cases.suspectsHeader", { count: case_.suspects?.length ?? 0 })}
         </SectionLabel>
         <View style={styles.stack}>
           {case_.suspects?.map((s: any) => (
@@ -153,22 +165,30 @@ export function CaseDetailScreen({ navigation, route }: Props) {
         </View>
 
         {/* ── Locked Sections ── */}
-        <SectionLabel style={styles.flushLabel}>UNLOCK ON START</SectionLabel>
+        <SectionLabel style={styles.flushLabel}>
+          {t("cases.unlockOnStart")}
+        </SectionLabel>
         <View style={styles.stack}>
           <LockedRow
             icon="search"
-            title="Evidence & Clues"
-            desc={`${case_.evidence?.length} pieces of evidence to investigate`}
+            title={t("cases.evidenceTitle")}
+            desc={t("cases.evidenceDesc", {
+              count: case_.evidence?.length ?? 0,
+            })}
           />
           <LockedRow
             icon="chat"
-            title="Witness Statements"
-            desc={`${case_.witnessStatements?.length} witnesses to interview`}
+            title={t("cases.witnessTitle")}
+            desc={t("cases.witnessDesc", {
+              count: case_.witnessStatements?.length ?? 0,
+            })}
           />
           <LockedRow
             icon="calendar"
-            title="Timeline of Events"
-            desc={`${case_.timeline?.length} events to analyze`}
+            title={t("cases.timelineTitle")}
+            desc={t("cases.timelineDesc", {
+              count: case_.timeline?.length ?? 0,
+            })}
           />
         </View>
 
@@ -179,9 +199,11 @@ export function CaseDetailScreen({ navigation, route }: Props) {
               <View style={styles.solvedBanner}>
                 <Icon name="checkCircle" size={32} color={colors.green} />
                 <View>
-                  <Text style={styles.solvedTitle}>Case Solved</Text>
+                  <Text style={styles.solvedTitle}>
+                    {t("cases.caseSolved")}
+                  </Text>
                   <Text style={styles.solvedScore}>
-                    +{investigation.score} pts earned
+                    {t("cases.ptsEarned", { score: investigation.score })}
                   </Text>
                 </View>
               </View>
@@ -189,9 +211,11 @@ export function CaseDetailScreen({ navigation, route }: Props) {
               <View style={styles.failedBanner}>
                 <Icon name="closeCircle" size={32} color={colors.coral} />
                 <View>
-                  <Text style={styles.failedTitle}>Wrong Accusation</Text>
+                  <Text style={styles.failedTitle}>
+                    {t("cases.wrongAccusation")}
+                  </Text>
                   <Text style={styles.solvedScore}>
-                    +{investigation.score} pts earned
+                    {t("cases.ptsEarned", { score: investigation.score })}
                   </Text>
                 </View>
               </View>
@@ -201,18 +225,15 @@ export function CaseDetailScreen({ navigation, route }: Props) {
               <GradientButton
                 label={
                   isInProgress
-                    ? "Continue Investigation"
-                    : "Start Investigation"
+                    ? t("home.continueInvestigation")
+                    : t("home.startInvestigation")
                 }
                 iconRight="arrowRight"
                 onPress={() =>
                   navigation.navigate("Investigation", { caseId: case_._id })
                 }
               />
-              <Text style={styles.hint}>
-                Investigate all evidence and question every suspect to unlock
-                your accusation
-              </Text>
+              <Text style={styles.hint}>{t("cases.ctaHint")}</Text>
             </>
           )}
         </View>
@@ -254,7 +275,7 @@ function LockedRow({
       </View>
       <View style={styles.lockedBadge}>
         <Icon name="lock" size={11} color={colors.text.muted} />
-        <Text style={styles.lockedBadgeText}>LOCKED</Text>
+        <Text style={styles.lockedBadgeText}>{i18n.t("cases.locked")}</Text>
       </View>
     </SurfaceCard>
   );

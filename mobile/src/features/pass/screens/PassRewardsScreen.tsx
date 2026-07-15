@@ -11,6 +11,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
+import i18n from "../../../i18n";
 import { colors, typography, spacing, radii } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon } from "../../../components/ui";
@@ -28,15 +30,16 @@ const TIER_COLOR: Record<string, string> = {
 
 function rewardSummary(r: any): string {
   const parts: string[] = [];
-  if (r.coins) parts.push(`${r.coins} coins`);
-  if (r.xp) parts.push(`${r.xp} XP`);
-  if (r.badge) parts.push("Badge");
-  if (r.title) parts.push("Title");
-  if (r.avatar) parts.push("Avatar");
-  return parts.join(" · ") || "Reward";
+  if (r.coins) parts.push(i18n.t("pass.coinsUnit", { count: r.coins }));
+  if (r.xp) parts.push(i18n.t("pass.xpUnit", { count: r.xp }));
+  if (r.badge) parts.push(i18n.t("pass.badge"));
+  if (r.title) parts.push(i18n.t("pass.title"));
+  if (r.avatar) parts.push(i18n.t("pass.avatar"));
+  return parts.join(" · ") || i18n.t("pass.reward");
 }
 
 export function PassRewardsScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const queryClient = useQueryClient();
@@ -82,8 +85,10 @@ export function PassRewardsScreen() {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text style={styles.kicker}>// REWARD TRACK</Text>
-          <Text style={styles.headerTitle}>{data?.pass?.title ?? "Rewards"}</Text>
+          <Text style={styles.kicker}>{t("pass.rewardTrackKicker")}</Text>
+          <Text style={styles.headerTitle}>
+            {data?.pass?.title ?? t("pass.rewardsTitle")}
+          </Text>
         </View>
         {hasClaimable && (
           <TouchableOpacity
@@ -94,7 +99,7 @@ export function PassRewardsScreen() {
             {busy === "all" ? (
               <ActivityIndicator color={colors.text.inverse} size="small" />
             ) : (
-              <Text style={styles.claimAllText}>Claim All</Text>
+              <Text style={styles.claimAllText}>{t("pass.claimAll")}</Text>
             )}
           </TouchableOpacity>
         )}
@@ -137,7 +142,7 @@ export function PassRewardsScreen() {
                     {busy === r.level ? (
                       <ActivityIndicator color={colors.text.inverse} size="small" />
                     ) : (
-                      <Text style={styles.claimText}>Claim</Text>
+                      <Text style={styles.claimText}>{t("pass.claim")}</Text>
                     )}
                   </TouchableOpacity>
                 ) : (

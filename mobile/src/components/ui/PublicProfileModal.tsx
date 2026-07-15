@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import i18n from "../../i18n";
 import { colors, typography, spacing, radii, gradients, shadows } from "../../theme";
 import { Icon } from "./Icon";
 import { GradientButton } from "./GradientButton";
@@ -107,14 +108,16 @@ export function PublicProfileModal({ userId, onClose }: Props) {
       return (
         <View style={styles.actionCol}>
           <GradientButton
-            label="Remove Friend"
+            label={i18n.t("publicProfile.removeFriend")}
             variant="outline"
             style={styles.cta}
             loading={busy}
             onPress={() => act(removeFriendApi)}
           />
           <TouchableOpacity onPress={() => act(blockUserApi)} disabled={busy}>
-            <Text style={styles.blockText}>Block</Text>
+            <Text style={styles.blockText}>
+              {i18n.t("publicProfile.block")}
+            </Text>
           </TouchableOpacity>
         </View>
       );
@@ -122,7 +125,7 @@ export function PublicProfileModal({ userId, onClose }: Props) {
     if (s === "pending_received") {
       return (
         <GradientButton
-          label="Accept Request"
+          label={i18n.t("publicProfile.acceptRequest")}
           style={styles.cta}
           loading={busy}
           onPress={() => act(acceptRequestApi)}
@@ -132,7 +135,7 @@ export function PublicProfileModal({ userId, onClose }: Props) {
     if (s === "pending_sent") {
       return (
         <GradientButton
-          label="Cancel Request"
+          label={i18n.t("publicProfile.cancelRequest")}
           variant="outline"
           style={styles.cta}
           loading={busy}
@@ -143,7 +146,7 @@ export function PublicProfileModal({ userId, onClose }: Props) {
     if (s === "blocked") {
       return (
         <GradientButton
-          label="Unblock"
+          label={i18n.t("publicProfile.unblock")}
           variant="outline"
           style={styles.cta}
           loading={busy}
@@ -154,7 +157,7 @@ export function PublicProfileModal({ userId, onClose }: Props) {
     // none
     return (
       <GradientButton
-        label="Add Friend"
+        label={i18n.t("publicProfile.addFriend")}
         style={styles.cta}
         loading={busy}
         onPress={() => act(sendRequestApi)}
@@ -186,7 +189,9 @@ export function PublicProfileModal({ userId, onClose }: Props) {
                     end={{ x: 1, y: 1 }}
                     style={StyleSheet.absoluteFill}
                   />
-                  <Text style={styles.holoRank}>RANK · GLOBAL</Text>
+                  <Text style={styles.holoRank}>
+                    {i18n.t("publicProfile.rankGlobal")}
+                  </Text>
                   <TouchableOpacity style={styles.holoClose} onPress={onClose}>
                     <Icon name="close" size={14} color={colors.text.primary} />
                   </TouchableOpacity>
@@ -221,7 +226,9 @@ export function PublicProfileModal({ userId, onClose }: Props) {
                     {featuredBadge && (
                       <View style={styles.showcaseChip}>
                         <Icon name={featuredBadge} size={12} color={colors.amber} />
-                        <Text style={styles.showcaseChipText}>Badge</Text>
+                        <Text style={styles.showcaseChipText}>
+                          {i18n.t("publicProfile.badge")}
+                        </Text>
                       </View>
                     )}
                     {typeof profile.achievementScore === "number" && (
@@ -243,7 +250,11 @@ export function PublicProfileModal({ userId, onClose }: Props) {
                     {typeof profile.seasonLevel === "number" && profile.seasonLevel > 0 && (
                       <View style={styles.showcaseChip}>
                         <Icon name="sparkles" size={12} color={colors.amber} />
-                        <Text style={styles.showcaseChipText}>S.Lv {profile.seasonLevel}</Text>
+                        <Text style={styles.showcaseChipText}>
+                          {i18n.t("publicProfile.seasonLv", {
+                            level: profile.seasonLevel,
+                          })}
+                        </Text>
                       </View>
                     )}
                   </View>
@@ -262,30 +273,41 @@ export function PublicProfileModal({ userId, onClose }: Props) {
                         color={profile.likedByMe ? colors.amber : colors.text.secondary}
                       />
                       <Text style={[styles.likeText, profile.likedByMe && styles.likeTextActive]}>
-                        {profile.likedByMe ? "Liked" : "Like"} · {profile.profileLikes ?? 0}
+                        {profile.likedByMe
+                          ? i18n.t("publicProfile.liked")
+                          : i18n.t("publicProfile.like")}{" "}
+                        · {profile.profileLikes ?? 0}
                       </Text>
                     </TouchableOpacity>
                   )}
                   {profile.online && (
-                    <Text style={styles.onlineText}>● Online now</Text>
+                    <Text style={styles.onlineText}>
+                      {i18n.t("publicProfile.onlineNow")}
+                    </Text>
                   )}
 
                   {profile.statsHidden ? (
                     <Text style={styles.hiddenText}>
-                      This detective keeps their stats private.
+                      {i18n.t("publicProfile.statsHidden")}
                     </Text>
                   ) : (
                     <>
                       <View style={styles.statsRow}>
-                        <Stat value={`${profile.totalSolved ?? 0}`} label="SOLVED" />
+                        <Stat
+                          value={`${profile.totalSolved ?? 0}`}
+                          label={i18n.t("publicProfile.solvedCaps")}
+                        />
                         <View style={styles.statDivider} />
                         <Stat
                           value={`${profile.accuracy ?? 0}%`}
-                          label="ACCURACY"
+                          label={i18n.t("publicProfile.accuracyCaps")}
                           color={colors.green}
                         />
                         <View style={styles.statDivider} />
-                        <Stat value={`${profile.streak ?? 0}`} label="STREAK" />
+                        <Stat
+                          value={`${profile.streak ?? 0}`}
+                          label={i18n.t("publicProfile.streakCaps")}
+                        />
                       </View>
                       <Text style={styles.xpText}>
                         {(profile.xp ?? 0).toLocaleString()} XP
@@ -296,7 +318,7 @@ export function PublicProfileModal({ userId, onClose }: Props) {
                   <FriendAction />
 
                   <GradientButton
-                    label="Close"
+                    label={i18n.t("common.close")}
                     variant="outline"
                     style={styles.cta}
                     onPress={onClose}
@@ -305,9 +327,11 @@ export function PublicProfileModal({ userId, onClose }: Props) {
               </>
             ) : (
               <View style={styles.loading}>
-                <Text style={styles.errorText}>Profile not found</Text>
+                <Text style={styles.errorText}>
+                  {i18n.t("publicProfile.notFound")}
+                </Text>
                 <GradientButton
-                  label="Close"
+                  label={i18n.t("common.close")}
                   variant="outline"
                   style={styles.cta}
                   onPress={onClose}
@@ -346,7 +370,7 @@ const styles = StyleSheet.create({
   holoRank: {
     position: "absolute",
     top: 13,
-    left: 15,
+    start: 15,
     fontFamily: typography.families.mono,
     fontSize: 9,
     letterSpacing: 1.8,
@@ -355,7 +379,7 @@ const styles = StyleSheet.create({
   holoClose: {
     position: "absolute",
     top: 12,
-    right: 12,
+    end: 12,
     width: 28,
     height: 28,
     borderRadius: radii.sm,

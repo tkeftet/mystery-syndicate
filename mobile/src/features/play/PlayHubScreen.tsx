@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii, gradients, shadows } from "../../theme";
 import type { AppStackParamList } from "../../screens/HomeScreen";
 import { Icon, ProgressBar, AppMenu } from "../../components/ui";
@@ -27,6 +28,7 @@ import {
 type Nav = NativeStackNavigationProp<AppStackParamList>;
 
 function SeasonCard({ season }: { season: any }) {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const diffColor = EVENT_DIFFICULTY_COLOR[season.difficulty] ?? colors.amber;
   return (
@@ -41,18 +43,21 @@ function SeasonCard({ season }: { season: any }) {
         style={[styles.seasonCard, shadows.card]}
       >
         <Icon name="folder" size={64} color={colors.amber} style={styles.seasonMark} />
-        <Text style={styles.seasonKicker}>{season.subtitle || "STORY ARC"}</Text>
+        <Text style={styles.seasonKicker}>
+          {season.subtitle || t("play.storyArc")}
+        </Text>
         <Text style={styles.seasonTitle}>{season.title}</Text>
         <Text style={styles.seasonDesc} numberOfLines={2}>
           {season.description}
         </Text>
         <View style={styles.seasonFooter}>
           <Text style={[styles.seasonDiff, { color: diffColor }]}>
-            {season.difficulty?.toUpperCase()} · {season.totalChapters} CHAPTERS
+            {season.difficulty?.toUpperCase()} ·{" "}
+            {t("play.chaptersCount", { count: season.totalChapters })}
           </Text>
           <View style={styles.continuePill}>
-            <Text style={styles.continueText}>Continue</Text>
-            <Icon name="back" size={14} color={colors.text.inverse} style={styles.chevron} />
+            <Text style={styles.continueText}>{t("play.continue")}</Text>
+            <Icon name="forward" size={14} color={colors.text.inverse} />
           </View>
         </View>
       </LinearGradient>
@@ -61,6 +66,7 @@ function SeasonCard({ season }: { season: any }) {
 }
 
 function EventCard({ event }: { event: any }) {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const live = event.status === "active";
   const countdown = useCountdown(live ? event.endDate : event.startDate);
@@ -78,11 +84,15 @@ function EventCard({ event }: { event: any }) {
         <View style={styles.eventLeft}>
           <View style={styles.eventTagRow}>
             {live && <View style={styles.liveDot} />}
-            <Text style={styles.eventTag}>{live ? "LIVE NOW" : "STARTS SOON"}</Text>
+            <Text style={styles.eventTag}>
+              {live ? t("home.liveNow") : t("home.startsSoon")}
+            </Text>
           </View>
           <Text style={styles.eventTitle} numberOfLines={1}>{event.title}</Text>
           <Text style={styles.eventSub}>
-            {live ? `Ends in ${countdown}` : `Starts in ${countdown}`}
+            {live
+              ? t("play.endsIn", { countdown })
+              : t("play.startsIn", { countdown })}
           </Text>
         </View>
         <Icon name="trophy" size={30} color={colors.text.inverse} />
@@ -92,6 +102,7 @@ function EventCard({ event }: { event: any }) {
 }
 
 function SeasonPassCard() {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const { data } = usePassHub();
   const pass = data?.pass;
@@ -109,7 +120,9 @@ function SeasonPassCard() {
         style={[styles.passCard, shadows.glow]}
       >
         <View style={styles.passTop}>
-          <Text style={styles.passKicker}>SEASON PASS · {pass.subtitle}</Text>
+          <Text style={styles.passKicker}>
+            {t("play.seasonPassKicker", { subtitle: pass.subtitle })}
+          </Text>
           {data.unclaimedCount > 0 && (
             <View style={styles.passBadge}>
               <Text style={styles.passBadgeText}>{data.unclaimedCount}</Text>
@@ -120,9 +133,14 @@ function SeasonPassCard() {
           {pass.title}
         </Text>
         <View style={styles.passLevelRow}>
-          <Text style={styles.passLevel}>Lvl {progress.level}</Text>
+          <Text style={styles.passLevel}>
+            {t("play.lvl", { level: progress.level })}
+          </Text>
           <Text style={styles.passXp}>
-            {progress.xpIntoLevel}/{progress.xpForNext} XP
+            {t("play.xpProgress", {
+              current: progress.xpIntoLevel,
+              next: progress.xpForNext,
+            })}
           </Text>
         </View>
         <ProgressBar progress={progress.percentToNext / 100} />
@@ -132,6 +150,7 @@ function SeasonPassCard() {
 }
 
 export function PlayHubScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const queryClient = useQueryClient();
@@ -160,8 +179,8 @@ export function PlayHubScreen() {
     <View style={[styles.safeTop, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text style={styles.kicker}>// PLAY</Text>
-          <Text style={styles.headerTitle}>Story & Events</Text>
+          <Text style={styles.kicker}>{t("play.kicker")}</Text>
+          <Text style={styles.headerTitle}>{t("play.title")}</Text>
         </View>
         <AppMenu />
       </View>
@@ -182,29 +201,27 @@ export function PlayHubScreen() {
           <SeasonPassCard />
 
           {/* ── Story Arc ── */}
-          <Text style={styles.sectionLabel}>STORY ARC</Text>
+          <Text style={styles.sectionLabel}>{t("play.storyArc")}</Text>
           {activeSeasons.length > 0 ? (
             activeSeasons.map((s) => <SeasonCard key={s._id} season={s} />)
           ) : (
-            <Text style={styles.emptyHint}>
-              No active season right now — a new mystery is coming soon.
-            </Text>
+            <Text style={styles.emptyHint}>{t("play.noSeason")}</Text>
           )}
 
           {/* ── Mega Cases ── */}
           <View style={styles.sectionHeaderRow}>
-            <Text style={styles.sectionLabel}>WEEKLY MEGA CASES</Text>
+            <Text style={styles.sectionLabel}>{t("play.megaCases")}</Text>
             <TouchableOpacity
               onPress={() => navigation.navigate("EventList")}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
-              <Text style={styles.seeAll}>See all →</Text>
+              <Text style={styles.seeAll}>{t("home.seeAll")}</Text>
             </TouchableOpacity>
           </View>
           {liveEvent ? (
             <EventCard event={liveEvent} />
           ) : (
-            <Text style={styles.emptyHint}>No mega case scheduled right now.</Text>
+            <Text style={styles.emptyHint}>{t("play.noMegaCase")}</Text>
           )}
         </ScrollView>
       )}
@@ -222,7 +239,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing[4],
     paddingBottom: spacing[3],
   },
-  headerLeft: { flex: 1, paddingRight: spacing[3] },
+  headerLeft: { flex: 1, paddingEnd: spacing[3] },
   kicker: {
     fontFamily: typography.families.mono,
     fontSize: typography.sizes.xs,
@@ -377,7 +394,6 @@ const styles = StyleSheet.create({
     color: colors.text.inverse,
     letterSpacing: 0.5,
   },
-  chevron: { transform: [{ rotate: "180deg" }] },
 
   // Event card
   eventCard: {
@@ -387,7 +403,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  eventLeft: { flex: 1, paddingRight: spacing[3] },
+  eventLeft: { flex: 1, paddingEnd: spacing[3] },
   eventTagRow: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 4 },
   liveDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: colors.text.inverse },
   eventTag: {

@@ -13,6 +13,9 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
+import { DIFFICULTY_CONFIG } from "../constants/difficulty";
 import { colors, typography, spacing, radii, gradients, shadows } from "../theme";
 import { useAuthStore } from "../features/auth/auth.store";
 import {
@@ -68,16 +71,6 @@ export type AppStackParamList = {
 
 type Nav = NativeStackNavigationProp<AppStackParamList>;
 
-const DIFFICULTY_CONFIG: Record<
-  string,
-  { label: string; color: string; level: number }
-> = {
-  easy: { label: "EASY", color: colors.green, level: 1 },
-  medium: { label: "MEDIUM", color: colors.warning, level: 2 },
-  hard: { label: "HARD", color: colors.coral, level: 3 },
-  expert: { label: "EXPERT", color: "#B58BD6", level: 4 },
-};
-
 function useCountdown() {
   const [timeLeft, setTimeLeft] = React.useState("");
 
@@ -104,22 +97,24 @@ function useCountdown() {
 
 function todayKicker() {
   const d = new Date();
-  const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  const months = [
-    "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
-    "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER",
-  ];
-  return `${days[d.getDay()]} · ${months[d.getMonth()]} ${d.getDate()}`;
+  try {
+    const weekday = d.toLocaleDateString(i18n.language, { weekday: "short" });
+    const month = d.toLocaleDateString(i18n.language, { month: "long" });
+    return `${weekday} · ${month} ${d.getDate()}`.toUpperCase();
+  } catch {
+    return d.toDateString().toUpperCase();
+  }
 }
 
 function greeting() {
   const h = new Date().getHours();
-  if (h < 12) return "Good morning,";
-  if (h < 18) return "Good afternoon,";
-  return "Good evening,";
+  if (h < 12) return i18n.t("home.goodMorning");
+  if (h < 18) return i18n.t("home.goodAfternoon");
+  return i18n.t("home.goodEvening");
 }
 
 function MegaCaseBanner() {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const { data: events } = useEvents();
   const list: any[] = (events as any[]) ?? [];
@@ -140,12 +135,12 @@ function MegaCaseBanner() {
   return (
     <View style={styles.megaSection}>
       <View style={styles.megaHeader}>
-        <Text style={styles.megaHeaderLabel}>WEEKLY MEGA CASE</Text>
+        <Text style={styles.megaHeaderLabel}>{t("home.megaHeader")}</Text>
         <TouchableOpacity
           onPress={seeAll}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <Text style={styles.megaSeeAll}>See all →</Text>
+          <Text style={styles.megaSeeAll}>{t("home.seeAll")}</Text>
         </TouchableOpacity>
       </View>
 
@@ -165,7 +160,7 @@ function MegaCaseBanner() {
             <View style={styles.megaTagRow}>
               {live && <View style={styles.megaLiveDot} />}
               <Text style={styles.megaTag}>
-                {live ? "LIVE NOW" : "STARTS SOON"}
+                {live ? t("home.liveNow") : t("home.startsSoon")}
               </Text>
             </View>
             <Text style={styles.megaTitle} numberOfLines={1}>
@@ -173,8 +168,8 @@ function MegaCaseBanner() {
             </Text>
             <Text style={styles.megaSub}>
               {live
-                ? `Ends in ${countdown} · Tap to play`
-                : `Starts in ${countdown}`}
+                ? t("home.endsIn", { countdown })
+                : t("home.startsIn", { countdown })}
             </Text>
           </View>
           <Icon name="trophy" size={34} color={colors.text.inverse} />
@@ -185,6 +180,7 @@ function MegaCaseBanner() {
 }
 
 export function HomeScreen() {
+  const { t } = useTranslation();
   const { user } = useAuthStore();
   const navigation = useNavigation<Nav>();
   const insets = useSafeAreaInsets();
@@ -227,7 +223,8 @@ export function HomeScreen() {
     setRefreshing(false);
   }
 
-  const username = freshProfile?.username ?? user?.username ?? "Detective";
+  const username =
+    freshProfile?.username ?? user?.username ?? t("home.detectiveFallback");
   const streak = freshProfile?.streak ?? user?.streak ?? 0;
   const accuracy = freshProfile?.accuracy ?? 0;
   const level = freshProfile?.level ?? 1;
@@ -268,19 +265,19 @@ export function HomeScreen() {
             <Icon name="streak" size={15} color={colors.amber} />
             <Text style={styles.streakValue}>{streak}</Text>
           </View>
-          <Text style={styles.streakLabel}>Day streak</Text>
+          <Text style={styles.streakLabel}>{t("home.dayStreak")}</Text>
         </View>
         <View style={styles.streakDivider} />
         <View style={styles.streakStat}>
           <Text style={[styles.streakValue, { color: colors.green }]}>
             {accuracy}%
           </Text>
-          <Text style={styles.streakLabel}>Accuracy</Text>
+          <Text style={styles.streakLabel}>{t("home.accuracy")}</Text>
         </View>
         <View style={styles.streakDivider} />
         <View style={styles.streakStat}>
           <Text style={styles.streakValue}>{level}</Text>
-          <Text style={styles.streakLabel}>Level</Text>
+          <Text style={styles.streakLabel}>{t("home.level")}</Text>
         </View>
       </LinearGradient>
 
@@ -299,16 +296,18 @@ export function HomeScreen() {
             {dailyLogin.canClaim && <View style={styles.dailyDot} />}
           </View>
           <View style={styles.dailyText}>
-            <Text style={styles.dailyTitle}>Daily Reward</Text>
+            <Text style={styles.dailyTitle}>{t("home.dailyReward")}</Text>
             <Text style={styles.dailySub}>
               {dailyLogin.canClaim
-                ? `Day ${dailyLogin.claimableDay} ready to claim`
-                : `${dailyLogin.currentStreak}-day streak · back tomorrow`}
+                ? t("home.dailyReady", { day: dailyLogin.claimableDay })
+                : t("home.dailyStreakBack", {
+                    count: dailyLogin.currentStreak,
+                  })}
             </Text>
           </View>
           {dailyLogin.canClaim ? (
             <View style={styles.dailyChip}>
-              <Text style={styles.dailyChipText}>CLAIM</Text>
+              <Text style={styles.dailyChipText}>{t("home.claim")}</Text>
             </View>
           ) : (
             <Icon name="arrowRight" size={16} color={colors.text.muted} />
@@ -322,15 +321,21 @@ export function HomeScreen() {
           [
             {
               key: "daily",
-              label: "Today",
+              label: t("home.tabToday"),
               icon: "search",
               badge: !todayIsCompleted && !!todayCase,
               count: null,
             },
-            { key: "quick", label: "Quick", icon: "bolt", badge: false, count: miniCount },
+            {
+              key: "quick",
+              label: t("home.tabQuick"),
+              icon: "bolt",
+              badge: false,
+              count: miniCount,
+            },
             {
               key: "previous",
-              label: "Previous",
+              label: t("home.tabPrevious"),
               icon: "folder",
               badge: false,
               count: recentCount,
@@ -406,7 +411,9 @@ export function HomeScreen() {
                 />
                 <View style={styles.coverTop}>
                   <Pill label={todayCase.type} icon={caseTypeIcon(todayCase.type)} />
-                  {diff && <DifficultyPips level={diff.level} label={diff.label} />}
+                  {diff && (
+                    <DifficultyPips level={diff.level} label={t(diff.labelKey)} />
+                  )}
                 </View>
               </View>
 
@@ -418,11 +425,26 @@ export function HomeScreen() {
                 </Text>
 
                 <View style={styles.caseStats}>
-                  <CaseStat icon="people" text={`${todayCase.suspects?.length ?? 0} suspects`} />
+                  <CaseStat
+                    icon="people"
+                    text={t("home.suspectsCount", {
+                      count: todayCase.suspects?.length ?? 0,
+                    })}
+                  />
                   <Dot />
-                  <CaseStat icon="search" text={`${todayCase.evidence?.length ?? 0} clues`} />
+                  <CaseStat
+                    icon="search"
+                    text={t("home.cluesCount", {
+                      count: todayCase.evidence?.length ?? 0,
+                    })}
+                  />
                   <Dot />
-                  <CaseStat icon="clock" text={`${todayCase.estimatedMinutes} min`} />
+                  <CaseStat
+                    icon="clock"
+                    text={t("home.minutesCount", {
+                      count: todayCase.estimatedMinutes,
+                    })}
+                  />
                 </View>
 
                 {todayIsCompleted ? (
@@ -446,15 +468,21 @@ export function HomeScreen() {
                             },
                           ]}
                         >
-                          {todayInvestigation.isCorrect ? "SOLVED" : "MISSED"}
+                          {todayInvestigation.isCorrect
+                            ? t("home.solved")
+                            : t("home.missed")}
                         </Text>
                       </View>
                       <Text style={styles.solvedScore}>
-                        +{todayInvestigation.score} pts
+                        {t("home.pointsEarned", {
+                          score: todayInvestigation.score,
+                        })}
                       </Text>
                     </View>
                     <View style={styles.countdownBox}>
-                      <Text style={styles.countdownLabel}>Next case in</Text>
+                      <Text style={styles.countdownLabel}>
+                        {t("home.nextCaseIn")}
+                      </Text>
                       <Text style={styles.countdownTime}>{timeLeft}</Text>
                     </View>
                   </View>
@@ -462,8 +490,8 @@ export function HomeScreen() {
                   <GradientButton
                     label={
                       todayIsInProgress
-                        ? "Continue Investigation"
-                        : "Start Investigation"
+                        ? t("home.continueInvestigation")
+                        : t("home.startInvestigation")
                     }
                     iconRight="arrowRight"
                     loading={loadingInvestigation}
@@ -477,10 +505,8 @@ export function HomeScreen() {
           ) : (
             <SurfaceCard style={styles.noCaseCard}>
               <Icon name="moon" size={44} color={colors.text.muted} />
-              <Text style={styles.noCaseTitle}>No case today</Text>
-              <Text style={styles.noCaseDesc}>
-                Check back tomorrow for a new mystery
-              </Text>
+              <Text style={styles.noCaseTitle}>{t("home.noCaseTitle")}</Text>
+              <Text style={styles.noCaseDesc}>{t("home.noCaseDesc")}</Text>
             </SurfaceCard>
           ))}
 
@@ -507,7 +533,7 @@ export function HomeScreen() {
                     <View style={styles.miniMetaRow}>
                       <Icon name="bolt" size={11} color={colors.text.muted} />
                       <Text style={styles.miniMeta}>
-                        {m.suspects?.length ?? 0} suspects · ~2 min
+                        {t("home.miniMeta", { count: m.suspects?.length ?? 0 })}
                       </Text>
                     </View>
                   </View>
@@ -517,7 +543,9 @@ export function HomeScreen() {
           ) : (
             <View style={styles.emptyRecent}>
               <Icon name="bolt" size={18} color={colors.text.muted} />
-              <Text style={styles.emptyRecentText}>No quick cases today</Text>
+              <Text style={styles.emptyRecentText}>
+                {t("home.noQuickCases")}
+              </Text>
             </View>
           ))}
 
@@ -546,10 +574,16 @@ export function HomeScreen() {
                           />
                         </View>
                         {c.investigationStatus === "correct" && (
-                          <StatusPill label="SOLVED" color={colors.green} />
+                          <StatusPill
+                            label={t("home.solved")}
+                            color={colors.green}
+                          />
                         )}
                         {c.investigationStatus === "wrong" && (
-                          <StatusPill label="MISSED" color={colors.coral} />
+                          <StatusPill
+                            label={t("home.missed")}
+                            color={colors.coral}
+                          />
                         )}
                       </View>
                       <Text style={styles.recentTitle} numberOfLines={2}>
@@ -561,7 +595,7 @@ export function HomeScreen() {
                           { color: cDiff?.color ?? colors.text.muted },
                         ]}
                       >
-                        {c.difficulty.toUpperCase()}
+                        {cDiff ? t(cDiff.labelKey) : c.difficulty.toUpperCase()}
                       </Text>
                     </SurfaceCard>
                   </TouchableOpacity>
@@ -571,7 +605,9 @@ export function HomeScreen() {
           ) : (
             <View style={styles.emptyRecent}>
               <Icon name="folder" size={18} color={colors.text.muted} />
-              <Text style={styles.emptyRecentText}>No previous cases yet</Text>
+              <Text style={styles.emptyRecentText}>
+                {t("home.noPreviousCases")}
+              </Text>
             </View>
           ))}
       </ScrollView>
@@ -605,7 +641,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing[3],
     paddingBottom: spacing[5],
   },
-  headerLeft: { flex: 1, paddingRight: spacing[3] },
+  headerLeft: { flex: 1, paddingEnd: spacing[3] },
   headerRight: { flexDirection: "row", alignItems: "center", gap: spacing[3] },
   kicker: {
     fontFamily: typography.families.mono,
@@ -659,7 +695,7 @@ const styles = StyleSheet.create({
   dailyDot: {
     position: "absolute",
     top: 4,
-    right: 4,
+    end: 4,
     width: 9,
     height: 9,
     borderRadius: 5,
@@ -722,7 +758,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     ...shadows.glow,
   },
-  megaLeft: { flex: 1, paddingRight: spacing[3] },
+  megaLeft: { flex: 1, paddingEnd: spacing[3] },
   megaTagRow: { flexDirection: "row", alignItems: "center", gap: 6, marginBottom: 4 },
   megaLiveDot: {
     width: 7,
@@ -791,7 +827,7 @@ const styles = StyleSheet.create({
   },
   coverWatermark: {
     position: "absolute",
-    right: -14,
+    end: -14,
     bottom: -28,
     opacity: 0.1,
   },

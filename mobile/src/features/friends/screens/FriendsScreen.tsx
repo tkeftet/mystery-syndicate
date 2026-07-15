@@ -13,6 +13,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
+import i18n, { type TranslationKey } from "../../../i18n";
 import { colors, typography, spacing, radii } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon, Avatar } from "../../../components/ui";
@@ -28,6 +30,12 @@ import {
 
 type Nav = NativeStackNavigationProp<AppStackParamList>;
 type Tab = "friends" | "requests" | "find";
+
+const TAB_LABEL_KEY: Record<Tab, TranslationKey> = {
+  friends: "friends.tabFriends",
+  requests: "friends.tabRequests",
+  find: "friends.tabFind",
+};
 
 function PresenceDot({ online }: { online: boolean }) {
   return (
@@ -72,8 +80,10 @@ function UserRow({
           {u.username}
         </Text>
         <Text style={[styles.rowMeta, { color: rank.color }]}>
-          {rank.label} · Lv {u.level ?? 1}
-          {u.streak ? ` · ${u.streak}d streak` : ""}
+          {rank.label} · {i18n.t("friends.lvShort", { level: u.level ?? 1 })}
+          {u.streak
+            ? ` · ${i18n.t("friends.streakShort", { count: u.streak })}`
+            : ""}
         </Text>
       </View>
       {right}
@@ -82,6 +92,7 @@ function UserRow({
 }
 
 export function FriendsScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const queryClient = useQueryClient();
@@ -122,24 +133,26 @@ export function FriendsScreen() {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.kicker}>// SOCIAL</Text>
-          <Text style={styles.headerTitle}>Friends</Text>
+          <Text style={styles.kicker}>{t("friends.kicker")}</Text>
+          <Text style={styles.headerTitle}>{t("friends.title")}</Text>
         </View>
       </View>
 
       {/* Tabs */}
       <View style={styles.tabs}>
-        {(["friends", "requests", "find"] as Tab[]).map((t) => {
-          const active = tab === t;
+        {(["friends", "requests", "find"] as Tab[]).map((tabKey) => {
+          const active = tab === tabKey;
           return (
             <TouchableOpacity
-              key={t}
+              key={tabKey}
               style={[styles.tab, active && styles.tabActive]}
-              onPress={() => setTab(t)}
+              onPress={() => setTab(tabKey)}
             >
               <Text style={[styles.tabText, active && styles.tabTextActive]}>
-                {t === "find" ? "FIND" : t.toUpperCase()}
-                {t === "requests" && incomingCount > 0 ? ` (${incomingCount})` : ""}
+                {t(TAB_LABEL_KEY[tabKey])}
+                {tabKey === "requests" && incomingCount > 0
+                  ? ` (${incomingCount})`
+                  : ""}
               </Text>
             </TouchableOpacity>
           );
@@ -170,9 +183,7 @@ export function FriendsScreen() {
                 />
               ))
             ) : (
-              <Text style={styles.empty}>
-                No friends yet — use Find to add some detectives.
-              </Text>
+              <Text style={styles.empty}>{t("friends.noFriends")}</Text>
             )}
           </ScrollView>
         ))}
@@ -183,7 +194,7 @@ export function FriendsScreen() {
           <ActivityIndicator color={colors.amber} style={styles.loader} />
         ) : (
           <ScrollView contentContainerStyle={styles.list}>
-            <Text style={styles.sectionLabel}>INCOMING</Text>
+            <Text style={styles.sectionLabel}>{t("friends.incoming")}</Text>
             {requests?.incoming?.length ? (
               requests.incoming.map((u: any) => (
                 <UserRow
@@ -198,7 +209,9 @@ export function FriendsScreen() {
                           run(u.userId, () => acceptRequestApi(u.userId))
                         }
                       >
-                        <Text style={styles.pillPrimaryText}>Accept</Text>
+                        <Text style={styles.pillPrimaryText}>
+                          {t("friends.accept")}
+                        </Text>
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={styles.pill}
@@ -214,11 +227,11 @@ export function FriendsScreen() {
                 />
               ))
             ) : (
-              <Text style={styles.empty}>No incoming requests.</Text>
+              <Text style={styles.empty}>{t("friends.noIncoming")}</Text>
             )}
 
             <Text style={[styles.sectionLabel, { marginTop: spacing[5] }]}>
-              SENT
+              {t("friends.sent")}
             </Text>
             {requests?.outgoing?.length ? (
               requests.outgoing.map((u: any) => (
@@ -233,13 +246,13 @@ export function FriendsScreen() {
                         run(u.userId, () => cancelRequestApi(u.userId))
                       }
                     >
-                      <Text style={styles.pillText}>Cancel</Text>
+                      <Text style={styles.pillText}>{t("common.cancel")}</Text>
                     </TouchableOpacity>
                   }
                 />
               ))
             ) : (
-              <Text style={styles.empty}>No sent requests.</Text>
+              <Text style={styles.empty}>{t("friends.noSent")}</Text>
             )}
           </ScrollView>
         ))}
@@ -251,7 +264,7 @@ export function FriendsScreen() {
             <Icon name="search" size={16} color={colors.text.muted} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search by username…"
+              placeholder={t("friends.searchPlaceholder")}
               placeholderTextColor={colors.text.muted}
               value={query}
               onChangeText={setQuery}
@@ -260,7 +273,7 @@ export function FriendsScreen() {
           </View>
           <ScrollView contentContainerStyle={styles.list}>
             {query.trim().length < 2 ? (
-              <Text style={styles.empty}>Type at least 2 characters.</Text>
+              <Text style={styles.empty}>{t("friends.typeMore")}</Text>
             ) : ls ? (
               <ActivityIndicator color={colors.amber} style={styles.loader} />
             ) : search?.results?.length ? (
@@ -271,9 +284,13 @@ export function FriendsScreen() {
                   onPress={() => setSelectedUserId(u.userId)}
                   right={
                     u.friendStatus === "friends" ? (
-                      <Text style={styles.statusText}>Friends</Text>
+                      <Text style={styles.statusText}>
+                        {t("friends.statusFriends")}
+                      </Text>
                     ) : u.friendStatus === "pending_sent" ? (
-                      <Text style={styles.statusText}>Pending</Text>
+                      <Text style={styles.statusText}>
+                        {t("friends.statusPending")}
+                      </Text>
                     ) : u.friendStatus === "pending_received" ? (
                       <TouchableOpacity
                         style={[styles.pill, styles.pillPrimary]}
@@ -282,7 +299,9 @@ export function FriendsScreen() {
                           run(u.userId, () => acceptRequestApi(u.userId))
                         }
                       >
-                        <Text style={styles.pillPrimaryText}>Accept</Text>
+                        <Text style={styles.pillPrimaryText}>
+                          {t("friends.accept")}
+                        </Text>
                       </TouchableOpacity>
                     ) : u.friendStatus === "none" ? (
                       <TouchableOpacity
@@ -292,14 +311,16 @@ export function FriendsScreen() {
                           run(u.userId, () => sendRequestApi(u.userId))
                         }
                       >
-                        <Text style={styles.pillPrimaryText}>Add</Text>
+                        <Text style={styles.pillPrimaryText}>
+                          {t("friends.add")}
+                        </Text>
                       </TouchableOpacity>
                     ) : null
                   }
                 />
               ))
             ) : (
-              <Text style={styles.empty}>No users found.</Text>
+              <Text style={styles.empty}>{t("friends.noUsers")}</Text>
             )}
           </ScrollView>
         </View>
@@ -389,7 +410,7 @@ const styles = StyleSheet.create({
   },
   dotWrap: {
     position: "absolute",
-    right: -1,
+    end: -1,
     bottom: -1,
     backgroundColor: colors.bg.secondary,
     borderRadius: 8,

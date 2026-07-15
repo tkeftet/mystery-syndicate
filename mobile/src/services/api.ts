@@ -4,6 +4,7 @@ import axios, {
 } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { queryClient } from "./queryClient";
+import { getCurrentLanguage } from "../i18n";
 
 const API_URL =
   process.env.EXPO_PUBLIC_API_URL ?? "http://10.240.159.145:4000/api/v1";
@@ -24,6 +25,9 @@ apiClient.interceptors.request.use(async (config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // Tell the API which language to localize case content into. Read per-request
+  // so it reflects the user's current choice without recreating the client.
+  config.headers["Accept-Language"] = getCurrentLanguage();
   return config;
 });
 

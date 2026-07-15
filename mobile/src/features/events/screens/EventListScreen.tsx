@@ -13,6 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii, gradients, shadows } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon } from "../../../components/ui";
@@ -27,6 +28,7 @@ type Nav = NativeStackNavigationProp<AppStackParamList>;
 
 // ── Featured (live) card ─────────────────────────────────────────────────────
 function FeaturedEvent({ event }: { event: any }) {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const countdown = useCountdown(event.endDate);
 
@@ -44,7 +46,7 @@ function FeaturedEvent({ event }: { event: any }) {
         <View style={styles.featuredTop}>
           <View style={styles.liveChip}>
             <View style={styles.liveDot} />
-            <Text style={styles.liveChipText}>LIVE NOW</Text>
+            <Text style={styles.liveChipText}>{t("home.liveNow")}</Text>
           </View>
           <Text style={styles.featuredDiff}>{event.difficulty?.toUpperCase()}</Text>
         </View>
@@ -57,11 +59,13 @@ function FeaturedEvent({ event }: { event: any }) {
         <View style={styles.featuredFooter}>
           <View style={styles.featuredMeta}>
             <Icon name="clock" size={14} color={colors.text.inverse} />
-            <Text style={styles.featuredMetaText}>Ends in {countdown}</Text>
+            <Text style={styles.featuredMetaText}>
+              {t("play.endsIn", { countdown })}
+            </Text>
           </View>
           <View style={styles.playPill}>
             <Icon name="play" size={13} color={colors.amber} />
-            <Text style={styles.playPillText}>Investigate</Text>
+            <Text style={styles.playPillText}>{t("events.investigate")}</Text>
           </View>
         </View>
       </LinearGradient>
@@ -71,6 +75,7 @@ function FeaturedEvent({ event }: { event: any }) {
 
 // ── Compact row (upcoming / past) ────────────────────────────────────────────
 function EventRow({ event }: { event: any }) {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const status = EVENT_STATUS_META[event.status] ?? EVENT_STATUS_META.completed;
   const isUpcoming = event.status === "upcoming";
@@ -98,18 +103,22 @@ function EventRow({ event }: { event: any }) {
         <View style={styles.rowMetaRow}>
           <View style={[styles.statusChip, { borderColor: status.color }]}>
             <Text style={[styles.statusText, { color: status.color }]}>
-              {status.label}
+              {t(status.labelKey)}
             </Text>
           </View>
           <Text style={[styles.rowDiff, { color: diffColor }]}>
             {event.difficulty?.toUpperCase()}
           </Text>
           <Text style={styles.rowMeta}>
-            {past ? "Finished" : isUpcoming ? `in ${countdown}` : `ends ${countdown}`}
+            {past
+              ? t("events.finished")
+              : isUpcoming
+                ? t("events.inCountdown", { countdown })
+                : t("events.endsCountdown", { countdown })}
           </Text>
         </View>
       </View>
-      <Icon name="back" size={16} color={colors.text.muted} style={styles.chevron} />
+      <Icon name="forward" size={16} color={colors.text.muted} />
     </TouchableOpacity>
   );
 }
@@ -124,6 +133,7 @@ function Section({ label, count }: { label: string; count: number }) {
 }
 
 export function EventListScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const queryClient = useQueryClient();
@@ -150,8 +160,8 @@ export function EventListScreen() {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.kicker}>// EVENTS</Text>
-          <Text style={styles.headerTitle}>Weekly Mega Cases</Text>
+          <Text style={styles.kicker}>{t("events.kicker")}</Text>
+          <Text style={styles.headerTitle}>{t("events.title")}</Text>
         </View>
       </View>
 
@@ -162,7 +172,7 @@ export function EventListScreen() {
       ) : list.length === 0 ? (
         <View style={styles.centered}>
           <Icon name="trophy" size={40} color={colors.text.faint} />
-          <Text style={styles.emptyText}>No events yet. Check back soon!</Text>
+          <Text style={styles.emptyText}>{t("events.noEvents")}</Text>
         </View>
       ) : (
         <ScrollView
@@ -179,7 +189,7 @@ export function EventListScreen() {
         >
           {active.length > 0 && (
             <>
-              <Section label="LIVE NOW" count={active.length} />
+              <Section label={t("events.sectionLive")} count={active.length} />
               {active.map((e) => (
                 <FeaturedEvent key={e._id} event={e} />
               ))}
@@ -188,7 +198,10 @@ export function EventListScreen() {
 
           {upcoming.length > 0 && (
             <>
-              <Section label="UPCOMING" count={upcoming.length} />
+              <Section
+                label={t("events.sectionUpcoming")}
+                count={upcoming.length}
+              />
               {upcoming.map((e) => (
                 <EventRow key={e._id} event={e} />
               ))}
@@ -197,7 +210,7 @@ export function EventListScreen() {
 
           {past.length > 0 && (
             <>
-              <Section label="PAST EVENTS" count={past.length} />
+              <Section label={t("events.sectionPast")} count={past.length} />
               {past.map((e) => (
                 <EventRow key={e._id} event={e} />
               ))}
@@ -387,5 +400,4 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.xs,
     color: colors.text.muted,
   },
-  chevron: { transform: [{ rotate: "180deg" }] },
 });

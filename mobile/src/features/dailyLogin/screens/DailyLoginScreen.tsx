@@ -11,6 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii, gradients } from "../../../theme";
 import { Icon, type IconName, GradientButton } from "../../../components/ui";
 import { AppPopup, type PopupVariant } from "../../../components/ui/AppPopup";
@@ -33,6 +34,7 @@ function rewardIcon(kind: LoginRewardKind): IconName {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export function DailyLoginScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const { data: cal, isLoading, refetch } = useDailyCalendar();
@@ -50,16 +52,21 @@ export function DailyLoginScreen() {
       setPopup({
         variant: "success",
         icon: rewardIcon(res.reward.kind),
-        title: `Day ${res.claimedDay} claimed!`,
+        title: t("dailyLogin.dayClaimed", { day: res.claimedDay }),
         message: res.streakReset
-          ? `${res.reward.label}. Your streak restarted — claim again tomorrow to build it back up!`
-          : `${res.reward.label}. ${res.currentStreak}-day streak 🔥`,
+          ? t("dailyLogin.claimStreakReset", { label: res.reward.label })
+          : t("dailyLogin.claimStreak", {
+              label: res.reward.label,
+              count: res.currentStreak,
+            }),
       });
     } catch (err: any) {
       setPopup({
         variant: "warning",
-        title: "Couldn't claim",
-        message: err?.response?.data?.error?.message ?? "Try again in a moment.",
+        title: t("dailyLogin.claimFailed"),
+        message:
+          err?.response?.data?.error?.message ??
+          t("dailyLogin.tryAgainMoment"),
       });
     }
   }
@@ -75,8 +82,8 @@ export function DailyLoginScreen() {
       setSaving(false);
       setPopup({
         variant: "warning",
-        title: "Ad not completed",
-        message: "Watch the full ad to restore your streak.",
+        title: t("dailyLogin.adNotCompleted"),
+        message: t("dailyLogin.watchFullAd"),
       });
       return;
     }
@@ -91,8 +98,8 @@ export function DailyLoginScreen() {
     setPopup({
       variant: "success",
       icon: "streak",
-      title: "Streak restored!",
-      message: "Your missed day was recovered. Claim today's reward to keep going.",
+      title: t("dailyLogin.streakRestored"),
+      message: t("dailyLogin.streakRestoredMsg"),
     });
   }
 
@@ -112,8 +119,8 @@ export function DailyLoginScreen() {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.kicker}>// DAILY REWARDS</Text>
-          <Text style={styles.headerTitle}>Login Calendar</Text>
+          <Text style={styles.kicker}>{t("dailyLogin.kicker")}</Text>
+          <Text style={styles.headerTitle}>{t("dailyLogin.title")}</Text>
         </View>
       </View>
 
@@ -133,26 +140,30 @@ export function DailyLoginScreen() {
               <Icon name="streak" size={18} color={colors.amber} />
               <Text style={styles.summaryValue}>{cal.currentStreak}</Text>
             </View>
-            <Text style={styles.summaryLabel}>Day streak</Text>
+            <Text style={styles.summaryLabel}>{t("home.dayStreak")}</Text>
           </View>
           <View style={styles.summaryDivider} />
           <View style={styles.summaryStat}>
             <Text style={styles.summaryValue}>{cal.monthlyProgress}/{cal.cycleLength}</Text>
-            <Text style={styles.summaryLabel}>This month</Text>
+            <Text style={styles.summaryLabel}>
+              {t("dailyLogin.thisMonth")}
+            </Text>
           </View>
           <View style={styles.summaryDivider} />
           <View style={styles.summaryStat}>
             <Text style={[styles.summaryValue, { color: colors.amberLight }]}>
               {cal.longestStreak}
             </Text>
-            <Text style={styles.summaryLabel}>Best streak</Text>
+            <Text style={styles.summaryLabel}>
+              {t("dailyLogin.bestStreak")}
+            </Text>
           </View>
         </LinearGradient>
 
         {cal.nextMilestone && (
           <Text style={styles.milestoneHint}>
             <Icon name="trophy" size={11} color={colors.amber} />{"  "}
-            Next milestone: Day {cal.nextMilestone}
+            {t("dailyLogin.nextMilestone", { day: cal.nextMilestone })}
           </Text>
         )}
 
@@ -160,9 +171,13 @@ export function DailyLoginScreen() {
         {cal.catchUp.available && (
           <View style={styles.catchUp}>
             <View style={styles.catchUpText}>
-              <Text style={styles.catchUpTitle}>You missed a day!</Text>
+              <Text style={styles.catchUpTitle}>
+                {t("dailyLogin.missedDay")}
+              </Text>
               <Text style={styles.catchUpSub}>
-                Watch an ad to restore your streak and claim Day {cal.catchUp.missedDay}.
+                {t("dailyLogin.missedDaySub", {
+                  day: cal.catchUp.missedDay,
+                })}
               </Text>
             </View>
             <TouchableOpacity
@@ -176,7 +191,9 @@ export function DailyLoginScreen() {
               ) : (
                 <>
                   <Icon name="play" size={13} color={colors.text.inverse} />
-                  <Text style={styles.restoreText}>Restore</Text>
+                  <Text style={styles.restoreText}>
+                    {t("dailyLogin.restore")}
+                  </Text>
                 </>
               )}
             </TouchableOpacity>
@@ -188,7 +205,7 @@ export function DailyLoginScreen() {
           <View style={styles.warn}>
             <Icon name="warning" size={14} color={colors.warning} />
             <Text style={styles.warnText}>
-              Your streak lapsed — claiming now restarts at Day 1.
+              {t("dailyLogin.streakLapsed")}
             </Text>
           </View>
         )}
@@ -196,7 +213,7 @@ export function DailyLoginScreen() {
         {/* ── Claim CTA ── */}
         {cal.canClaim ? (
           <GradientButton
-            label={`Claim Day ${cal.claimableDay}`}
+            label={t("dailyLogin.claimDay", { day: cal.claimableDay })}
             iconRight="arrowRight"
             loading={claim.isPending}
             onPress={onClaim}
@@ -205,7 +222,9 @@ export function DailyLoginScreen() {
         ) : (
           <View style={styles.claimedBanner}>
             <Icon name="check" size={15} color={colors.green} />
-            <Text style={styles.claimedText}>Today's reward claimed — back tomorrow!</Text>
+            <Text style={styles.claimedText}>
+              {t("dailyLogin.todayClaimed")}
+            </Text>
           </View>
         )}
 
@@ -224,7 +243,13 @@ export function DailyLoginScreen() {
         variant={popup?.variant}
         icon={popup?.icon}
         onClose={() => setPopup(null)}
-        buttons={[{ label: "Nice!", variant: "primary", onPress: () => setPopup(null) }]}
+        buttons={[
+          {
+            label: t("dailyLogin.nice"),
+            variant: "primary",
+            onPress: () => setPopup(null),
+          },
+        ]}
       />
     </View>
   );
@@ -442,7 +467,7 @@ const styles = StyleSheet.create({
   milestoneDot: {
     position: "absolute",
     top: 5,
-    right: 5,
+    end: 5,
     width: 6,
     height: 6,
     borderRadius: 3,

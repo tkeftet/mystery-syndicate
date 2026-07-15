@@ -20,14 +20,31 @@ import mongoose from "mongoose";
 import { connectDatabase } from "../config/database";
 import { Case } from "../modules/cases/case.model";
 import { logger } from "../utils/logger";
+import { resolveLocalized, SUPPORTED_LANGS } from "../shared/localized";
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
+// A localizable text field is a non-empty string OR a { en?, fr?, ar? } object
+// with at least one non-empty language value.
+function okText(v: any): boolean {
+  if (typeof v === "string") return v.trim().length > 0;
+  if (v && typeof v === "object" && !Array.isArray(v)) {
+    return SUPPORTED_LANGS.some(
+      (l) => typeof v[l] === "string" && v[l].trim().length > 0,
+    );
+  }
+  return false;
+}
+
 function validateCase(c: any, i: number): string[] {
   const errs: string[] = [];
-  const at = (msg: string) => `case[${i}] (${c?.title ?? "untitled"}): ${msg}`;
+  const label = resolveLocalized(c?.title, "en") || "untitled";
+  const at = (msg: string) => `case[${i}] (${label}): ${msg}`;
 
-  for (const f of ["title", "description", "type", "difficulty"]) {
+  for (const f of ["title", "description"]) {
+    if (!okText(c?.[f])) errs.push(at(`missing "${f}"`));
+  }
+  for (const f of ["type", "difficulty"]) {
     if (!c?.[f] || typeof c[f] !== "string") errs.push(at(`missing "${f}"`));
   }
   const kind = c?.kind ?? "daily";
@@ -36,36 +53,44 @@ function validateCase(c: any, i: number): string[] {
   if (typeof c?.estimatedMinutes !== "number") errs.push(at(`"estimatedMinutes" must be a number`));
   if (typeof c?.maxScore !== "number") errs.push(at(`"maxScore" must be a number`));
 
-  if (!c?.victim?.name || !c?.victim?.description) errs.push(at(`"victim" needs name + description`));
+  if (!okText(c?.victim?.name) || !okText(c?.victim?.description))
+    errs.push(at(`"victim" needs name + description`));
 
   const suspects = Array.isArray(c?.suspects) ? c.suspects : [];
   if (suspects.length < 2) errs.push(at(`needs at least 2 suspects`));
   for (const s of suspects) {
-    for (const f of ["id", "name", "description", "alibi", "relationship"]) {
-      if (!s?.[f]) errs.push(at(`suspect "${s?.id ?? "?"}" missing "${f}"`));
+    if (!s?.id) errs.push(at(`suspect "?" missing "id"`));
+    for (const f of ["name", "description", "alibi", "relationship"]) {
+      if (!okText(s?.[f])) errs.push(at(`suspect "${s?.id ?? "?"}" missing "${f}"`));
     }
   }
   const evidence = Array.isArray(c?.evidence) ? c.evidence : [];
   if (evidence.length < 1) errs.push(at(`needs at least 1 evidence item`));
   for (const e of evidence) {
-    for (const f of ["id", "title", "description", "type"]) {
-      if (!e?.[f]) errs.push(at(`evidence "${e?.id ?? "?"}" missing "${f}"`));
+    if (!e?.id) errs.push(at(`evidence "?" missing "id"`));
+    if (!e?.type) errs.push(at(`evidence "${e?.id ?? "?"}" missing "type"`));
+    for (const f of ["title", "description"]) {
+      if (!okText(e?.[f])) errs.push(at(`evidence "${e?.id ?? "?"}" missing "${f}"`));
     }
   }
   const timeline = Array.isArray(c?.timeline) ? c.timeline : [];
   if (timeline.length < 1) errs.push(at(`needs at least 1 timeline event`));
   for (const t of timeline) {
-    for (const f of ["id", "time", "description"]) {
-      if (!t?.[f]) errs.push(at(`timeline "${t?.id ?? "?"}" missing "${f}"`));
+    if (!t?.id) errs.push(at(`timeline "?" missing "id"`));
+    for (const f of ["time", "description"]) {
+      if (!okText(t?.[f])) errs.push(at(`timeline "${t?.id ?? "?"}" missing "${f}"`));
     }
   }
 
   const sol = c?.solution;
   if (!sol) errs.push(at(`missing "solution"`));
   else {
-    for (const f of ["suspectId", "motive", "timelineEventId", "explanation"]) {
+    // motive stays a plain string (mega/chapter scoring compares it directly);
+    // explanation is localizable.
+    for (const f of ["suspectId", "motive", "timelineEventId"]) {
       if (!sol[f]) errs.push(at(`solution missing "${f}"`));
     }
+    if (!okText(sol.explanation)) errs.push(at(`solution missing "explanation"`));
     if (sol.suspectId && !suspects.some((s: any) => s.id === sol.suspectId))
       errs.push(at(`solution.suspectId "${sol.suspectId}" doesn't match any suspect`));
     if (sol.timelineEventId && !timeline.some((t: any) => t.id === sol.timelineEventId))
@@ -125,10 +150,13 @@ async function run() {
   let updated = 0;
   for (const raw of data) {
     const doc = normalize(raw);
+    // Non-daily cases are keyed by title. Title may be localized ({en,...}) or a
+    // plain string, so match on the resolved English title against either shape.
+    const enTitle = resolveLocalized(doc.title, "en");
     const filter =
       doc.kind === "daily" || doc.kind === "mini"
         ? { kind: doc.kind, availableDate: doc.availableDate }
-        : { kind: doc.kind, title: doc.title };
+        : { kind: doc.kind, $or: [{ title: enTitle }, { "title.en": enTitle }] };
     const res = await Case.updateOne(filter, { $set: doc }, { upsert: true });
     if (res.upsertedCount && res.upsertedCount > 0) created++;
     else updated++;

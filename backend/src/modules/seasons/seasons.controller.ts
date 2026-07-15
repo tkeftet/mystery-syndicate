@@ -1,6 +1,7 @@
 import type { Response, NextFunction } from "express";
 import type { AuthRequest } from "../auth";
 import * as service from "./seasons.service";
+import { resolveLang, localizeDeep } from "../../shared/localized";
 
 export async function listSeasonsController(
   _req: AuthRequest,
@@ -33,7 +34,8 @@ export async function seasonMapController(
 ) {
   try {
     const data = await service.getSeasonMap(req.userId!, req.params.seasonId);
-    res.json({ success: true, data });
+    // Chapter title/cliffhanger come from Case docs and may be localized.
+    res.json({ success: true, data: localizeDeep(data, resolveLang(req)) });
   } catch (err) {
     next(err);
   }
@@ -95,7 +97,7 @@ export async function submitChapterController(
       Number(req.params.n),
       { suspectId, motive, timelineEventId },
     );
-    res.json({ success: true, data });
+    res.json({ success: true, data: localizeDeep(data, resolveLang(req)) });
   } catch (err) {
     next(err);
   }

@@ -11,6 +11,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { useQuery } from "@tanstack/react-query";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
+import i18n, { type TranslationKey } from "../../../i18n";
 import { colors, typography, spacing, radii } from "../../../theme";
 import { Icon, type IconName, Avatar } from "../../../components/ui";
 import { AppPopup } from "../../../components/ui/AppPopup";
@@ -20,23 +22,31 @@ import { useCustomization, useEquipCosmetic } from "../cosmetics.hooks";
 import type { CosmeticItem } from "../cosmetics.service";
 import {
   RARITY_COLORS,
-  RARITY_LABEL,
   BACKGROUND_GRADIENTS,
   backgroundColors,
   nameColorHex,
 } from "../cosmeticDisplay";
 
+const RARITY_LABEL_KEY: Record<string, TranslationKey> = {
+  common: "rarity.common",
+  rare: "rarity.rare",
+  epic: "rarity.epic",
+  legendary: "rarity.legendary",
+  mythic: "rarity.mythic",
+};
+
 const CATEGORIES = [
-  { key: "frame", label: "Frames", nullable: true },
-  { key: "background", label: "Scenes", nullable: true },
-  { key: "avatar", label: "Avatars", nullable: false },
-  { key: "title", label: "Titles", nullable: true },
-  { key: "nameColor", label: "Name", nullable: true },
-  { key: "prestigeIcon", label: "Prestige", nullable: true },
-  { key: "badge", label: "Badges", nullable: true },
+  { key: "frame", labelKey: "customize.catFrames", nullable: true },
+  { key: "background", labelKey: "customize.catScenes", nullable: true },
+  { key: "avatar", labelKey: "customize.catAvatars", nullable: false },
+  { key: "title", labelKey: "customize.catTitles", nullable: true },
+  { key: "nameColor", labelKey: "customize.catName", nullable: true },
+  { key: "prestigeIcon", labelKey: "customize.catPrestige", nullable: true },
+  { key: "badge", labelKey: "customize.catBadges", nullable: true },
 ] as const;
 
 export function CustomizeProfileScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<any>();
   const { data, isLoading } = useCustomization();
@@ -60,7 +70,7 @@ export function CustomizeProfileScreen() {
   const prestige = eq.prestigeIcon ? (cosmeticIcon(data.items, eq.prestigeIcon) as IconName | null) : null;
   const badgeIcon = eq.badge ? (cosmeticIcon(data.items, eq.badge) as IconName | null) : null;
   const titleMeta = eq.title ? TITLE_META[eq.title] : null;
-  const username = profile?.username ?? "Detective";
+  const username = profile?.username ?? t("customize.detectiveFallback");
 
   const items = data.items.filter((i) => i.category === cat);
   const activeCat = CATEGORIES.find((c) => c.key === cat)!;
@@ -68,7 +78,10 @@ export function CustomizeProfileScreen() {
   function onPick(item: CosmeticItem) {
     if (item.equipped) return;
     if (!item.owned) {
-      setPopup({ title: item.name, message: `🔒 ${item.hint}` });
+      setPopup({
+        title: item.name,
+        message: t("customize.lockedHint", { hint: item.hint }),
+      });
       return;
     }
     equip.mutate({ category: item.category, id: item.id });
@@ -82,8 +95,8 @@ export function CustomizeProfileScreen() {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.kicker}>// CUSTOMIZE</Text>
-          <Text style={styles.headerTitle}>Your Profile</Text>
+          <Text style={styles.kicker}>{t("customize.kicker")}</Text>
+          <Text style={styles.headerTitle}>{t("customize.title")}</Text>
         </View>
       </View>
 
@@ -104,11 +117,17 @@ export function CustomizeProfileScreen() {
         {badgeIcon && (
           <View style={styles.previewBadge}>
             <Icon name={badgeIcon} size={13} color={colors.amber} />
-            <Text style={styles.previewBadgeText}>Featured Badge</Text>
+            <Text style={styles.previewBadgeText}>
+              {t("customize.featuredBadge")}
+            </Text>
           </View>
         )}
         <Text style={styles.collected}>
-          {data.ownedCount}/{data.totalCount} collected · {data.profileLikes} likes
+          {t("customize.collected", {
+            owned: data.ownedCount,
+            total: data.totalCount,
+            likes: data.profileLikes,
+          })}
         </Text>
       </LinearGradient>
 
@@ -125,7 +144,9 @@ export function CustomizeProfileScreen() {
             style={[styles.tab, cat === c.key && styles.tabActive]}
             onPress={() => setCat(c.key)}
           >
-            <Text style={[styles.tabText, cat === c.key && styles.tabTextActive]}>{c.label}</Text>
+            <Text style={[styles.tabText, cat === c.key && styles.tabTextActive]}>
+              {t(c.labelKey)}
+            </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -140,8 +161,10 @@ export function CustomizeProfileScreen() {
             <View style={styles.cellIcon}>
               <Icon name="close" size={20} color={colors.text.muted} />
             </View>
-            <Text style={styles.cellName} numberOfLines={1}>None</Text>
-            <Text style={styles.cellRarity}>Default</Text>
+            <Text style={styles.cellName} numberOfLines={1}>
+              {t("customize.none")}
+            </Text>
+            <Text style={styles.cellRarity}>{t("customize.default")}</Text>
           </TouchableOpacity>
         )}
         {items.map((item) => (
@@ -155,7 +178,13 @@ export function CustomizeProfileScreen() {
         message={popup?.message}
         variant="info"
         onClose={() => setPopup(null)}
-        buttons={[{ label: "Got it", variant: "primary", onPress: () => setPopup(null) }]}
+        buttons={[
+          {
+            label: t("customize.gotIt"),
+            variant: "primary",
+            onPress: () => setPopup(null),
+          },
+        ]}
       />
     </View>
   );
@@ -193,7 +222,11 @@ function ItemCell({ item, onPress }: { item: CosmeticItem; onPress: () => void }
         )}
       </View>
       <Text style={styles.cellName} numberOfLines={1}>{item.name}</Text>
-      <Text style={[styles.cellRarity, { color: rarity }]}>{RARITY_LABEL[item.rarity]}</Text>
+      <Text style={[styles.cellRarity, { color: rarity }]}>
+        {RARITY_LABEL_KEY[item.rarity]
+          ? i18n.t(RARITY_LABEL_KEY[item.rarity])
+          : item.rarity}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -297,13 +330,13 @@ const styles = StyleSheet.create({
   },
   swatch: { width: 26, height: 26, borderRadius: 13 },
   lockBadge: {
-    position: "absolute", bottom: -2, right: -2,
+    position: "absolute", bottom: -2, end: -2,
     width: 18, height: 18, borderRadius: 9,
     backgroundColor: colors.bg.tertiary, borderWidth: 1, borderColor: colors.border.strong,
     alignItems: "center", justifyContent: "center",
   },
   equippedBadge: {
-    position: "absolute", bottom: -2, right: -2,
+    position: "absolute", bottom: -2, end: -2,
     width: 18, height: 18, borderRadius: 9, backgroundColor: colors.amber,
     alignItems: "center", justifyContent: "center",
   },

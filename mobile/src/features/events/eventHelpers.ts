@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { colors } from "../../theme";
+import i18n, { type TranslationKey } from "../../i18n";
 
 /** Live "Xd Yh" / "Yh Zm" countdown to a target date; "ended" once passed. */
 export function useCountdown(target?: string | Date): string {
@@ -10,7 +11,7 @@ export function useCountdown(target?: string | Date): string {
     function tick() {
       const diff = end - Date.now();
       if (diff <= 0) {
-        setLabel("ended");
+        setLabel(i18n.t("events.ended"));
         return;
       }
       const d = Math.floor(diff / 86400000);
@@ -27,12 +28,12 @@ export function useCountdown(target?: string | Date): string {
 
 export const EVENT_STATUS_META: Record<
   string,
-  { label: string; color: string }
+  { labelKey: TranslationKey; color: string }
 > = {
-  upcoming: { label: "UPCOMING", color: colors.info },
-  active: { label: "LIVE", color: colors.green },
-  completed: { label: "ENDED", color: colors.text.muted },
-  archived: { label: "ARCHIVED", color: colors.text.muted },
+  upcoming: { labelKey: "events.statusUpcoming", color: colors.info },
+  active: { labelKey: "events.statusLive", color: colors.green },
+  completed: { labelKey: "events.statusEnded", color: colors.text.muted },
+  archived: { labelKey: "events.statusArchived", color: colors.text.muted },
 };
 
 export const EVENT_DIFFICULTY_COLOR: Record<string, string> = {

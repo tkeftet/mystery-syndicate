@@ -1,0 +1,152 @@
+[
+  {
+    "title": {
+      "en": "The Midnight Gallery",
+      "fr": "La Galerie de Minuit",
+      "ar": "معرض منتصف الليل"
+    },
+    "description": {
+      "en": "A priceless painting vanishes from a locked gallery during a private viewing. Only three guests remained after closing.",
+      "fr": "Un tableau inestimable disparaît d'une galerie verrouillée lors d'une visite privée. Seuls trois invités sont restés après la fermeture.",
+      "ar": "تختفي لوحة لا تقدّر بثمن من معرض مغلق أثناء عرض خاص. لم يبقَ بعد الإغلاق سوى ثلاثة ضيوف."
+    },
+    "type": "theft",
+    "difficulty": "easy",
+    "kind": "daily",
+    "status": "active",
+    "availableDate": "2026-01-01",
+    "estimatedMinutes": 6,
+    "maxScore": 1000,
+    "victim": {
+      "name": {
+        "en": "Gallery owner Helena Voss",
+        "fr": "La propriétaire de la galerie Helena Voss",
+        "ar": "مالكة المعرض هيلينا فوس"
+      },
+      "description": {
+        "en": "Discovered the empty frame at 12:05 AM and raised the alarm.",
+        "fr": "A découvert le cadre vide à 00 h 05 et a donné l'alerte.",
+        "ar": "اكتشفت الإطار الفارغ في الساعة 12:05 صباحاً وأطلقت الإنذار."
+      },
+      "avatar": "default_victim"
+    },
+    "suspects": [
+      {
+        "id": "s1",
+        "name": { "en": "Marcus Reed", "fr": "Marcus Reed", "ar": "ماركوس ريد" },
+        "description": {
+          "en": "A rival collector who bid on the painting and lost.",
+          "fr": "Un collectionneur rival qui a enchéri sur le tableau et a perdu.",
+          "ar": "جامع تحف منافس زايد على اللوحة وخسر."
+        },
+        "alibi": {
+          "en": "Says he was on the phone in the lobby the whole evening.",
+          "fr": "Affirme avoir été au téléphone dans le hall toute la soirée.",
+          "ar": "يقول إنه كان يتحدث بالهاتف في الردهة طوال المساء."
+        },
+        "relationship": {
+          "en": "Rival collector",
+          "fr": "Collectionneur rival",
+          "ar": "جامع منافس"
+        },
+        "avatar": "default_suspect"
+      },
+      {
+        "id": "s2",
+        "name": { "en": "Clara Nunes", "fr": "Clara Nunes", "ar": "كلارا نونيس" },
+        "description": {
+          "en": "The gallery's night curator, alone with the keys.",
+          "fr": "La conservatrice de nuit de la galerie, seule avec les clés.",
+          "ar": "أمينة المعرض الليلية، وحدها مع المفاتيح."
+        },
+        "alibi": {
+          "en": "Claims she was cataloguing in the back office.",
+          "fr": "Prétend qu'elle cataloguait dans le bureau du fond.",
+          "ar": "تدّعي أنها كانت تفهرس في المكتب الخلفي."
+        },
+        "relationship": {
+          "en": "Night curator",
+          "fr": "Conservatrice de nuit",
+          "ar": "أمينة ليلية"
+        },
+        "avatar": "default_suspect"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "e1",
+        "title": {
+          "en": "Muddy footprint",
+          "fr": "Empreinte boueuse",
+          "ar": "أثر قدم موحل"
+        },
+        "description": {
+          "en": "A single muddy shoe print by the service door, matching a men's boot.",
+          "fr": "Une seule empreinte de chaussure boueuse près de la porte de service, correspondant à une botte d'homme.",
+          "ar": "أثر حذاء موحل واحد قرب باب الخدمة، يطابق حذاء رجالي."
+        },
+        "type": "physical",
+        "isRedHerring": false
+      },
+      {
+        "id": "e2",
+        "title": {
+          "en": "Deleted keycard log",
+          "fr": "Journal de badge effacé",
+          "ar": "سجل بطاقة ممحو"
+        },
+        "description": {
+          "en": "The back-office door log was wiped between 11:40 and 12:00 — only the curator's card can do that.",
+          "fr": "Le journal de la porte du bureau a été effacé entre 23 h 40 et minuit — seule la carte de la conservatrice peut le faire.",
+          "ar": "مُسِح سجل باب المكتب بين 11:40 و12:00 — بطاقة الأمينة وحدها تستطيع ذلك."
+        },
+        "type": "digital",
+        "isRedHerring": false
+      }
+    ],
+    "witnessStatements": [
+      {
+        "id": "w1",
+        "witnessName": { "en": "Doorman Otis", "fr": "Le portier Otis", "ar": "البوّاب أوتيس" },
+        "statement": {
+          "en": "Nobody left through the front after eleven. The service door alarm was oddly silent.",
+          "fr": "Personne n'est sorti par l'avant après onze heures. L'alarme de la porte de service était étrangement silencieuse.",
+          "ar": "لم يغادر أحد من الأمام بعد الحادية عشرة. كان إنذار باب الخدمة صامتاً على نحو غريب."
+        },
+        "reliability": "reliable"
+      }
+    ],
+    "timeline": [
+      {
+        "id": "t1",
+        "time": { "en": "11:40 PM", "fr": "23 h 40", "ar": "11:40 مساءً" },
+        "description": {
+          "en": "Back-office door log is wiped.",
+          "fr": "Le journal de la porte du bureau est effacé.",
+          "ar": "مُسِح سجل باب المكتب."
+        },
+        "involvedSuspects": ["s2"]
+      },
+      {
+        "id": "t2",
+        "time": { "en": "12:00 AM", "fr": "Minuit", "ar": "12:00 منتصف الليل" },
+        "description": {
+          "en": "The painting is gone; the service door is ajar.",
+          "fr": "Le tableau a disparu ; la porte de service est entrouverte.",
+          "ar": "اختفت اللوحة؛ وباب الخدمة موارب."
+        },
+        "involvedSuspects": ["s2"]
+      }
+    ],
+    "solution": {
+      "suspectId": "s2",
+      "motive": "resale profit",
+      "timelineEventId": "t1",
+      "explanation": {
+        "en": "Only Clara's keycard could wipe the back-office log, and she used the service door — whose alarm she alone could disable — to pass the painting out for resale. The muddy footprint was a decoy from an earlier delivery.",
+        "fr": "Seule la carte de Clara pouvait effacer le journal du bureau, et elle a utilisé la porte de service — dont elle seule pouvait désactiver l'alarme — pour faire sortir le tableau en vue d'une revente. L'empreinte boueuse était un leurre laissé par une livraison antérieure.",
+        "ar": "بطاقة كلارا وحدها كانت تستطيع محو سجل المكتب، وقد استخدمت باب الخدمة — الذي تستطيع وحدها تعطيل إنذاره — لتمرير اللوحة بهدف بيعها. أثر القدم الموحل كان خدعة من عملية توصيل سابقة."
+      }
+    }
+  }
+]

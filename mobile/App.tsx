@@ -30,6 +30,7 @@ import { initializeAds } from "./src/services/ads";
 import { heartbeatApi } from "./src/features/friends/friends.service";
 import { ErrorBoundary } from "./src/components/ErrorBoundary";
 import { initMonitoring } from "./src/services/monitoring";
+import { initI18n } from "./src/i18n";
 
 function AppContent() {
   const { loadFromStorage, isAuthenticated } = useAuthStore();
@@ -62,6 +63,7 @@ function AppContent() {
 }
 
 export default function App() {
+  const [i18nReady, setI18nReady] = useState(false);
   const [fontsLoaded] = useFonts({
     DMSerifDisplay: DMSerifDisplay_400Regular,
     "DMSerifDisplay-Italic": DMSerifDisplay_400Regular_Italic,
@@ -73,12 +75,18 @@ export default function App() {
     "SpaceMono-Bold": SpaceMono_700Bold,
   });
 
+  useEffect(() => {
+    // Resolve the language (stored choice or device locale) before first render
+    // so no screen flashes in the wrong language.
+    initI18n().finally(() => setI18nReady(true));
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <ErrorBoundary>
           <QueryClientProvider client={queryClient}>
-            {fontsLoaded ? <AppContent /> : <LoadingScreen />}
+            {fontsLoaded && i18nReady ? <AppContent /> : <LoadingScreen />}
           </QueryClientProvider>
         </ErrorBoundary>
       </SafeAreaProvider>

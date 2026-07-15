@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteProp } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon } from "../../../components/ui";
@@ -22,6 +23,7 @@ type Nav = NativeStackNavigationProp<AppStackParamList>;
 type Rt = RouteProp<AppStackParamList, "EventLeaderboard">;
 
 export function EventLeaderboardScreen({ route }: { route: Rt }) {
+  const { t } = useTranslation();
   const { eventId } = route.params;
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
@@ -37,8 +39,8 @@ export function EventLeaderboardScreen({ route }: { route: Rt }) {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.kicker}>// EVENT LEADERBOARD</Text>
-          <Text style={styles.headerTitle}>Rankings</Text>
+          <Text style={styles.kicker}>{t("events.leaderboardKicker")}</Text>
+          <Text style={styles.headerTitle}>{t("leaderboard.title")}</Text>
         </View>
       </View>
 
@@ -49,7 +51,7 @@ export function EventLeaderboardScreen({ route }: { route: Rt }) {
       ) : !board || board.length === 0 ? (
         <View style={styles.centered}>
           <Icon name="trophy" size={40} color={colors.text.faint} />
-          <Text style={styles.emptyText}>No submissions yet. Be the first!</Text>
+          <Text style={styles.emptyText}>{t("events.noSubmissions")}</Text>
         </View>
       ) : (
         <ScrollView contentContainerStyle={styles.list}>
@@ -71,7 +73,7 @@ export function EventLeaderboardScreen({ route }: { route: Rt }) {
                 <View style={styles.nameCol}>
                   <Text style={styles.username} numberOfLines={1}>
                     {row.username}
-                    {isMe ? "  (you)" : ""}
+                    {isMe ? `  ${t("leaderboard.you")}` : ""}
                   </Text>
                   <Text style={styles.time}>
                     {formatDuration(row.completionTimeSec)}

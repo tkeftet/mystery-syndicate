@@ -12,6 +12,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteProp } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
+import i18n from "../../../i18n";
 import { colors, typography, spacing, radii, gradients, shadows } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon, GradientButton } from "../../../components/ui";
@@ -37,10 +39,11 @@ function RewardRow({
 }) {
   if (!reward) return null;
   const parts: string[] = [];
-  if (reward.title) parts.push("Exclusive Title");
-  if (reward.badge) parts.push("Exclusive Badge");
-  if (reward.xp) parts.push(`${reward.xp} XP`);
-  if (reward.coins) parts.push(`${reward.coins} coins`);
+  if (reward.title) parts.push(i18n.t("events.exclusiveTitle"));
+  if (reward.badge) parts.push(i18n.t("events.exclusiveBadge"));
+  if (reward.xp) parts.push(i18n.t("events.xpAmount", { count: reward.xp }));
+  if (reward.coins)
+    parts.push(i18n.t("events.coinsAmount", { count: reward.coins }));
   if (parts.length === 0) return null;
   return (
     <View style={styles.rewardRow}>
@@ -52,6 +55,7 @@ function RewardRow({
 }
 
 export function EventDetailScreen({ route }: { route: Rt }) {
+  const { t } = useTranslation();
   const { eventId } = route.params;
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
@@ -82,14 +86,16 @@ export function EventDetailScreen({ route }: { route: Rt }) {
       return (
         <View style={styles.ctaDisabled}>
           <Icon name="clock" size={16} color={colors.text.muted} />
-          <Text style={styles.ctaDisabledText}>Starts in {countdown}</Text>
+          <Text style={styles.ctaDisabledText}>
+            {t("play.startsIn", { countdown })}
+          </Text>
         </View>
       );
     }
     if (submitted) {
       return (
         <GradientButton
-          label="View Leaderboard"
+          label={t("investigation.viewLeaderboard")}
           onPress={() =>
             navigation.navigate("EventLeaderboard", { eventId })
           }
@@ -99,7 +105,7 @@ export function EventDetailScreen({ route }: { route: Rt }) {
     if (event.status === "active") {
       return (
         <GradientButton
-          label="Investigate"
+          label={t("events.investigate")}
           onPress={() =>
             navigation.navigate("Investigation", {
               caseId: event.caseId,
@@ -112,7 +118,7 @@ export function EventDetailScreen({ route }: { route: Rt }) {
     // ended, didn't play
     return (
       <GradientButton
-        label="View Leaderboard"
+        label={t("investigation.viewLeaderboard")}
         onPress={() => navigation.navigate("EventLeaderboard", { eventId })}
       />
     );
@@ -145,7 +151,7 @@ export function EventDetailScreen({ route }: { route: Rt }) {
                 <View style={[styles.liveDot, { backgroundColor: status.color }]} />
               )}
               <Text style={[styles.statusText, { color: status.color }]}>
-                {status.label}
+                {t(status.labelKey)}
               </Text>
             </View>
             <Text style={[styles.difficulty, { color: diffColor }]}>
@@ -160,7 +166,9 @@ export function EventDetailScreen({ route }: { route: Rt }) {
           <View style={styles.countdownPill}>
             <Icon name="clock" size={14} color={colors.amber} />
             <Text style={styles.countdownText}>
-              {isUpcoming ? `Starts in ${countdown}` : `Ends in ${countdown}`}
+              {isUpcoming
+                ? t("play.startsIn", { countdown })
+                : t("play.endsIn", { countdown })}
             </Text>
           </View>
         )}
@@ -170,21 +178,27 @@ export function EventDetailScreen({ route }: { route: Rt }) {
         {/* ── Your result (if submitted) ── */}
         {submitted && mine && (
           <View style={styles.resultCard}>
-            <Text style={styles.sectionLabel}>YOUR RESULT</Text>
+            <Text style={styles.sectionLabel}>{t("events.yourResult")}</Text>
             <View style={styles.resultStats}>
               <View style={styles.resultStat}>
                 <Text style={styles.resultValue}>{mine.participation.score}</Text>
-                <Text style={styles.resultStatLabel}>score</Text>
+                <Text style={styles.resultStatLabel}>
+                  {t("events.scoreUnit")}
+                </Text>
               </View>
               <View style={styles.resultStat}>
                 <Text style={styles.resultValue}>#{mine.rank ?? "—"}</Text>
-                <Text style={styles.resultStatLabel}>rank</Text>
+                <Text style={styles.resultStatLabel}>
+                  {t("events.rankUnit")}
+                </Text>
               </View>
               <View style={styles.resultStat}>
                 <Text style={styles.resultValue}>
                   {formatDuration(mine.participation.completionTimeSec)}
                 </Text>
-                <Text style={styles.resultStatLabel}>time</Text>
+                <Text style={styles.resultStatLabel}>
+                  {t("events.timeUnit")}
+                </Text>
               </View>
             </View>
           </View>
@@ -193,11 +207,15 @@ export function EventDetailScreen({ route }: { route: Rt }) {
         {/* ── Rewards ── */}
         {event.leaderboardEnabled && (
           <View style={styles.rewardsCard}>
-            <Text style={styles.sectionLabel}>REWARDS</Text>
-            <RewardRow icon="crown" tier="Rank 1" reward={rc.top1} />
-            <RewardRow icon="medal" tier="Top 10" reward={rc.top10} />
-            <RewardRow icon="star" tier="Top 100" reward={rc.top100} />
-            <RewardRow icon="checkCircle" tier="All players" reward={rc.participation} />
+            <Text style={styles.sectionLabel}>{t("events.rewardsCaps")}</Text>
+            <RewardRow icon="crown" tier={t("events.rank1")} reward={rc.top1} />
+            <RewardRow icon="medal" tier={t("events.top10")} reward={rc.top10} />
+            <RewardRow icon="star" tier={t("events.top100")} reward={rc.top100} />
+            <RewardRow
+              icon="checkCircle"
+              tier={t("events.allPlayers")}
+              reward={rc.participation}
+            />
           </View>
         )}
 
@@ -208,8 +226,10 @@ export function EventDetailScreen({ route }: { route: Rt }) {
             onPress={() => navigation.navigate("EventLeaderboard", { eventId })}
           >
             <Icon name="trophy" size={16} color={colors.amber} />
-            <Text style={styles.linkText}>View event leaderboard</Text>
-            <Icon name="back" size={16} color={colors.text.muted} style={styles.chevron} />
+            <Text style={styles.linkText}>
+              {t("events.viewEventLeaderboard")}
+            </Text>
+            <Icon name="forward" size={16} color={colors.text.muted} />
           </TouchableOpacity>
         )}
       </ScrollView>
@@ -367,7 +387,6 @@ const styles = StyleSheet.create({
     color: colors.amber,
     flex: 1,
   },
-  chevron: { transform: [{ rotate: "180deg" }] },
   ctaBar: {
     paddingHorizontal: spacing[5],
     paddingTop: spacing[3],

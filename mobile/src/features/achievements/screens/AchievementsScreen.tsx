@@ -11,6 +11,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
+import i18n, { type TranslationKey } from "../../../i18n";
 import { colors, typography, spacing, radii, gradients } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon, ProgressBar } from "../../../components/ui";
@@ -27,14 +29,14 @@ const RARITY_COLOR: Record<string, string> = {
   mythic: "#E0567B",
 };
 
-const CATEGORIES: { key: string; label: string }[] = [
-  { key: "cases", label: "CASES" },
-  { key: "accuracy", label: "ACCURACY" },
-  { key: "streaks", label: "STREAKS" },
-  { key: "story", label: "STORY ARC" },
-  { key: "mega", label: "MEGA CASES" },
-  { key: "social", label: "SOCIAL" },
-  { key: "seasonal", label: "SEASONAL" },
+const CATEGORIES: { key: string; labelKey: TranslationKey }[] = [
+  { key: "cases", labelKey: "achievements.catCases" },
+  { key: "accuracy", labelKey: "achievements.catAccuracy" },
+  { key: "streaks", labelKey: "achievements.catStreaks" },
+  { key: "story", labelKey: "achievements.catStory" },
+  { key: "mega", labelKey: "achievements.catMega" },
+  { key: "social", labelKey: "achievements.catSocial" },
+  { key: "seasonal", labelKey: "achievements.catSeasonal" },
 ];
 
 function AchievementCard({ a }: { a: any }) {
@@ -63,7 +65,13 @@ function AchievementCard({ a }: { a: any }) {
           <View style={styles.unlockedRow}>
             <Icon name="checkCircle" size={12} color={colors.success} />
             <Text style={styles.unlockedText}>
-              Unlocked{a.unlockedAt ? ` · ${new Date(a.unlockedAt).toLocaleDateString()}` : ""}
+              {a.unlockedAt
+                ? i18n.t("achievements.unlockedOn", {
+                    date: new Date(a.unlockedAt).toLocaleDateString(
+                      i18n.language,
+                    ),
+                  })
+                : i18n.t("achievements.unlocked")}
             </Text>
           </View>
         ) : (
@@ -82,6 +90,7 @@ function AchievementCard({ a }: { a: any }) {
 }
 
 export function AchievementsScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const { data, isLoading } = useAchievements();
@@ -95,8 +104,8 @@ export function AchievementsScreen() {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.kicker}>// ACHIEVEMENTS</Text>
-          <Text style={styles.headerTitle}>Achievements</Text>
+          <Text style={styles.kicker}>{t("achievements.kicker")}</Text>
+          <Text style={styles.headerTitle}>{t("achievements.title")}</Text>
         </View>
       </View>
 
@@ -112,9 +121,14 @@ export function AchievementsScreen() {
             style={styles.scoreCard}
           >
             <Text style={styles.scoreValue}>{data?.achievementScore ?? 0}</Text>
-            <Text style={styles.scoreLabel}>ACHIEVEMENT SCORE</Text>
+            <Text style={styles.scoreLabel}>
+              {t("achievements.achievementScore")}
+            </Text>
             <Text style={styles.scoreSub}>
-              {data?.unlockedCount ?? 0} / {data?.totalCount ?? 0} unlocked
+              {t("achievements.unlockedCount", {
+                unlocked: data?.unlockedCount ?? 0,
+                total: data?.totalCount ?? 0,
+              })}
             </Text>
           </LinearGradient>
 
@@ -123,7 +137,7 @@ export function AchievementsScreen() {
             if (items.length === 0) return null;
             return (
               <View key={cat.key}>
-                <Text style={styles.sectionLabel}>{cat.label}</Text>
+                <Text style={styles.sectionLabel}>{t(cat.labelKey)}</Text>
                 {items.map((a) => (
                   <AchievementCard key={a.key} a={a} />
                 ))}

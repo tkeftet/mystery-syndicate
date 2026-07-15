@@ -11,6 +11,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
+import { type TranslationKey } from "../../../i18n";
 import { colors, typography, spacing, radii } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon, ProgressBar } from "../../../components/ui";
@@ -19,10 +21,10 @@ import { claimChallengeApi, claimAllChallengesApi } from "../challenges.service"
 
 type Nav = NativeStackNavigationProp<AppStackParamList>;
 
-const PERIODS: { key: string; label: string }[] = [
-  { key: "daily", label: "DAILY" },
-  { key: "weekly", label: "WEEKLY" },
-  { key: "monthly", label: "MONTHLY" },
+const PERIODS: { key: string; labelKey: TranslationKey }[] = [
+  { key: "daily", labelKey: "challenges.periodDaily" },
+  { key: "weekly", labelKey: "challenges.periodWeekly" },
+  { key: "monthly", labelKey: "challenges.periodMonthly" },
 ];
 
 function ChallengeCard({
@@ -34,6 +36,7 @@ function ChallengeCard({
   busy: boolean;
   onClaim: () => void;
 }) {
+  const { t } = useTranslation();
   const pct = Math.min(c.progress / c.target, 1);
   return (
     <View style={[styles.card, c.completed && !c.claimed && styles.cardReady]}>
@@ -56,7 +59,7 @@ function ChallengeCard({
       {c.claimed ? (
         <View style={styles.claimedRow}>
           <Icon name="checkCircle" size={13} color={colors.success} />
-          <Text style={styles.claimedText}>Claimed</Text>
+          <Text style={styles.claimedText}>{t("challenges.claimed")}</Text>
         </View>
       ) : c.completed ? (
         <TouchableOpacity style={styles.claimBtn} disabled={busy} onPress={onClaim}>
@@ -64,8 +67,12 @@ function ChallengeCard({
             <ActivityIndicator color={colors.text.inverse} size="small" />
           ) : (
             <Text style={styles.claimText}>
-              Claim +{c.rewardSeasonXp} XP
-              {c.rewardCoins ? ` · ${c.rewardCoins} coins` : ""}
+              {c.rewardCoins
+                ? t("challenges.claimXpCoins", {
+                    xp: c.rewardSeasonXp,
+                    coins: c.rewardCoins,
+                  })
+                : t("challenges.claimXp", { xp: c.rewardSeasonXp })}
             </Text>
           )}
         </TouchableOpacity>
@@ -75,6 +82,7 @@ function ChallengeCard({
 }
 
 export function ChallengeCenterScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const queryClient = useQueryClient();
@@ -121,8 +129,8 @@ export function ChallengeCenterScreen() {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>
-          <Text style={styles.kicker}>// CHALLENGES</Text>
-          <Text style={styles.headerTitle}>Challenge Center</Text>
+          <Text style={styles.kicker}>{t("challenges.kicker")}</Text>
+          <Text style={styles.headerTitle}>{t("challenges.title")}</Text>
         </View>
         {hasClaimable && (
           <TouchableOpacity
@@ -133,7 +141,9 @@ export function ChallengeCenterScreen() {
             {busy === "all" ? (
               <ActivityIndicator color={colors.text.inverse} size="small" />
             ) : (
-              <Text style={styles.claimAllText}>Claim All</Text>
+              <Text style={styles.claimAllText}>
+                {t("challenges.claimAll")}
+              </Text>
             )}
           </TouchableOpacity>
         )}
@@ -148,7 +158,7 @@ export function ChallengeCenterScreen() {
             if (items.length === 0) return null;
             return (
               <View key={p.key}>
-                <Text style={styles.sectionLabel}>{p.label}</Text>
+                <Text style={styles.sectionLabel}>{t(p.labelKey)}</Text>
                 {items.map((c) => (
                   <ChallengeCard
                     key={c.key}
@@ -161,7 +171,7 @@ export function ChallengeCenterScreen() {
             );
           })}
           {list.length === 0 && (
-            <Text style={styles.empty}>No challenges available right now.</Text>
+            <Text style={styles.empty}>{t("challenges.noChallenges")}</Text>
           )}
         </ScrollView>
       )}

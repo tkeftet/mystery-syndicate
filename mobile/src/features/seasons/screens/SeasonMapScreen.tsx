@@ -12,6 +12,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RouteProp } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
+import i18n, { type TranslationKey } from "../../../i18n";
 import { colors, typography, spacing, radii, gradients } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon, ProgressBar } from "../../../components/ui";
@@ -20,12 +22,12 @@ import { useSeasonMap } from "../seasons.hooks";
 type Nav = NativeStackNavigationProp<AppStackParamList>;
 type Rt = RouteProp<AppStackParamList, "SeasonMap">;
 
-const CHAPTER_TYPE_LABEL: Record<string, string> = {
-  investigation: "Investigation",
-  interrogation: "Interrogation",
-  discovery: "Discovery",
-  twist: "Twist",
-  final_reveal: "Final Reveal",
+const CHAPTER_TYPE_LABEL_KEY: Record<string, TranslationKey> = {
+  investigation: "seasons.chapterInvestigation",
+  interrogation: "seasons.chapterInterrogation",
+  discovery: "seasons.chapterDiscovery",
+  twist: "seasons.chapterTwist",
+  final_reveal: "seasons.chapterFinalReveal",
 };
 
 function ChapterRow({
@@ -35,6 +37,7 @@ function ChapterRow({
   chapter: any;
   seasonId: string;
 }) {
+  const { t } = useTranslation();
   const navigation = useNavigation<Nav>();
   const status = chapter.status as "completed" | "available" | "locked";
   const locked = status === "locked";
@@ -69,11 +72,16 @@ function ChapterRow({
       </View>
       <View style={styles.rowBody}>
         <Text style={styles.chapterKicker}>
-          CHAPTER {chapter.chapterNumber} ·{" "}
-          {CHAPTER_TYPE_LABEL[chapter.chapterType] ?? "Investigation"}
+          {t("seasons.chapterKicker", {
+            number: chapter.chapterNumber,
+            type:
+              CHAPTER_TYPE_LABEL_KEY[chapter.chapterType]
+                ? t(CHAPTER_TYPE_LABEL_KEY[chapter.chapterType])
+                : t("seasons.chapterInvestigation"),
+          })}
         </Text>
         <Text style={[styles.chapterTitle, locked && styles.lockedText]}>
-          {locked ? "Locked" : chapter.title}
+          {locked ? t("seasons.locked") : chapter.title}
         </Text>
         {done && chapter.cliffhanger ? (
           <Text style={styles.cliffhanger} numberOfLines={2}>
@@ -81,10 +89,16 @@ function ChapterRow({
           </Text>
         ) : locked ? (
           <Text style={styles.unlockText}>
-            Unlocks {new Date(chapter.unlockDate).toLocaleDateString()}
+            {t("seasons.unlocks", {
+              date: new Date(chapter.unlockDate).toLocaleDateString(
+                i18n.language,
+              ),
+            })}
           </Text>
         ) : (
-          <Text style={styles.availableText}>Tap to investigate →</Text>
+          <Text style={styles.availableText}>
+            {t("seasons.tapToInvestigate")}
+          </Text>
         )}
       </View>
     </TouchableOpacity>
@@ -92,6 +106,7 @@ function ChapterRow({
 }
 
 export function SeasonMapScreen({ route }: { route: Rt }) {
+  const { t } = useTranslation();
   const { seasonId } = route.params;
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
@@ -130,14 +145,19 @@ export function SeasonMapScreen({ route }: { route: Rt }) {
           <Icon name="folder" size={64} color={colors.amber} style={styles.heroMark} />
         </LinearGradient>
 
-        <Text style={styles.kicker}>{season.subtitle || "STORY ARC"}</Text>
+        <Text style={styles.kicker}>
+          {season.subtitle || t("play.storyArc")}
+        </Text>
         <Text style={styles.title}>{season.title}</Text>
         <Text style={styles.desc}>{season.description}</Text>
 
         {/* ── Progress ── */}
         <View style={styles.progressRow}>
           <Text style={styles.progressLabel}>
-            {progress.chaptersCompleted} / {season.totalChapters} chapters
+            {t("seasons.chaptersProgress", {
+              done: progress.chaptersCompleted,
+              total: season.totalChapters,
+            })}
           </Text>
           <Text style={styles.progressPct}>{progress.percent}%</Text>
         </View>
@@ -149,13 +169,15 @@ export function SeasonMapScreen({ route }: { route: Rt }) {
         >
           <Icon name="trophy" size={16} color={colors.amber} />
           <Text style={styles.lbText}>
-            Season leaderboard · your score {progress.seasonScore}
+            {t("seasons.seasonLeaderboardScore", {
+              score: progress.seasonScore,
+            })}
           </Text>
-          <Icon name="back" size={16} color={colors.text.muted} style={styles.chevron} />
+          <Icon name="forward" size={16} color={colors.text.muted} />
         </TouchableOpacity>
 
         {/* ── Chapters ── */}
-        <Text style={styles.sectionLabel}>CHAPTERS</Text>
+        <Text style={styles.sectionLabel}>{t("seasons.chaptersCaps")}</Text>
         {chapters.map((c: any) => (
           <ChapterRow key={c.chapterNumber} chapter={c} seasonId={seasonId} />
         ))}
@@ -243,7 +265,6 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.sm,
     color: colors.text.secondary,
   },
-  chevron: { transform: [{ rotate: "180deg" }] },
   sectionLabel: {
     fontFamily: typography.families.mono,
     fontSize: 11,

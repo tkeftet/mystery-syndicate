@@ -14,6 +14,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQueryClient } from "@tanstack/react-query";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
+import { type TranslationKey } from "../../../i18n";
 import { colors, typography, spacing, radii } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon } from "../../../components/ui";
@@ -27,7 +29,17 @@ import { showAdPrivacyOptions } from "../../../services/ads";
 type Nav = NativeStackNavigationProp<AppStackParamList>;
 const VISIBILITY = ["public", "friends", "private"] as const;
 
+const VISIBILITY_LABEL_KEY: Record<
+  (typeof VISIBILITY)[number],
+  TranslationKey
+> = {
+  public: "privacy.visPublic",
+  friends: "privacy.visFriends",
+  private: "privacy.visPrivate",
+};
+
 export function PrivacySettingsScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const queryClient = useQueryClient();
@@ -52,8 +64,7 @@ export function PrivacySettingsScreen() {
     } catch (e: any) {
       setDeleting(false);
       setDeleteError(
-        e?.response?.data?.message ??
-          "Couldn't delete your account. Please try again.",
+        e?.response?.data?.message ?? t("privacy.deleteFailed"),
       );
     }
   }
@@ -78,8 +89,8 @@ export function PrivacySettingsScreen() {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.kicker}>// PRIVACY</Text>
-          <Text style={styles.headerTitle}>Privacy</Text>
+          <Text style={styles.kicker}>{t("privacy.kicker")}</Text>
+          <Text style={styles.headerTitle}>{t("privacy.title")}</Text>
         </View>
       </View>
 
@@ -87,7 +98,9 @@ export function PrivacySettingsScreen() {
         <ActivityIndicator color={colors.amber} style={{ marginTop: spacing[8] }} />
       ) : (
         <ScrollView contentContainerStyle={styles.content}>
-          <Text style={styles.sectionLabel}>PROFILE VISIBILITY</Text>
+          <Text style={styles.sectionLabel}>
+            {t("privacy.profileVisibility")}
+          </Text>
           <View style={styles.segment}>
             {VISIBILITY.map((v) => {
               const active = s.profileVisibility === v;
@@ -98,57 +111,57 @@ export function PrivacySettingsScreen() {
                   onPress={() => patch({ profileVisibility: v })}
                 >
                   <Text style={[styles.segText, active && styles.segTextActive]}>
-                    {v.toUpperCase()}
+                    {t(VISIBILITY_LABEL_KEY[v])}
                   </Text>
                 </TouchableOpacity>
               );
             })}
           </View>
-          <Text style={styles.hint}>
-            Who can see your full profile and stats.
-          </Text>
+          <Text style={styles.hint}>{t("privacy.visibilityHint")}</Text>
 
           <Toggle
-            label="Show online status"
+            label={t("privacy.showOnline")}
             value={s.showOnline}
             onChange={(v) => patch({ showOnline: v })}
           />
           <Toggle
-            label="Show last seen"
+            label={t("privacy.showLastSeen")}
             value={s.showLastSeen}
             onChange={(v) => patch({ showLastSeen: v })}
           />
           <Toggle
-            label="Show statistics"
+            label={t("privacy.showStats")}
             value={s.showStats}
             onChange={(v) => patch({ showStats: v })}
           />
           <Toggle
-            label="Allow friend requests"
+            label={t("privacy.allowRequests")}
             value={s.allowRequests}
             onChange={(v) => patch({ allowRequests: v })}
           />
 
-          <Text style={styles.sectionLabel}>ADS</Text>
+          <Text style={styles.sectionLabel}>{t("privacy.adsSection")}</Text>
           <TouchableOpacity
             style={styles.linkRow}
             onPress={() => showAdPrivacyOptions()}
             activeOpacity={0.8}
           >
-            <Text style={styles.toggleLabel}>Manage ad privacy</Text>
+            <Text style={styles.toggleLabel}>
+              {t("privacy.manageAdPrivacy")}
+            </Text>
             <Icon name="arrowRight" size={16} color={colors.text.muted} />
           </TouchableOpacity>
-          <Text style={styles.hint}>
-            Review or change your consent for personalized ads.
-          </Text>
+          <Text style={styles.hint}>{t("privacy.adsHint")}</Text>
 
-          <Text style={styles.sectionLabel}>LEGAL</Text>
+          <Text style={styles.sectionLabel}>{t("privacy.legalSection")}</Text>
           <TouchableOpacity
             style={styles.linkRow}
             onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
             activeOpacity={0.8}
           >
-            <Text style={styles.toggleLabel}>Privacy Policy</Text>
+            <Text style={styles.toggleLabel}>
+              {t("privacy.privacyPolicy")}
+            </Text>
             <Icon name="arrowRight" size={16} color={colors.text.muted} />
           </TouchableOpacity>
           <View style={{ height: spacing[2] }} />
@@ -157,11 +170,13 @@ export function PrivacySettingsScreen() {
             onPress={() => Linking.openURL(TERMS_URL)}
             activeOpacity={0.8}
           >
-            <Text style={styles.toggleLabel}>Terms of Service</Text>
+            <Text style={styles.toggleLabel}>{t("privacy.terms")}</Text>
             <Icon name="arrowRight" size={16} color={colors.text.muted} />
           </TouchableOpacity>
 
-          <Text style={styles.sectionLabel}>ACCOUNT</Text>
+          <Text style={styles.sectionLabel}>
+            {t("privacy.accountSection")}
+          </Text>
           <TouchableOpacity
             style={styles.dangerRow}
             onPress={() => {
@@ -170,37 +185,33 @@ export function PrivacySettingsScreen() {
             }}
             activeOpacity={0.8}
           >
-            <Text style={styles.dangerLabel}>Delete account</Text>
+            <Text style={styles.dangerLabel}>
+              {t("privacy.deleteAccount")}
+            </Text>
             <Icon name="arrowRight" size={16} color={colors.coral} />
           </TouchableOpacity>
-          <Text style={styles.hint}>
-            Permanently deletes your account, progress, friends, and purchases.
-            This can&apos;t be undone.
-          </Text>
+          <Text style={styles.hint}>{t("privacy.deleteHint")}</Text>
         </ScrollView>
       )}
 
       <AppPopup
         visible={confirmDelete}
         variant="danger"
-        title="Delete account?"
-        message={
-          deleteError ??
-          "This permanently erases your profile, progress, friends, and purchases. This cannot be undone."
-        }
+        title={t("privacy.deleteConfirmTitle")}
+        message={deleteError ?? t("privacy.deleteConfirmMsg")}
         onClose={() => {
           if (!deleting) setConfirmDelete(false);
         }}
         buttons={[
           {
-            label: "Cancel",
+            label: t("common.cancel"),
             variant: "secondary",
             onPress: () => {
               if (!deleting) setConfirmDelete(false);
             },
           },
           {
-            label: "Delete",
+            label: t("privacy.delete"),
             variant: "danger",
             loading: deleting,
             onPress: handleDeleteAccount,

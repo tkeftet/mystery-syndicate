@@ -2,6 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 import { Icon } from "../components/ui/Icon";
 import { HomeScreen } from "../screens/HomeScreen";
 import { LeaderboardScreen } from "../features/leaderboard/screens/LeaderboardScreen";
@@ -86,6 +87,7 @@ function PlayStack() {
 
 export function AppNavigator() {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -112,7 +114,7 @@ export function AppNavigator() {
         name="HomeTab"
         component={HomeStack}
         options={{
-          tabBarLabel: "Home",
+          tabBarLabel: t("tabs.home"),
           tabBarIcon: ({ color }) => (
             <Icon name="home" size={22} color={color} />
           ),
@@ -122,7 +124,7 @@ export function AppNavigator() {
         name="EventsTab"
         component={PlayStack}
         options={{
-          tabBarLabel: "Play",
+          tabBarLabel: t("tabs.play"),
           tabBarIcon: ({ color }) => (
             <Icon name="play" size={22} color={color} />
           ),
@@ -132,7 +134,7 @@ export function AppNavigator() {
         name="LeaderboardTab"
         component={LeaderboardScreen}
         options={{
-          tabBarLabel: "Rankings",
+          tabBarLabel: t("tabs.rankings"),
           tabBarIcon: ({ color }) => (
             <Icon name="trophy" size={22} color={color} />
           ),
@@ -142,7 +144,7 @@ export function AppNavigator() {
         name="ProfileTab"
         component={ProfileStack}
         options={{
-          tabBarLabel: "Profile",
+          tabBarLabel: t("tabs.profile"),
           tabBarIcon: ({ color }) => (
             <Icon name="user" size={22} color={color} />
           ),
@@ -152,7 +154,7 @@ export function AppNavigator() {
         name="ShopTab"
         component={ShopScreen}
         options={{
-          tabBarLabel: "Shop",
+          tabBarLabel: t("tabs.shop"),
           tabBarIcon: ({ color }) => (
             <Icon name="shop" size={22} color={color} />
           ),

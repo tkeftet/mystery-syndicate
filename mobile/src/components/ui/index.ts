@@ -9,4 +9,5 @@ export { ProgressBar, SegmentedProgress } from "./ProgressBar";
 export { Avatar } from "./Avatar";
 export { ScreenHeader } from "./ScreenHeader";
 export { AppMenu } from "./AppMenu";
+export { LanguagePicker } from "./LanguagePicker";
 export { EmptyState } from "./EmptyState";

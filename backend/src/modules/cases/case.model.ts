@@ -4,10 +4,17 @@ import type {
   CaseDifficulty,
   CaseStatus,
 } from "../../shared/types/domain.types";
+import type { LocalizedString } from "../../shared/localized";
+
+// Localizable text fields accept a plain string (English-only / legacy content)
+// or a { en, fr?, ar? } object; the API resolves them per request language.
+// Stored as Mixed so Mongoose keeps the object shape instead of coercing to a
+// string. See shared/localized.ts.
+const LocalizedText = { type: Schema.Types.Mixed };
 
 export interface ICase extends Document {
-  title: string;
-  description: string;
+  title: LocalizedString;
+  description: LocalizedString;
   type: CaseType;
   difficulty: CaseDifficulty;
   status: CaseStatus;
@@ -38,48 +45,49 @@ export interface ICase extends Document {
     | "twist"
     | "final_reveal";
   /** Narrative shown before the investigation. */
-  storyText?: string;
+  storyText?: LocalizedString;
   /** Teaser revealed on the completion summary to bait the next chapter. */
-  cliffhanger?: string;
+  cliffhanger?: LocalizedString;
   victim: {
-    name: string;
-    description: string;
+    name: LocalizedString;
+    description: LocalizedString;
     avatar: string;
   };
   suspects: Array<{
     id: string;
-    name: string;
-    description: string;
-    alibi: string;
-    relationship: string;
+    name: LocalizedString;
+    description: LocalizedString;
+    alibi: LocalizedString;
+    relationship: LocalizedString;
     avatar: string;
   }>;
   evidence: Array<{
     id: string;
-    title: string;
-    description: string;
+    title: LocalizedString;
+    description: LocalizedString;
     type: "physical" | "digital" | "testimonial" | "document";
     imageUrl?: string;
     isRedHerring: boolean;
   }>;
   witnessStatements: Array<{
     id: string;
-    witnessName: string;
-    statement: string;
+    witnessName: LocalizedString;
+    statement: LocalizedString;
     reliability: "reliable" | "unreliable" | "uncertain";
   }>;
   timeline: Array<{
     id: string;
-    time: string;
-    description: string;
+    time: LocalizedString;
+    description: LocalizedString;
     involvedSuspects: string[];
   }>;
   solution: {
     suspectId: string;
+    // motive/weapon stay plain strings — mega/chapter scoring string-compares them.
     motive: string;
     weapon?: string;
     timelineEventId: string;
-    explanation: string;
+    explanation: LocalizedString;
   };
   createdAt: Date;
   updatedAt: Date;
@@ -87,8 +95,8 @@ export interface ICase extends Document {
 
 const caseSchema = new Schema<ICase>(
   {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
+    title: LocalizedText,
+    description: LocalizedText,
     type: {
       type: String,
       enum: ["murder", "theft", "disappearance", "sabotage", "fraud"],
@@ -129,28 +137,28 @@ const caseSchema = new Schema<ICase>(
         "final_reveal",
       ],
     },
-    storyText: { type: String },
-    cliffhanger: { type: String },
+    storyText: LocalizedText,
+    cliffhanger: LocalizedText,
     victim: {
-      name: { type: String, required: true },
-      description: { type: String, required: true },
+      name: LocalizedText,
+      description: LocalizedText,
       avatar: { type: String, default: "default_victim" },
     },
     suspects: [
       {
         id: { type: String, required: true },
-        name: { type: String, required: true },
-        description: { type: String, required: true },
-        alibi: { type: String, required: true },
-        relationship: { type: String, required: true },
+        name: LocalizedText,
+        description: LocalizedText,
+        alibi: LocalizedText,
+        relationship: LocalizedText,
         avatar: { type: String, default: "default_suspect" },
       },
     ],
     evidence: [
       {
         id: { type: String, required: true },
-        title: { type: String, required: true },
-        description: { type: String, required: true },
+        title: LocalizedText,
+        description: LocalizedText,
         type: {
           type: String,
           enum: ["physical", "digital", "testimonial", "document"],
@@ -163,8 +171,8 @@ const caseSchema = new Schema<ICase>(
     witnessStatements: [
       {
         id: { type: String, required: true },
-        witnessName: { type: String, required: true },
-        statement: { type: String, required: true },
+        witnessName: LocalizedText,
+        statement: LocalizedText,
         reliability: {
           type: String,
           enum: ["reliable", "unreliable", "uncertain"],
@@ -175,8 +183,8 @@ const caseSchema = new Schema<ICase>(
     timeline: [
       {
         id: { type: String, required: true },
-        time: { type: String, required: true },
-        description: { type: String, required: true },
+        time: LocalizedText,
+        description: LocalizedText,
         involvedSuspects: [{ type: String }],
       },
     ],
@@ -185,7 +193,7 @@ const caseSchema = new Schema<ICase>(
       motive: { type: String, required: true },
       weapon: { type: String },
       timelineEventId: { type: String, required: true },
-      explanation: { type: String, required: true },
+      explanation: LocalizedText,
     },
   },
   { timestamps: true },

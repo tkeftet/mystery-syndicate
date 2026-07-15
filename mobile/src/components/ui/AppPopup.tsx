@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { colors, typography, spacing, radii } from "../../theme";
 import { Icon, type IconName } from "./Icon";
+import i18n from "../../i18n";
 
 export type PopupVariant = "info" | "success" | "danger" | "warning";
 
@@ -62,7 +63,7 @@ export function AppPopup({
   const cfg = VARIANT_CONFIG[variant];
   const resolvedButtons: PopupButton[] = buttons?.length
     ? buttons
-    : [{ label: "OK", variant: "primary", onPress: onClose }];
+    : [{ label: i18n.t("common.ok"), variant: "primary", onPress: onClose }];
 
   return (
     <Modal

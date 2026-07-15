@@ -10,6 +10,8 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
+import { type TranslationKey } from "../../../i18n";
 import { colors, typography, spacing, radii } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon } from "../../../components/ui";
@@ -18,7 +20,13 @@ import { useAgencyLeaderboard } from "../agencies.hooks";
 
 type Nav = NativeStackNavigationProp<AppStackParamList>;
 
+const SCOPE_LABEL_KEY: Record<"weekly" | "global", TranslationKey> = {
+  weekly: "agencies.scopeWeekly",
+  global: "agencies.scopeGlobal",
+};
+
 export function AgencyLeaderboardScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const [scope, setScope] = useState<"weekly" | "global">("weekly");
@@ -31,8 +39,8 @@ export function AgencyLeaderboardScreen() {
           <Icon name="back" size={18} color={colors.text.primary} />
         </TouchableOpacity>
         <View>
-          <Text style={styles.kicker}>// AGENCY RANKINGS</Text>
-          <Text style={styles.headerTitle}>Top Agencies</Text>
+          <Text style={styles.kicker}>{t("agencies.rankingsKicker")}</Text>
+          <Text style={styles.headerTitle}>{t("agencies.topAgencies")}</Text>
         </View>
       </View>
 
@@ -44,7 +52,7 @@ export function AgencyLeaderboardScreen() {
             onPress={() => setScope(s)}
           >
             <Text style={[styles.tabText, scope === s && styles.tabTextActive]}>
-              {s.toUpperCase()}
+              {t(SCOPE_LABEL_KEY[s])}
             </Text>
           </TouchableOpacity>
         ))}
@@ -71,7 +79,12 @@ export function AgencyLeaderboardScreen() {
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.name} numberOfLines={1}>{a.name}</Text>
-                    <Text style={styles.sub}>Lv {a.level} · {a.memberCount} members</Text>
+                    <Text style={styles.sub}>
+                      {t("agencies.agencyLbMeta", {
+                        level: a.level,
+                        members: a.memberCount,
+                      })}
+                    </Text>
                   </View>
                   <Text style={styles.score}>
                     {scope === "weekly" ? a.weeklyPoints : a.agencyXp}
@@ -80,7 +93,7 @@ export function AgencyLeaderboardScreen() {
               );
             })
           ) : (
-            <Text style={styles.empty}>No agencies ranked yet.</Text>
+            <Text style={styles.empty}>{t("agencies.noAgenciesRanked")}</Text>
           )}
         </ScrollView>
       )}

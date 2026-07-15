@@ -11,6 +11,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
+import i18n, { type TranslationKey } from "../../../i18n";
 import { colors, typography, spacing, radii, shadows, gradients } from "../../../theme";
 import { getShopApi, purchaseItemApi, equipItemApi } from "../rewards.service";
 import { getMyProfileApi } from "../../profile/profile.service";
@@ -39,7 +41,22 @@ function shopItemIcon(item: any): IconName {
   return "hint";
 }
 
+// Shop items are a fixed backend catalog with stable ids, so localize their
+// name/description client-side by id; fall back to the backend string if a new
+// item ships before its translation is added.
+function shopItemName(item: any): string {
+  return i18n.t(`shop.items.${item?.id}.name` as TranslationKey, {
+    defaultValue: item?.name ?? "",
+  });
+}
+function shopItemDesc(item: any): string {
+  return i18n.t(`shop.items.${item?.id}.desc` as TranslationKey, {
+    defaultValue: item?.description ?? "",
+  });
+}
+
 export function ShopScreen() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState<ShopTab>("hints");
@@ -78,8 +95,12 @@ export function ShopScreen() {
     if (item.requiredLevel && userLevel < item.requiredLevel) {
       setPopup({
         variant: "warning",
-        title: "Locked",
-        message: `Reach Level ${item.requiredLevel} to unlock ${item.name}. You're Level ${userLevel}.`,
+        title: t("shop.lockedTitle"),
+        message: t("shop.lockedMsg", {
+          level: item.requiredLevel,
+          name: shopItemName(item),
+          current: userLevel,
+        }),
       });
       return;
     }
@@ -87,19 +108,34 @@ export function ShopScreen() {
     if ((profile?.coins ?? 0) < item.price) {
       setPopup({
         variant: "warning",
-        title: "Not enough coins",
-        message: `${item.name} costs ${item.price} coins, but you only have ${profile?.coins ?? 0}. Solve more cases to earn coins.`,
+        title: t("shop.notEnoughCoins"),
+        message: t("shop.notEnoughCoinsMsg", {
+          name: shopItemName(item),
+          price: item.price,
+          coins: profile?.coins ?? 0,
+        }),
       });
       return;
     }
 
     setPopup({
       variant: "info",
-      title: `Buy ${item.name}?`,
-      message: `This will cost ${item.price} coins.\nYou have ${profile?.coins ?? 0} coins.`,
+      title: t("shop.buyTitle", { name: shopItemName(item) }),
+      message: t("shop.buyMsg", {
+        price: item.price,
+        coins: profile?.coins ?? 0,
+      }),
       buttons: [
-        { label: "Cancel", variant: "secondary", onPress: () => setPopup(null) },
-        { label: "Buy", variant: "primary", onPress: () => confirmPurchase(item) },
+        {
+          label: t("common.cancel"),
+          variant: "secondary",
+          onPress: () => setPopup(null),
+        },
+        {
+          label: t("shop.buy"),
+          variant: "primary",
+          onPress: () => confirmPurchase(item),
+        },
       ],
     });
   }
@@ -114,8 +150,9 @@ export function ShopScreen() {
     } catch (err: any) {
       setPopup({
         variant: "danger",
-        title: "Purchase Failed",
-        message: err?.response?.data?.error?.message ?? "Not enough coins",
+        title: t("shop.purchaseFailed"),
+        message:
+          err?.response?.data?.error?.message ?? t("shop.notEnoughCoins"),
       });
     } finally {
       setPurchasing(null);
@@ -129,16 +166,17 @@ export function ShopScreen() {
       const nowEquipped = !!res?.equipped;
       setPopup({
         variant: "success",
-        title: nowEquipped ? "Equipped!" : "Removed",
+        title: nowEquipped ? t("shop.equipped") : t("shop.removed"),
         message: nowEquipped
-          ? `${item.name} is now active.`
-          : `${item.name} is no longer active.`,
+          ? t("shop.nowActive", { name: shopItemName(item) })
+          : t("shop.noLongerActive", { name: shopItemName(item) }),
       });
     } catch (err: any) {
       setPopup({
         variant: "danger",
-        title: "Error",
-        message: err?.response?.data?.error?.message ?? "Failed to equip",
+        title: t("common.error"),
+        message:
+          err?.response?.data?.error?.message ?? t("shop.equipFailed"),
       });
     }
   }
@@ -156,7 +194,7 @@ export function ShopScreen() {
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: insets.top + spacing[3] }]}>
         <View>
-          <Text style={styles.kicker}>// SHOP</Text>
+          <Text style={styles.kicker}>{t("shop.kicker")}</Text>
         </View>
         <View style={styles.headerRight}>
           <View style={styles.coinsBadge}>
@@ -172,7 +210,7 @@ export function ShopScreen() {
       {/* ── Hints Balance ── */}
       <View style={styles.hintsBar}>
         <Icon name="hint" size={15} color={colors.amber} />
-        <Text style={styles.hintsText}> Hints available: </Text>
+        <Text style={styles.hintsText}> {t("shop.hintsAvailable")} </Text>
         <Text style={styles.hintsCount} allowFontScaling={false}>
           {Math.max(0, profile?.hints ?? 0)}
         </Text>
@@ -194,10 +232,10 @@ export function ShopScreen() {
               <Icon name={tabIcon} size={15} color={tabColor} />
               <Text style={[styles.tabText, isActive && styles.tabTextActive]}>
                 {tab === "hints"
-                  ? "Hints"
+                  ? t("shop.tabHints")
                   : tab === "avatars"
-                    ? "Avatars"
-                    : "Titles"}
+                    ? t("shop.tabAvatars")
+                    : t("shop.tabTitles")}
               </Text>
             </TouchableOpacity>
           );
@@ -232,25 +270,29 @@ export function ShopScreen() {
                 </LinearGradient>
                 <View style={styles.itemInfo}>
                   <View style={styles.itemNameRow}>
-                    <Text style={styles.itemName}>{item.name}</Text>
+                    <Text style={styles.itemName}>{shopItemName(item)}</Text>
                     {isEquipped && (
                       <View style={styles.equippedBadge}>
                         <View style={styles.equippedDot} />
-                        <Text style={styles.equippedText}>ACTIVE</Text>
+                        <Text style={styles.equippedText}>
+                          {t("shop.active")}
+                        </Text>
                       </View>
                     )}
                   </View>
-                  <Text style={styles.itemDesc}>{item.description}</Text>
+                  <Text style={styles.itemDesc}>{shopItemDesc(item)}</Text>
                   {item.quantity && (
                     <Text style={styles.itemQuantity}>
-                      ×{item.quantity} hints
+                      {t("shop.quantityHints", { count: item.quantity })}
                     </Text>
                   )}
                   {locked && (
                     <View style={styles.lockRow}>
                       <Icon name="lock" size={11} color={colors.text.muted} />
                       <Text style={styles.lockText}>
-                        Requires Level {item.requiredLevel}
+                        {t("shop.requiresLevel", {
+                          level: item.requiredLevel,
+                        })}
                       </Text>
                     </View>
                   )}
@@ -272,17 +314,17 @@ export function ShopScreen() {
                 ) : isEquipped ? (
                   <View style={styles.equippedRow}>
                     <Icon name="check" size={15} color={colors.text.inverse} />
-                    <Text style={styles.buyButtonText}>ON</Text>
+                    <Text style={styles.buyButtonText}>{t("shop.on")}</Text>
                   </View>
                 ) : isOwned ? (
-                  <Text style={styles.buyButtonText}>EQUIP</Text>
+                  <Text style={styles.buyButtonText}>{t("shop.equip")}</Text>
                 ) : locked ? (
                   <View style={styles.equippedRow}>
                     <Icon name="lock" size={13} color={colors.text.muted} />
                     <Text
                       style={[styles.buyButtonText, styles.buyButtonTextCantAfford]}
                     >
-                      LVL {item.requiredLevel}
+                      {t("shop.lvlShort", { level: item.requiredLevel })}
                     </Text>
                   </View>
                 ) : (
@@ -335,16 +377,18 @@ export function ShopScreen() {
                 color={colors.text.inverse}
               />
             </LinearGradient>
-            <Text style={styles.modalKicker}>PURCHASED</Text>
-            <Text style={styles.modalTitle}>{showSuccess?.item?.name}</Text>
+            <Text style={styles.modalKicker}>{t("shop.purchased")}</Text>
+            <Text style={styles.modalTitle}>{shopItemName(showSuccess?.item)}</Text>
             <View style={styles.modalCoinsRow}>
               <Icon name="coin" size={15} color={colors.amber} />
               <Text style={styles.modalCoins}>
-                {showSuccess?.result?.coinsRemaining} coins remaining
+                {t("shop.coinsRemaining", {
+                  count: showSuccess?.result?.coinsRemaining,
+                })}
               </Text>
             </View>
             <GradientButton
-              label="Continue"
+              label={t("play.continue")}
               style={styles.modalButton}
               onPress={() => setShowSuccess(null)}
             />

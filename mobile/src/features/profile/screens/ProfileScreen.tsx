@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  I18nManager,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useQuery } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii, gradients } from "../../../theme";
 import {
   frameRingColor,
@@ -45,6 +47,7 @@ import {
 } from "../../../utils/leveling";
 
 export function ProfileScreen() {
+  const { t } = useTranslation();
   const { clearAuth } = useAuthStore();
   const insets = useSafeAreaInsets();
   const navigation =
@@ -88,19 +91,17 @@ export function ProfileScreen() {
     return (
       <View style={[styles.centered, { padding: spacing[6] }]}>
         <Icon name="warning" size={40} color={colors.coral} />
-        <Text style={styles.errorTitle}>Couldn't load your profile</Text>
-        <Text style={styles.errorSub}>
-          Check your connection and try again.
-        </Text>
+        <Text style={styles.errorTitle}>{t("profile.loadError")}</Text>
+        <Text style={styles.errorSub}>{t("profile.checkConnection")}</Text>
         <GradientButton
-          label="Retry"
+          label={t("common.retry")}
           icon="search"
           loading={isFetching}
           onPress={() => refetch()}
           style={styles.errorBtn}
         />
         <TouchableOpacity style={styles.errorSignOut} onPress={clearAuth}>
-          <Text style={styles.errorSignOutText}>Sign out</Text>
+          <Text style={styles.errorSignOutText}>{t("menu.signOut")}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -120,7 +121,7 @@ export function ProfileScreen() {
     <View style={[styles.safeTop, { paddingTop: insets.top }]}>
       {/* ── Header (fixed) ── */}
       <View style={styles.header}>
-        <Text style={styles.kicker}>// PROFILE</Text>
+        <Text style={styles.kicker}>{t("profile.kicker")}</Text>
         <AppMenu />
       </View>
 
@@ -172,7 +173,7 @@ export function ProfileScreen() {
             activeOpacity={0.8}
           >
             <Icon name="sparkles" size={12} color={colors.amber} />
-            <Text style={styles.customizeText}>Customize</Text>
+            <Text style={styles.customizeText}>{t("profile.customize")}</Text>
             {!!profile.profileLikes && (
               <Text style={styles.likesText}>· ♥ {profile.profileLikes}</Text>
             )}
@@ -183,32 +184,51 @@ export function ProfileScreen() {
       {/* ── XP (fixed) ── */}
       <View style={styles.xpSection}>
         <View style={styles.xpHeader}>
-          <Text style={styles.xpLevel}>LEVEL {level}</Text>
+          <Text style={styles.xpLevel}>
+            {t("profile.levelCaps", { level })}
+          </Text>
           <Text style={styles.xpCount}>
-            {xpInLevel} / {levelSpan} XP
+            {t("profile.xpCount", { current: xpInLevel, span: levelSpan })}
           </Text>
         </View>
         <ProgressBar progress={xpProgress} height={8} />
         <Text style={styles.xpNext}>
-          {levelSpan - xpInLevel} XP to Level {level + 1}
+          {t("profile.xpToNext", {
+            xp: levelSpan - xpInLevel,
+            next: level + 1,
+          })}
         </Text>
       </View>
 
       {/* ── Stats (fixed) ── */}
       <View style={styles.statsRow}>
-        <StatTile value={profile.totalSolved} label="Solved" accent={colors.amber} />
+        <StatTile
+          value={profile.totalSolved}
+          label={t("profile.statSolved")}
+          accent={colors.amber}
+        />
         <StatTile
           value={`${profile.accuracy}%`}
-          label="Accuracy"
+          label={t("home.accuracy")}
           valueColor={colors.green}
           accent={colors.green}
         />
-        <StatTile value={profile.streak} label="Streak" accent={colors.amberLight} />
-        <StatTile value={profile.coins} label="Coins" accent={colors.blue} />
+        <StatTile
+          value={profile.streak}
+          label={t("profile.statStreak")}
+          accent={colors.amberLight}
+        />
+        <StatTile
+          value={profile.coins}
+          label={t("profile.statCoins")}
+          accent={colors.blue}
+        />
       </View>
 
       {/* ── Case History (only this scrolls) ── */}
-      <SectionLabel style={styles.historyLabel}>CASE HISTORY</SectionLabel>
+      <SectionLabel style={styles.historyLabel}>
+        {t("profile.caseHistory")}
+      </SectionLabel>
       <ScrollView
         style={styles.historyScroll}
         contentContainerStyle={styles.historyContent}
@@ -236,7 +256,7 @@ export function ProfileScreen() {
                 </View>
                 <View style={styles.historyRight}>
                   <Text style={[styles.historyStatus, { color }]}>
-                    {item.isCorrect ? "SOLVED" : "MISSED"}
+                    {item.isCorrect ? t("home.solved") : t("home.missed")}
                   </Text>
                   <Text style={styles.historyScore}>{item.score}</Text>
                 </View>
@@ -246,10 +266,10 @@ export function ProfileScreen() {
         ) : (
           <View style={styles.empty}>
             <Icon name="search" size={40} color={colors.text.muted} />
-            <Text style={styles.emptyTitle}>No cases solved yet</Text>
-            <Text style={styles.emptySub}>
-              Solve your first case to start building your record
+            <Text style={styles.emptyTitle}>
+              {t("profile.noHistoryTitle")}
             </Text>
+            <Text style={styles.emptySub}>{t("profile.noHistorySub")}</Text>
           </View>
         )}
       </ScrollView>
@@ -335,7 +355,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bg.elevated,
     overflow: "hidden",
   },
-  coverMark: { position: "absolute", right: 18, top: 16, opacity: 0.12 },
+  coverMark: { position: "absolute", end: 18, top: 16, opacity: 0.12 },
   identity: {
     flexDirection: "row",
     alignItems: "flex-end",
@@ -402,7 +422,8 @@ const styles = StyleSheet.create({
     fontFamily: typography.families.mono,
     fontSize: 9.5,
     color: colors.text.muted,
-    textAlign: "right",
+    // Hug the writing-direction end (right in LTR, left in RTL)
+    textAlign: I18nManager.isRTL ? "left" : "right",
   },
 
   statsRow: {
@@ -420,8 +441,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: spacing[3],
-    paddingLeft: spacing[4],
-    paddingRight: spacing[4],
+    paddingStart: spacing[4],
+    paddingEnd: spacing[4],
     gap: spacing[3],
   },
   historyDot: { width: 8, height: 8, borderRadius: 4 },

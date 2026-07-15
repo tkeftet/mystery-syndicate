@@ -13,8 +13,9 @@ import {
 import { PRIVACY_POLICY_URL, TERMS_URL } from "../../../constants/links";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { AuthStackParamList } from "../../../navigation/AuthNavigator";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii } from "../../../theme";
-import { GradientButton } from "../../../components/ui";
+import { GradientButton, LanguagePicker } from "../../../components/ui";
 import { useAuthStore } from "../auth.store";
 import { registerApi } from "../auth.service";
 import { track, AnalyticsEvent } from "../../../services/analytics";
@@ -24,6 +25,7 @@ type Props = {
 };
 
 export function RegisterScreen({ navigation }: Props) {
+  const { t } = useTranslation();
   const { setAuth } = useAuthStore();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -33,19 +35,19 @@ export function RegisterScreen({ navigation }: Props) {
 
   function validateFields(): string | null {
     if (!username || !email || !password) {
-      return "Please fill in all fields";
+      return t("auth.fillAllFields");
     }
     if (username.length < 3 || username.length > 20) {
-      return "Username must be between 3 and 20 characters";
+      return t("auth.usernameLength");
     }
     if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-      return "Username can only contain letters, numbers, underscores";
+      return t("auth.usernameCharset");
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      return "Please enter a valid email address";
+      return t("auth.emailInvalid");
     }
     if (password.length < 8) {
-      return "Password must be at least 8 characters";
+      return t("auth.passwordLength");
     }
     return null;
   }
@@ -69,7 +71,9 @@ export function RegisterScreen({ navigation }: Props) {
       await setAuth(user, accessToken, refreshToken);
       track(AnalyticsEvent.USER_REGISTERED, { method: "email" });
     } catch (err: any) {
-      setError(err?.response?.data?.error?.message ?? "Registration failed");
+      setError(
+        err?.response?.data?.error?.message ?? t("auth.registrationFailed"),
+      );
     } finally {
       setLoading(false);
     }
@@ -81,16 +85,18 @@ export function RegisterScreen({ navigation }: Props) {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <ScrollView contentContainerStyle={styles.scroll}>
-        <Text style={styles.kicker}>NEW RECRUIT</Text>
+        <LanguagePicker style={styles.langBar} />
+        <Text style={styles.kicker}>{t("auth.registerKicker")}</Text>
         <Text style={styles.title}>
-          Join the <Text style={styles.titleAccent}>Syndicate</Text>
+          {t("auth.registerTitlePrefix")}{" "}
+          <Text style={styles.titleAccent}>Syndicate</Text>
         </Text>
-        <Text style={styles.subtitle}>Create your detective profile</Text>
+        <Text style={styles.subtitle}>{t("auth.registerSubtitle")}</Text>
 
         <View style={styles.form}>
           <TextInput
             style={styles.input}
-            placeholder="Username"
+            placeholder={t("auth.usernamePlaceholder")}
             placeholderTextColor={colors.text.muted}
             value={username}
             onChangeText={setUsername}
@@ -98,7 +104,7 @@ export function RegisterScreen({ navigation }: Props) {
           />
           <TextInput
             style={styles.input}
-            placeholder="Email"
+            placeholder={t("auth.emailPlaceholder")}
             placeholderTextColor={colors.text.muted}
             value={email}
             onChangeText={setEmail}
@@ -107,7 +113,7 @@ export function RegisterScreen({ navigation }: Props) {
           />
           <TextInput
             style={styles.input}
-            placeholder="Password"
+            placeholder={t("auth.passwordPlaceholder")}
             placeholderTextColor={colors.text.muted}
             value={password}
             onChangeText={setPassword}
@@ -117,26 +123,26 @@ export function RegisterScreen({ navigation }: Props) {
           {error ? <Text style={styles.error}>{error}</Text> : null}
 
           <GradientButton
-            label="Create Account"
+            label={t("auth.createAccount")}
             loading={loading}
             onPress={handleRegister}
             style={styles.primaryButton}
           />
 
           <Text style={styles.legal}>
-            By creating an account you agree to our{" "}
+            {t("auth.legalPrefix")}{" "}
             <Text
               style={styles.legalLink}
               onPress={() => Linking.openURL(TERMS_URL)}
             >
-              Terms
+              {t("auth.legalTerms")}
             </Text>{" "}
-            and{" "}
+            {t("auth.legalAnd")}{" "}
             <Text
               style={styles.legalLink}
               onPress={() => Linking.openURL(PRIVACY_POLICY_URL)}
             >
-              Privacy Policy
+              {t("auth.legalPrivacy")}
             </Text>
             .
           </Text>
@@ -146,7 +152,7 @@ export function RegisterScreen({ navigation }: Props) {
             onPress={() => navigation.goBack()}
           >
             <Text style={styles.backButtonText}>
-              Already have an account? Sign In
+              {t("auth.alreadyHaveAccount")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -164,6 +170,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     padding: spacing[6],
+  },
+  langBar: {
+    marginBottom: spacing[6],
   },
   kicker: {
     fontFamily: typography.families.mono,

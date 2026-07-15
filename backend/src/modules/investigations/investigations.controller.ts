@@ -1,6 +1,7 @@
 import type { Response, NextFunction } from "express";
 import type { AuthRequest } from "../auth";
 import * as service from "./investigations.service";
+import { resolveLang, localizeDeep } from "../../shared/localized";
 
 export async function startController(
   req: AuthRequest,
@@ -30,7 +31,9 @@ export async function submitAccusationController(
       req.body.suspectId,
       req.body.motive,
     );
-    res.json({ success: true, data: result });
+    // Resolve embedded case text (solution explanation, red-herring titles) to
+    // the caller's language before returning.
+    res.json({ success: true, data: localizeDeep(result, resolveLang(req)) });
   } catch (err) {
     next(err);
   }
@@ -56,7 +59,8 @@ export async function useHintController(
 ) {
   try {
     const result = await service.useHint(req.userId!, req.params.caseId);
-    res.json({ success: true, data: result });
+    // clearedSuspect.name may be a localized object — resolve it.
+    res.json({ success: true, data: localizeDeep(result, resolveLang(req)) });
   } catch (err) {
     next(err);
   }

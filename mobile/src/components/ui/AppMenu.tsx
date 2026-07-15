@@ -9,25 +9,20 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii } from "../../theme";
-import { Icon, type IconName } from "./Icon";
+import { Icon } from "./Icon";
+import { LanguagePicker } from "./LanguagePicker";
 import { useAuthStore } from "../../features/auth/auth.store";
 
-type MenuItem = {
-  icon: IconName;
-  label: string;
-  /** Screen registered in the ProfileStack. */
-  route: string;
-};
-
-const ITEMS: MenuItem[] = [
-  // Customize lives on the Profile screen; Daily Reward has a Home banner —
-  // both removed here to keep this a focused "more" menu.
-  { icon: "people", label: "Friends", route: "Friends" },
-  { icon: "scales", label: "Agency", route: "Agencies" },
-  { icon: "trophy", label: "Achievements", route: "Achievements" },
-  { icon: "lock", label: "Privacy", route: "PrivacySettings" },
-];
+// Customize lives on the Profile screen; Daily Reward has a Home banner —
+// both removed here to keep this a focused "more" menu.
+const ITEMS = [
+  { icon: "people", labelKey: "menu.friends", route: "Friends" },
+  { icon: "scales", labelKey: "menu.agency", route: "Agencies" },
+  { icon: "trophy", labelKey: "menu.achievements", route: "Achievements" },
+  { icon: "lock", labelKey: "menu.privacy", route: "PrivacySettings" },
+] as const;
 
 /**
  * Global top-right menu button. Tapping it opens a dropdown anchored under the
@@ -39,6 +34,7 @@ export function AppMenu() {
   // Loosely typed: the same call (navigate to the Profile tab's nested screen)
   // works from any tab/stack because navigate bubbles up to the tab navigator.
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
   const { clearAuth } = useAuthStore();
   const [open, setOpen] = useState(false);
 
@@ -74,9 +70,17 @@ export function AppMenu() {
                 onPress={() => go(it.route)}
               >
                 <Icon name={it.icon} size={18} color={colors.amber} />
-                <Text style={styles.itemLabel}>{it.label}</Text>
+                <Text style={styles.itemLabel}>{t(it.labelKey)}</Text>
               </TouchableOpacity>
             ))}
+
+            <View style={styles.divider} />
+
+            <LanguagePicker
+              variant="labeled"
+              style={styles.langBlock}
+              onChanged={() => setOpen(false)}
+            />
 
             <View style={styles.divider} />
 
@@ -89,7 +93,9 @@ export function AppMenu() {
               }}
             >
               <Icon name="logout" size={18} color={colors.coral} />
-              <Text style={[styles.itemLabel, styles.signOut]}>Sign Out</Text>
+              <Text style={[styles.itemLabel, styles.signOut]}>
+                {t("menu.signOut")}
+              </Text>
             </TouchableOpacity>
           </View>
         </Pressable>
@@ -115,7 +121,7 @@ const styles = StyleSheet.create({
   },
   panel: {
     position: "absolute",
-    right: spacing[5],
+    end: spacing[5],
     width: 220,
     backgroundColor: colors.bg.elevated,
     borderRadius: radii.lg,
@@ -143,6 +149,11 @@ const styles = StyleSheet.create({
   },
   signOut: {
     color: colors.coral,
+  },
+  langBlock: {
+    paddingTop: spacing[3],
+    paddingBottom: spacing[3],
+    paddingHorizontal: spacing[4],
   },
   divider: {
     height: 1,

@@ -11,6 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii, gradients, shadows } from "../../../theme";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { Icon, ProgressBar, GradientButton } from "../../../components/ui";
@@ -19,6 +20,7 @@ import { usePassHub } from "../pass.hooks";
 type Nav = NativeStackNavigationProp<AppStackParamList>;
 
 export function SeasonPassHubScreen() {
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<Nav>();
   const { data, isLoading } = usePassHub();
@@ -45,7 +47,7 @@ export function SeasonPassHubScreen() {
       {!pass ? (
         <View style={styles.centered}>
           <Icon name="star" size={40} color={colors.text.faint} />
-          <Text style={styles.empty}>No active season right now.</Text>
+          <Text style={styles.empty}>{t("pass.noSeason")}</Text>
         </View>
       ) : (
         <ScrollView
@@ -59,11 +61,15 @@ export function SeasonPassHubScreen() {
             end={{ x: 1, y: 1 }}
             style={[styles.banner, shadows.glow]}
           >
-            <Text style={styles.bannerKicker}>{pass.subtitle || "SEASON PASS"}</Text>
+            <Text style={styles.bannerKicker}>
+              {pass.subtitle || t("pass.seasonPass")}
+            </Text>
             <Text style={styles.bannerTitle}>{pass.title}</Text>
             <View style={styles.bannerMeta}>
               <Icon name="clock" size={13} color={colors.text.inverse} />
-              <Text style={styles.bannerMetaText}>{data.daysLeft} days left</Text>
+              <Text style={styles.bannerMetaText}>
+                {t("pass.daysLeft", { count: data.daysLeft })}
+              </Text>
             </View>
           </LinearGradient>
 
@@ -71,7 +77,7 @@ export function SeasonPassHubScreen() {
           <View style={styles.levelCard}>
             <View style={styles.levelRow}>
               <View>
-                <Text style={styles.levelLabel}>SEASON LEVEL</Text>
+                <Text style={styles.levelLabel}>{t("pass.seasonLevel")}</Text>
                 <Text style={styles.levelValue}>
                   {progress.level}
                   <Text style={styles.levelMax}> / {pass.totalLevels}</Text>
@@ -80,28 +86,35 @@ export function SeasonPassHubScreen() {
               {data.unclaimedCount > 0 && (
                 <View style={styles.unclaimedBadge}>
                   <Text style={styles.unclaimedText}>
-                    {data.unclaimedCount} to claim
+                    {t("pass.toClaim", { count: data.unclaimedCount })}
                   </Text>
                 </View>
               )}
             </View>
             <View style={styles.progressMeta}>
               <Text style={styles.progressText}>
-                {progress.xpIntoLevel} / {progress.xpForNext} XP to next
+                {t("pass.xpToNext", {
+                  current: progress.xpIntoLevel,
+                  next: progress.xpForNext,
+                })}
               </Text>
               <Text style={styles.progressPct}>{progress.percentToNext}%</Text>
             </View>
             <ProgressBar progress={progress.percentToNext / 100} />
             <Text style={styles.totalXp}>
-              {progress.seasonXp.toLocaleString()} total Season XP
+              {t("pass.totalSeasonXp", {
+                count: progress.seasonXp,
+              })}
             </Text>
           </View>
 
           <GradientButton
             label={
               data.unclaimedCount > 0
-                ? `View Reward Track (${data.unclaimedCount})`
-                : "View Reward Track"
+                ? t("pass.viewRewardTrackCount", {
+                    count: data.unclaimedCount,
+                  })
+                : t("pass.viewRewardTrack")
             }
             style={styles.cta}
             onPress={() => navigation.navigate("PassRewards")}
@@ -112,14 +125,11 @@ export function SeasonPassHubScreen() {
             onPress={() => navigation.navigate("ChallengeCenter")}
           >
             <Icon name="checkCircle" size={16} color={colors.amber} />
-            <Text style={styles.challengesBtnText}>Challenges</Text>
-            <Icon name="back" size={16} color={colors.text.muted} style={styles.chevron} />
+            <Text style={styles.challengesBtnText}>{t("pass.challenges")}</Text>
+            <Icon name="forward" size={16} color={colors.text.muted} />
           </TouchableOpacity>
 
-          <Text style={styles.hint}>
-            Earn Season XP from daily cases (+50), mini cases (+20), Mega Cases
-            (+250) and Story chapters (+100).
-          </Text>
+          <Text style={styles.hint}>{t("pass.xpHint")}</Text>
         </ScrollView>
       )}
     </View>
@@ -260,7 +270,6 @@ const styles = StyleSheet.create({
     fontSize: typography.sizes.base,
     color: colors.text.primary,
   },
-  chevron: { transform: [{ rotate: "180deg" }] },
   hint: {
     fontFamily: typography.families.body,
     fontSize: typography.sizes.xs,

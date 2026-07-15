@@ -15,6 +15,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AppStackParamList } from "../../../screens/HomeScreen";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTranslation } from "react-i18next";
+import i18n, { type TranslationKey } from "../../../i18n";
 import { colors, typography, spacing, radii, shadows, gradients } from "../../../theme";
 import { useCaseById } from "../../cases/cases.hooks";
 import { useInvestigationStore } from "../investigation.store";
@@ -65,11 +67,11 @@ type PopupState = {
 
 type Tab = "evidence" | "suspects" | "witnesses" | "timeline";
 
-const TABS: { key: Tab; label: string; icon: IconName }[] = [
-  { key: "evidence", label: "Evidence", icon: "search" },
-  { key: "suspects", label: "Suspects", icon: "people" },
-  { key: "witnesses", label: "Witnesses", icon: "chat" },
-  { key: "timeline", label: "Timeline", icon: "calendar" },
+const TABS: { key: Tab; labelKey: TranslationKey; icon: IconName }[] = [
+  { key: "evidence", labelKey: "investigation.tabEvidence", icon: "search" },
+  { key: "suspects", labelKey: "investigation.tabSuspects", icon: "people" },
+  { key: "witnesses", labelKey: "investigation.tabWitnesses", icon: "chat" },
+  { key: "timeline", labelKey: "investigation.tabTimeline", icon: "calendar" },
 ];
 
 const EVIDENCE_TYPE_COLOR: Record<string, string> = {
@@ -79,20 +81,36 @@ const EVIDENCE_TYPE_COLOR: Record<string, string> = {
   document: "#B58BD6",
 };
 
+const EVIDENCE_TYPE_LABEL_KEY: Record<string, TranslationKey> = {
+  physical: "evidenceType.physical",
+  digital: "evidenceType.digital",
+  testimonial: "evidenceType.testimonial",
+  document: "evidenceType.document",
+};
+
 const RELIABILITY_CONFIG: Record<
   string,
-  { color: string; label: string; icon: IconName }
+  { color: string; labelKey: TranslationKey; icon: IconName }
 > = {
-  reliable: { color: colors.green, label: "RELIABLE", icon: "checkCircle" },
+  reliable: {
+    color: colors.green,
+    labelKey: "investigation.reliabilityReliable",
+    icon: "checkCircle",
+  },
   unreliable: {
     color: colors.coral,
-    label: "UNRELIABLE",
+    labelKey: "investigation.reliabilityUnreliable",
     icon: "closeCircle",
   },
-  uncertain: { color: colors.warning, label: "UNCERTAIN", icon: "warning" },
+  uncertain: {
+    color: colors.warning,
+    labelKey: "investigation.reliabilityUncertain",
+    icon: "warning",
+  },
 };
 
 export function InvestigationScreen({ navigation, route }: Props) {
+  const { t } = useTranslation();
   const { caseId, eventId, seasonId, chapterNumber } = route.params;
   const isEvent = !!eventId;
   const isChapter = !!seasonId;
@@ -165,8 +183,8 @@ export function InvestigationScreen({ navigation, route }: Props) {
             }
             setPopup({
               variant: "warning",
-              title: "Can't start event",
-              message: msg || "This event isn't available right now.",
+              title: i18n.t("investigation.cantStartEvent"),
+              message: msg || i18n.t("investigation.eventUnavailable"),
             });
             navigation.goBack();
             return;
@@ -181,10 +199,10 @@ export function InvestigationScreen({ navigation, route }: Props) {
           } catch (e: any) {
             setPopup({
               variant: "warning",
-              title: "Chapter locked",
+              title: i18n.t("investigation.chapterLocked"),
               message:
                 e?.response?.data?.error?.message ??
-                "This chapter isn't available yet.",
+                i18n.t("investigation.chapterUnavailable"),
             });
             navigation.goBack();
             return;
@@ -208,7 +226,7 @@ export function InvestigationScreen({ navigation, route }: Props) {
             isCorrect: existing.isCorrect,
             score: existing.score,
             solution: { suspectId: existing.accusation?.suspectId },
-            explanation: "You already solved this case.",
+            explanation: i18n.t("investigation.alreadySolved"),
             streakResult: null,
           });
           if (existing.rewardDoubled) setRewardDoubled(true);
@@ -285,8 +303,8 @@ export function InvestigationScreen({ navigation, route }: Props) {
     ) {
       setPopup({
         variant: "warning",
-        title: "Missing info",
-        message: "Pick the suspect, motive, weapon, and key moment.",
+        title: t("investigation.missingInfo"),
+        message: t("investigation.missingEventFields"),
       });
       return;
     }
@@ -317,9 +335,10 @@ export function InvestigationScreen({ navigation, route }: Props) {
     } catch (err: any) {
       setPopup({
         variant: "danger",
-        title: "Submission failed",
+        title: t("investigation.submissionFailed"),
         message:
-          err?.response?.data?.error?.message ?? "Could not submit your answer.",
+          err?.response?.data?.error?.message ??
+          t("investigation.couldNotSubmit"),
       });
     } finally {
       setSubmitting(false);
@@ -330,8 +349,8 @@ export function InvestigationScreen({ navigation, route }: Props) {
     if (!selectedSuspect || !eventMotive || !eventTimelineId || !seasonId) {
       setPopup({
         variant: "warning",
-        title: "Missing info",
-        message: "Pick the suspect, motive, and key moment.",
+        title: t("investigation.missingInfo"),
+        message: t("investigation.missingChapterFields"),
       });
       return;
     }
@@ -362,9 +381,10 @@ export function InvestigationScreen({ navigation, route }: Props) {
     } catch (err: any) {
       setPopup({
         variant: "danger",
-        title: "Submission failed",
+        title: t("investigation.submissionFailed"),
         message:
-          err?.response?.data?.error?.message ?? "Could not submit your answer.",
+          err?.response?.data?.error?.message ??
+          t("investigation.couldNotSubmit"),
       });
     } finally {
       setSubmitting(false);
@@ -375,8 +395,8 @@ export function InvestigationScreen({ navigation, route }: Props) {
     if (!selectedSuspect || !motive.trim()) {
       setPopup({
         variant: "warning",
-        title: "Missing info",
-        message: "Select a suspect and provide a motive.",
+        title: t("investigation.missingInfo"),
+        message: t("investigation.missingAccusationFields"),
       });
       return;
     }
@@ -407,16 +427,11 @@ export function InvestigationScreen({ navigation, route }: Props) {
       });
       setResult(res);
       setShowAccuseModal(false);
-    } catch (err: any) {
-      console.warn("Accusation error:", err?.message);
-      console.warn(
-        "Accusation error response:",
-        JSON.stringify(err?.response?.data),
-      );
+    } catch {
       setPopup({
         variant: "danger",
-        title: "Error",
-        message: "Failed to submit accusation.",
+        title: t("common.error"),
+        message: t("investigation.accusationFailed"),
       });
     } finally {
       setSubmitting(false);
@@ -433,9 +448,8 @@ export function InvestigationScreen({ navigation, route }: Props) {
     ) {
       setPopup({
         variant: "warning",
-        title: "Investigate first",
-        message:
-          "Review all evidence and question all suspects before using a hint.",
+        title: t("investigation.investigateFirst"),
+        message: t("investigation.investigateFirstMsg"),
       });
       return;
     }
@@ -443,8 +457,8 @@ export function InvestigationScreen({ navigation, route }: Props) {
     if ((profile?.hints ?? 0) <= 0) {
       setPopup({
         variant: "warning",
-        title: "No hints remaining",
-        message: "Buy more hints in the Shop.",
+        title: t("investigation.noHints"),
+        message: t("investigation.buyHints"),
       });
       return;
     }
@@ -453,12 +467,19 @@ export function InvestigationScreen({ navigation, route }: Props) {
     setPopup({
       variant: "info",
       icon: "hint",
-      title: "Use Your Hint?",
-      message:
-        "This is your only hint for this case. It will eliminate one innocent suspect.",
+      title: t("investigation.useHintTitle"),
+      message: t("investigation.useHintMsg"),
       buttons: [
-        { label: "Cancel", variant: "secondary", onPress: () => setPopup(null) },
-        { label: "Use Hint", variant: "primary", onPress: confirmUseHint },
+        {
+          label: t("common.cancel"),
+          variant: "secondary",
+          onPress: () => setPopup(null),
+        },
+        {
+          label: t("investigation.useHint"),
+          variant: "primary",
+          onPress: confirmUseHint,
+        },
       ],
     });
   }
@@ -481,14 +502,18 @@ export function InvestigationScreen({ navigation, route }: Props) {
       setPopup({
         variant: "success",
         icon: "hint",
-        title: "Suspect Cleared!",
-        message: `${result.clearedSuspect.name} is innocent.`,
+        title: t("investigation.suspectCleared"),
+        message: t("investigation.suspectInnocent", {
+          name: result.clearedSuspect.name,
+        }),
       });
     } catch (err: any) {
       setPopup({
         variant: "danger",
-        title: "Error",
-        message: err?.response?.data?.error?.message ?? "Failed to use hint",
+        title: t("common.error"),
+        message:
+          err?.response?.data?.error?.message ??
+          t("investigation.hintFailed"),
       });
     } finally {
       setUsingHint(false);
@@ -518,15 +543,15 @@ export function InvestigationScreen({ navigation, route }: Props) {
   const APPLYING_POPUP: PopupState = {
     variant: "info",
     icon: "hint",
-    title: "Applying reward…",
-    message: "One moment.",
+    title: t("investigation.applyingReward"),
+    message: t("investigation.oneMoment"),
   };
 
   const adRewardError = (err: any): PopupState => ({
     variant: "warning",
-    title: "Couldn't apply reward",
+    title: t("investigation.rewardFailed"),
     message:
-      err?.response?.data?.error?.message ?? "Please try again in a moment.",
+      err?.response?.data?.error?.message ?? t("investigation.tryAgainSoon"),
   });
 
   async function handleAdEliminate() {
@@ -544,8 +569,10 @@ export function InvestigationScreen({ navigation, route }: Props) {
       setPopup({
         variant: "success",
         icon: "hint",
-        title: "Suspect Cleared!",
-        message: name ? `${name} is innocent.` : "A suspect was cleared.",
+        title: t("investigation.suspectCleared"),
+        message: name
+          ? t("investigation.suspectInnocent", { name })
+          : t("investigation.aSuspectCleared"),
       });
     } catch (err) {
       setPopup(adRewardError(err));
@@ -566,10 +593,10 @@ export function InvestigationScreen({ navigation, route }: Props) {
       setPopup({
         variant: "warning",
         icon: "warning",
-        title: "Red Herring Exposed",
+        title: t("investigation.redHerringExposed"),
         message: title
-          ? `"${title}" is a decoy — don't let it mislead you.`
-          : "A red herring was exposed.",
+          ? t("investigation.decoyWarning", { title })
+          : t("investigation.aRedHerringExposed"),
       });
     } catch (err) {
       setPopup(adRewardError(err));
@@ -591,8 +618,8 @@ export function InvestigationScreen({ navigation, route }: Props) {
       setPopup({
         variant: "success",
         icon: "coin",
-        title: "Reward Doubled!",
-        message: "Your XP and coins for this case were doubled.",
+        title: t("investigation.rewardDoubledTitle"),
+        message: t("investigation.rewardDoubledMsg"),
       });
     } catch (err) {
       setPopup(adRewardError(err));
@@ -666,18 +693,22 @@ export function InvestigationScreen({ navigation, route }: Props) {
               />
             </LinearGradient>
             <Text style={styles.resultKicker}>
-              {result.isCorrect ? "CASE CLOSED" : "CASE REOPENED"}
+              {result.isCorrect
+                ? t("investigation.caseClosed")
+                : t("investigation.caseReopened")}
             </Text>
             <Text style={styles.resultTitle}>
               {result.isPerfect
-                ? "Perfect\nInvestigation"
+                ? t("investigation.perfectInvestigationTitle")
                 : result.isCorrect
-                  ? "Case Solved"
-                  : "Wrong Accusation"}
+                  ? t("cases.caseSolved")
+                  : t("cases.wrongAccusation")}
             </Text>
 
             <View style={styles.scoreBox}>
-              <Text style={styles.scoreLabel}>FINAL SCORE</Text>
+              <Text style={styles.scoreLabel}>
+                {t("investigation.finalScore")}
+              </Text>
               <Text style={styles.scoreValue}>{result.score}</Text>
             </View>
 
@@ -694,7 +725,7 @@ export function InvestigationScreen({ navigation, route }: Props) {
                   <View style={styles.doubleAdRow}>
                     <Icon name="play" size={15} color={colors.text.inverse} />
                     <Text style={styles.doubleAdText}>
-                      Watch ad — double XP & coins
+                      {t("investigation.watchAdDouble")}
                     </Text>
                   </View>
                 )}
@@ -702,20 +733,23 @@ export function InvestigationScreen({ navigation, route }: Props) {
             ) : (
               <View style={styles.doubledBadge}>
                 <Icon name="checkCircle" size={14} color={colors.success} />
-                <Text style={styles.doubledBadgeText}>Reward doubled</Text>
+                <Text style={styles.doubledBadgeText}>
+                  {t("investigation.rewardDoubledBadge")}
+                </Text>
               </View>
             )}
 
             <View style={styles.explanationCard}>
-          <Text style={styles.explanationLabel}>WHAT HAPPENED</Text>
+          <Text style={styles.explanationLabel}>
+            {t("investigation.whatHappened")}
+          </Text>
           <Text style={styles.resultExplanation}>{result.explanation}</Text>
           <Text style={styles.resultSolution}>
-            Culprit:{" "}
-            {
-              case_.suspects?.find(
+            {t("investigation.culprit", {
+              name: case_.suspects?.find(
                 (s: any) => s.id === result.solution.suspectId,
-              )?.name
-            }
+              )?.name,
+            })}
           </Text>
         </View>
 
@@ -724,11 +758,12 @@ export function InvestigationScreen({ navigation, route }: Props) {
           <View style={styles.perfectCard}>
             <View style={styles.perfectBadgeRow}>
               <Icon name="medal" size={16} color={colors.amber} />
-              <Text style={styles.perfectBadge}>PERFECT INVESTIGATION</Text>
+              <Text style={styles.perfectBadge}>
+                {t("investigation.perfectBadge")}
+              </Text>
             </View>
             <Text style={styles.perfectDesc}>
-              You inspected every clue, questioned every suspect, and solved it
-              without hints.
+              {t("investigation.perfectDesc")}
             </Text>
           </View>
         )}
@@ -743,13 +778,17 @@ export function InvestigationScreen({ navigation, route }: Props) {
                 : styles.redHerringCardFooled,
             ]}
           >
-            <Text style={styles.redHerringLabel}>RED HERRINGS</Text>
+            <Text style={styles.redHerringLabel}>
+              {t("investigation.redHerrings")}
+            </Text>
             {redHerringStats.fooledBy.length === 0 ? (
               <View style={styles.redHerringRow}>
                 <Icon name="target" size={16} color={colors.amber} />
                 <Text style={styles.redHerringClean}>
-                  You avoided {redHerringStats.avoided}/{redHerringStats.total}{" "}
-                  red herrings!
+                  {t("investigation.avoidedHerrings", {
+                    avoided: redHerringStats.avoided,
+                    total: redHerringStats.total,
+                  })}
                 </Text>
               </View>
             ) : (
@@ -758,7 +797,7 @@ export function InvestigationScreen({ navigation, route }: Props) {
                   <View key={`${title}-${i}`} style={styles.redHerringRow}>
                     <Icon name="warning" size={16} color={colors.danger} />
                     <Text style={styles.redHerringFooled}>
-                      You were fooled by: {title}
+                      {t("investigation.fooledBy", { title })}
                     </Text>
                   </View>
                 ))}
@@ -776,10 +815,14 @@ export function InvestigationScreen({ navigation, route }: Props) {
               style={styles.streakEmoji}
             />
             <Text style={styles.streakCount}>
-              {streakResult.streak} Day Streak
+              {t("investigation.dayStreakCount", {
+                count: streakResult.streak,
+              })}
             </Text>
             {streakResult.isNewRecord && (
-              <Text style={styles.streakRecord}>New Record!</Text>
+              <Text style={styles.streakRecord}>
+                {t("investigation.newRecord")}
+              </Text>
             )}
           </View>
         )}
@@ -788,7 +831,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
           <View style={styles.rewardCard}>
             <View style={styles.rewardLabelRow}>
               <Icon name="trophy" size={13} color={colors.amber} />
-              <Text style={styles.rewardLabel}>STREAK REWARD</Text>
+              <Text style={styles.rewardLabel}>
+                {t("investigation.streakReward")}
+              </Text>
             </View>
             <Text style={styles.rewardTitle}>
               {streakResult.rewardEarned.label}
@@ -798,13 +843,17 @@ export function InvestigationScreen({ navigation, route }: Props) {
                 <Text style={styles.rewardValue}>
                   +{streakResult.rewardEarned.coins}
                 </Text>
-                <Text style={styles.rewardType}>coins</Text>
+                <Text style={styles.rewardType}>
+                  {t("investigation.coinsUnit")}
+                </Text>
               </View>
               <View style={styles.rewardItem}>
                 <Text style={styles.rewardValue}>
                   +{streakResult.rewardEarned.xp}
                 </Text>
-                <Text style={styles.rewardType}>xp</Text>
+                <Text style={styles.rewardType}>
+                  {t("investigation.xpUnit")}
+                </Text>
               </View>
             </View>
           </View>
@@ -813,7 +862,7 @@ export function InvestigationScreen({ navigation, route }: Props) {
           </ScrollView>
 
           <GradientButton
-            label="Back to Home"
+            label={t("investigation.backToHome")}
             style={styles.doneButton}
             onPress={() => {
               setResult(null);
@@ -849,7 +898,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
               <View style={styles.hintButtonContent}>
                 <Icon name="hint" size={15} color={colors.amber} />
                 <Text style={styles.hintButtonText}>
-                  {hintUsed ? "Used" : `${Math.max(0, profile?.hints ?? 0)}`}
+                  {hintUsed
+                    ? t("investigation.hintUsedLabel")
+                    : `${Math.max(0, profile?.hints ?? 0)}`}
                 </Text>
               </View>
             )}
@@ -860,7 +911,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
       {/* ── Progress ── */}
       <View style={styles.progressSection}>
         <View style={styles.progressHeader}>
-          <Text style={styles.progressLabel}>INVESTIGATION PROGRESS</Text>
+          <Text style={styles.progressLabel}>
+            {t("investigation.progressLabel")}
+          </Text>
           <Text style={styles.progressPct}>
             {Math.round(overallProgress * 100)}%
           </Text>
@@ -881,7 +934,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
           ) : (
             <>
               <Icon name="play" size={13} color={colors.amber} />
-              <Text style={styles.adHelpText}>Eliminate suspect</Text>
+              <Text style={styles.adHelpText}>
+                {t("investigation.adEliminate")}
+              </Text>
             </>
           )}
         </TouchableOpacity>
@@ -895,7 +950,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
           ) : (
             <>
               <Icon name="play" size={13} color={colors.amber} />
-              <Text style={styles.adHelpText}>Expose a clue</Text>
+              <Text style={styles.adHelpText}>
+                {t("investigation.adReveal")}
+              </Text>
             </>
           )}
         </TouchableOpacity>
@@ -940,7 +997,7 @@ export function InvestigationScreen({ navigation, route }: Props) {
               <Text
                 style={[styles.tabLabel, isActive && styles.tabLabelActive]}
               >
-                {tab.label}
+                {t(tab.labelKey)}
               </Text>
               {total > 0 && (
                 <View
@@ -969,7 +1026,7 @@ export function InvestigationScreen({ navigation, route }: Props) {
           <View style={styles.victimCard}>
             <View style={styles.victimHeader}>
               <Icon name="user" size={14} color={colors.coral} />
-              <Text style={styles.victimLabel}>VICTIM</Text>
+              <Text style={styles.victimLabel}>{t("cases.victim")}</Text>
             </View>
             <Text style={styles.victimName}>{case_.victim.name}</Text>
             {!!case_.victim.description && (
@@ -999,23 +1056,29 @@ export function InvestigationScreen({ navigation, route }: Props) {
                     {inspected ? (
                       <View style={styles.doneBadge}>
                         <Icon name="check" size={11} color={colors.success} />
-                        <Text style={styles.doneBadgeText}>INSPECTED</Text>
+                        <Text style={styles.doneBadgeText}>
+                          {t("investigation.inspected")}
+                        </Text>
                       </View>
                     ) : (
                       <View style={styles.tapBadge}>
-                        <Text style={styles.tapBadgeText}>TAP TO INSPECT</Text>
+                        <Text style={styles.tapBadgeText}>
+                          {t("investigation.tapToInspect")}
+                        </Text>
                       </View>
                     )}
                   </View>
                   <Text style={[styles.cardTag, { color: typeColor }]}>
-                    {e.type.toUpperCase()}
+                    {EVIDENCE_TYPE_LABEL_KEY[e.type]
+                      ? t(EVIDENCE_TYPE_LABEL_KEY[e.type])
+                      : e.type.toUpperCase()}
                   </Text>
                   {inspected && (
                     <Text style={styles.cardDesc}>{e.description}</Text>
                   )}
                   {!inspected && (
                     <Text style={styles.cardLocked}>
-                      Tap to reveal this clue
+                      {t("investigation.tapToReveal")}
                     </Text>
                   )}
                 </View>
@@ -1069,16 +1132,22 @@ export function InvestigationScreen({ navigation, route }: Props) {
                     {cleared ? (
                       <View style={styles.clearedBadge}>
                         <Icon name="check" size={11} color={colors.success} />
-                        <Text style={styles.clearedBadgeText}>CLEARED</Text>
+                        <Text style={styles.clearedBadgeText}>
+                          {t("investigation.cleared")}
+                        </Text>
                       </View>
                     ) : reviewed ? (
                       <View style={styles.doneBadge}>
                         <Icon name="check" size={11} color={colors.success} />
-                        <Text style={styles.doneBadgeText}>QUESTIONED</Text>
+                        <Text style={styles.doneBadgeText}>
+                          {t("investigation.questioned")}
+                        </Text>
                       </View>
                     ) : (
                       <View style={styles.tapBadge}>
-                        <Text style={styles.tapBadgeText}>TAP</Text>
+                        <Text style={styles.tapBadgeText}>
+                          {t("investigation.tap")}
+                        </Text>
                       </View>
                     )}
                   </View>
@@ -1086,14 +1155,16 @@ export function InvestigationScreen({ navigation, route }: Props) {
                     <>
                       <Text style={styles.cardDesc}>{s.description}</Text>
                       <View style={styles.alibiBox}>
-                        <Text style={styles.alibiLabel}>ALIBI</Text>
+                        <Text style={styles.alibiLabel}>
+                          {t("investigation.alibi")}
+                        </Text>
                         <Text style={styles.alibiText}>{s.alibi}</Text>
                       </View>
                     </>
                   )}
                   {!reviewed && (
                     <Text style={styles.cardLocked}>
-                      Tap to question this suspect
+                      {t("investigation.tapToQuestion")}
                     </Text>
                   )}
                 </View>
@@ -1132,11 +1203,15 @@ export function InvestigationScreen({ navigation, route }: Props) {
                     {reviewed ? (
                       <View style={styles.doneBadge}>
                         <Icon name="check" size={11} color={colors.success} />
-                        <Text style={styles.doneBadgeText}>READ</Text>
+                        <Text style={styles.doneBadgeText}>
+                          {t("investigation.read")}
+                        </Text>
                       </View>
                     ) : (
                       <View style={styles.tapBadge}>
-                        <Text style={styles.tapBadgeText}>TAP</Text>
+                        <Text style={styles.tapBadgeText}>
+                          {t("investigation.tap")}
+                        </Text>
                       </View>
                     )}
                   </View>
@@ -1152,14 +1227,14 @@ export function InvestigationScreen({ navigation, route }: Props) {
                         { color: relConfig.color, marginBottom: 0 },
                       ]}
                     >
-                      {relConfig.label}
+                      {t(relConfig.labelKey)}
                     </Text>
                   </View>
                   {reviewed ? (
                     <Text style={styles.statementText}>"{w.statement}"</Text>
                   ) : (
                     <Text style={styles.cardLocked}>
-                      Tap to read this testimony
+                      {t("investigation.tapToRead")}
                     </Text>
                   )}
                 </View>
@@ -1196,12 +1271,12 @@ export function InvestigationScreen({ navigation, route }: Props) {
           <View style={styles.accuseLocked}>
             <Icon name="checkCircle" size={15} color={colors.success} />
             <Text style={[styles.accuseLockedText, { color: colors.success }]}>
-              CHAPTER COMPLETED — REVIEW ONLY
+              {t("investigation.chapterCompletedReview")}
             </Text>
           </View>
         ) : accuseUnlocked ? (
           <GradientButton
-            label="Make an Accusation"
+            label={t("investigation.makeAccusation")}
             icon="scales"
             onPress={() => setShowAccuseModal(true)}
           />
@@ -1209,7 +1284,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
           <View style={styles.accuseLocked}>
             <Icon name="lock" size={15} color={colors.text.muted} />
             <Text style={styles.accuseLockedText}>
-              {Math.round(overallProgress * 100)}% — INVESTIGATE MORE
+              {t("investigation.investigateMore", {
+                percent: Math.round(overallProgress * 100),
+              })}
             </Text>
           </View>
         )}
@@ -1222,13 +1299,17 @@ export function InvestigationScreen({ navigation, route }: Props) {
             <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.modalTitleRow}>
               <Icon name="scales" size={20} color={colors.text.primary} />
-              <Text style={styles.modalTitle}>Make Your Accusation</Text>
+              <Text style={styles.modalTitle}>
+                {t("investigation.makeYourAccusation")}
+              </Text>
             </View>
             <Text style={styles.modalSubtitle}>
-              Choose wisely — you only get one shot
+              {t("investigation.chooseWisely")}
             </Text>
 
-            <Text style={styles.modalLabel}>WHO IS GUILTY?</Text>
+            <Text style={styles.modalLabel}>
+              {t("investigation.whoIsGuilty")}
+            </Text>
             {case_.suspects?.map((s: any) => {
               const cleared = clearedSuspectIds.includes(s.id);
               return (
@@ -1257,7 +1338,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
                   {cleared ? (
                     <View style={styles.clearedBadge}>
                       <Icon name="check" size={11} color={colors.success} />
-                      <Text style={styles.clearedBadgeText}>CLEARED</Text>
+                      <Text style={styles.clearedBadgeText}>
+                        {t("investigation.cleared")}
+                      </Text>
                     </View>
                   ) : (
                     selectedSuspect?.id === s.id && (
@@ -1270,7 +1353,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
 
             {isStructured ? (
               <>
-                <Text style={styles.modalLabel}>WHAT WAS THE MOTIVE?</Text>
+                <Text style={styles.modalLabel}>
+                  {t("investigation.whatMotive")}
+                </Text>
                 <View style={styles.optionWrap}>
                   {(case_.megaOptions?.motives ?? []).map((m: string) => (
                     <TouchableOpacity
@@ -1295,7 +1380,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
 
                 {isEvent && (
                   <>
-                    <Text style={styles.modalLabel}>WHICH WEAPON?</Text>
+                    <Text style={styles.modalLabel}>
+                      {t("investigation.whichWeapon")}
+                    </Text>
                     <View style={styles.optionWrap}>
                       {(case_.megaOptions?.weapons ?? []).map((w: string) => (
                         <TouchableOpacity
@@ -1320,7 +1407,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
                   </>
                 )}
 
-                <Text style={styles.modalLabel}>KEY MOMENT</Text>
+                <Text style={styles.modalLabel}>
+                  {t("investigation.keyMoment")}
+                </Text>
                 {(case_.timeline ?? []).map((t: any) => (
                   <TouchableOpacity
                     key={t.id}
@@ -1343,10 +1432,12 @@ export function InvestigationScreen({ navigation, route }: Props) {
               </>
             ) : (
               <>
-                <Text style={styles.modalLabel}>WHAT WAS THE MOTIVE?</Text>
+                <Text style={styles.modalLabel}>
+                  {t("investigation.whatMotive")}
+                </Text>
                 <TextInput
                   style={styles.motiveInput}
-                  placeholder="Explain the motive..."
+                  placeholder={t("investigation.motivePlaceholder")}
                   placeholderTextColor={colors.text.muted}
                   value={motive}
                   onChangeText={setMotive}
@@ -1361,10 +1452,16 @@ export function InvestigationScreen({ navigation, route }: Props) {
                 style={styles.cancelButton}
                 onPress={() => setShowAccuseModal(false)}
               >
-                <Text style={styles.cancelButtonText}>Cancel</Text>
+                <Text style={styles.cancelButtonText}>
+                  {t("common.cancel")}
+                </Text>
               </TouchableOpacity>
               <GradientButton
-                label={isStructured ? "Submit" : "Accuse"}
+                label={
+                  isStructured
+                    ? t("investigation.submit")
+                    : t("investigation.accuse")
+                }
                 style={styles.submitButton}
                 loading={submitting}
                 disabled={
@@ -1411,12 +1508,18 @@ export function InvestigationScreen({ navigation, route }: Props) {
               />
             </LinearGradient>
             <Text style={styles.levelUpTitle}>
-              {eventResult?.isCorrect ? "CASE SOLVED" : "SUBMITTED"}
+              {eventResult?.isCorrect
+                ? t("investigation.caseSolvedCaps")
+                : t("investigation.submitted")}
             </Text>
-            <Text style={styles.levelUpSub}>{eventResult?.score} pts</Text>
+            <Text style={styles.levelUpSub}>
+              {t("investigation.ptsValue", { score: eventResult?.score })}
+            </Text>
             <Text style={styles.levelUpDesc}>
-              {eventResult?.accuracy}% accuracy ·{" "}
-              {formatDuration(eventResult?.completionTimeSec)}
+              {t("investigation.accuracyDuration", {
+                accuracy: eventResult?.accuracy,
+                duration: formatDuration(eventResult?.completionTimeSec),
+              })}
             </Text>
 
             {eventResult?.scoreBreakdown && (
@@ -1435,7 +1538,7 @@ export function InvestigationScreen({ navigation, route }: Props) {
             )}
 
             <GradientButton
-              label="View Leaderboard"
+              label={t("investigation.viewLeaderboard")}
               style={styles.levelUpButton}
               onPress={() => {
                 setEventResult(null);
@@ -1449,7 +1552,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
                 navigation.navigate("Home");
               }}
             >
-              <Text style={styles.eventResultHomeText}>Back to Home</Text>
+              <Text style={styles.eventResultHomeText}>
+                {t("investigation.backToHome")}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -1473,19 +1578,25 @@ export function InvestigationScreen({ navigation, route }: Props) {
             </LinearGradient>
             <Text style={styles.levelUpTitle}>
               {chapterResult?.seasonCompleted
-                ? "SEASON COMPLETE"
-                : "CHAPTER COMPLETE"}
+                ? t("investigation.seasonComplete")
+                : t("investigation.chapterComplete")}
             </Text>
             <Text style={styles.levelUpSub}>
-              {chapterResult?.result?.score} pts
+              {t("investigation.ptsValue", {
+                score: chapterResult?.result?.score,
+              })}
             </Text>
             <Text style={styles.levelUpDesc}>
-              {chapterResult?.result?.accuracy}% accuracy
+              {t("investigation.accuracyOnly", {
+                accuracy: chapterResult?.result?.accuracy,
+              })}
             </Text>
 
             {!!chapterResult?.cliffhanger && (
               <View style={styles.cliffhangerCard}>
-                <Text style={styles.cliffhangerLabel}>CLIFFHANGER</Text>
+                <Text style={styles.cliffhangerLabel}>
+                  {t("investigation.cliffhanger")}
+                </Text>
                 <Text style={styles.cliffhangerBody}>
                   “{chapterResult.cliffhanger}”
                 </Text>
@@ -1495,10 +1606,13 @@ export function InvestigationScreen({ navigation, route }: Props) {
             {!!chapterResult?.nextChapter && (
               <Text style={styles.nextTease}>
                 {chapterResult.nextChapter.unlocked
-                  ? "The next chapter is ready for you."
-                  : `Chapter ${chapterResult.nextChapter.chapterNumber} unlocks ${new Date(
-                      chapterResult.nextChapter.unlockDate,
-                    ).toLocaleDateString()}.`}
+                  ? t("investigation.nextChapterReady")
+                  : t("investigation.chapterUnlocks", {
+                      number: chapterResult.nextChapter.chapterNumber,
+                      date: new Date(
+                        chapterResult.nextChapter.unlockDate,
+                      ).toLocaleDateString(i18n.language),
+                    })}
               </Text>
             )}
 
@@ -1509,11 +1623,12 @@ export function InvestigationScreen({ navigation, route }: Props) {
                     <Icon name="coin" size={15} color={colors.amber} />
                     <Text style={styles.levelUpRewardText}>
                       {[
-                        r.xp && `+${r.xp} XP`,
-                        r.coins && `+${r.coins} coins`,
-                        r.title && "Title",
-                        r.badge && "Badge",
-                        r.avatar && "Avatar",
+                        r.xp && t("investigation.xpReward", { count: r.xp }),
+                        r.coins &&
+                          t("investigation.coinsReward", { count: r.coins }),
+                        r.title && t("investigation.rewardTitle"),
+                        r.badge && t("investigation.rewardBadge"),
+                        r.avatar && t("investigation.rewardAvatar"),
                       ]
                         .filter(Boolean)
                         .join(" · ")}
@@ -1524,7 +1639,7 @@ export function InvestigationScreen({ navigation, route }: Props) {
             )}
 
             <GradientButton
-              label="Continue"
+              label={t("play.continue")}
               style={styles.levelUpButton}
               onPress={() => {
                 setChapterResult(null);
@@ -1541,7 +1656,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
                   navigation.replace("SeasonLeaderboard", { seasonId });
               }}
             >
-              <Text style={styles.eventResultHomeText}>View Leaderboard</Text>
+              <Text style={styles.eventResultHomeText}>
+                {t("investigation.viewLeaderboard")}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -1559,16 +1676,20 @@ export function InvestigationScreen({ navigation, route }: Props) {
             >
               <Icon name="star" size={42} color={colors.text.inverse} />
             </LinearGradient>
-            <Text style={styles.levelUpTitle}>LEVEL UP</Text>
+            <Text style={styles.levelUpTitle}>
+              {t("investigation.levelUp")}
+            </Text>
             <Text style={styles.levelUpSub}>
               {levelUpData?.oldLevel} → {levelUpData?.newLevel}
             </Text>
             <Text style={styles.levelUpDesc}>
-              You reached Level {levelUpData?.newLevel}!
+              {t("investigation.reachedLevel", {
+                level: levelUpData?.newLevel,
+              })}
             </Text>
             {!!levelUpData?.milestones?.length && (
               <Text style={styles.levelUpMilestone}>
-                ★ MILESTONE REWARD UNLOCKED
+                {t("investigation.milestoneUnlocked")}
               </Text>
             )}
             {!!(levelUpData?.coins || levelUpData?.hints) && (
@@ -1577,7 +1698,9 @@ export function InvestigationScreen({ navigation, route }: Props) {
                   <View style={styles.levelUpRewardRow}>
                     <Icon name="coin" size={18} color={colors.amber} />
                     <Text style={styles.levelUpRewardText}>
-                      +{levelUpData.coins} coins
+                      {t("investigation.coinsReward", {
+                        count: levelUpData.coins,
+                      })}
                     </Text>
                   </View>
                 )}
@@ -1585,15 +1708,16 @@ export function InvestigationScreen({ navigation, route }: Props) {
                   <View style={styles.levelUpRewardRow}>
                     <Icon name="hint" size={18} color={colors.amber} />
                     <Text style={styles.levelUpRewardText}>
-                      +{levelUpData.hints} free hint
-                      {levelUpData.hints > 1 ? "s" : ""}
+                      {t("investigation.hintsReward", {
+                        count: levelUpData.hints,
+                      })}
                     </Text>
                   </View>
                 )}
               </View>
             )}
             <GradientButton
-              label="Continue"
+              label={t("play.continue")}
               style={styles.levelUpButton}
               onPress={() => setShowLevelUp(false)}
             />
@@ -1946,7 +2070,7 @@ const styles = StyleSheet.create({
   },
   timelineLeft: {
     alignItems: "center",
-    marginRight: spacing[4],
+    marginEnd: spacing[4],
     width: 20,
   },
   timelineDot: {

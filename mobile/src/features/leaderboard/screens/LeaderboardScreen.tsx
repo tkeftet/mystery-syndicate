@@ -23,6 +23,8 @@ import {
   MEDAL_COLORS,
 } from "../../../constants/iconMappings";
 
+import { useTranslation } from "react-i18next";
+import i18n, { type TranslationKey } from "../../../i18n";
 import { colors, typography, spacing, radii, gradients } from "../../../theme";
 import { useAuthStore } from "../../auth/auth.store";
 import {
@@ -37,31 +39,39 @@ type Tab = "daily" | "weekly" | "alltime" | "stars";
 
 const DOTW_SECTIONS: {
   key: "topAccuracy" | "longestStreak" | "mostSolved";
-  label: string;
+  labelKey: TranslationKey;
   icon: any;
   suffix: (r: any) => string;
 }[] = [
   {
     key: "topAccuracy",
-    label: "TOP ACCURACY",
+    labelKey: "leaderboard.topAccuracy",
     icon: "target",
     suffix: (r) => `${r.accuracy}%`,
   },
   {
     key: "longestStreak",
-    label: "LONGEST STREAK",
+    labelKey: "leaderboard.longestStreak",
     icon: "streak",
-    suffix: (r) => `${r.streak} days`,
+    suffix: (r) => i18n.t("leaderboard.daysSuffix", { count: r.streak }),
   },
   {
     key: "mostSolved",
-    label: "MOST SOLVED",
+    labelKey: "leaderboard.mostSolved",
     icon: "checkCircle",
     suffix: (r) => `${r.totalSolved}`,
   },
 ];
 
+const TAB_LABEL_KEY: Record<Tab, TranslationKey> = {
+  daily: "leaderboard.tabDaily",
+  weekly: "leaderboard.tabWeekly",
+  alltime: "leaderboard.tabAllTime",
+  stars: "leaderboard.tabStars",
+};
+
 export function LeaderboardScreen() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>("daily");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const { user } = useAuthStore();
@@ -87,8 +97,8 @@ export function LeaderboardScreen() {
       {/* ── Header ── */}
       <View style={[styles.header, { paddingTop: insets.top + spacing[3] }]}>
         <View style={styles.headerLeft}>
-          <Text style={styles.kicker}>// LEADERBOARD</Text>
-          <Text style={styles.title}>Rankings</Text>
+          <Text style={styles.kicker}>{t("leaderboard.kicker")}</Text>
+          <Text style={styles.title}>{t("leaderboard.title")}</Text>
         </View>
         <AppMenu />
       </View>
@@ -101,19 +111,25 @@ export function LeaderboardScreen() {
           end={{ x: 1, y: 1 }}
           style={styles.myRankCard}
         >
-          <Text style={styles.myRankLabel}>YOUR GLOBAL RANK</Text>
+          <Text style={styles.myRankLabel}>
+            {t("leaderboard.yourGlobalRank")}
+          </Text>
           <Text style={styles.myRankValue}>#{myRank.allTime}</Text>
           <View style={styles.myRankStats}>
             <View style={styles.myRankStat}>
               <Text style={styles.myRankStatValue}>
                 {myRank.xp.toLocaleString()}
               </Text>
-              <Text style={styles.myRankStatLabel}>XP</Text>
+              <Text style={styles.myRankStatLabel}>
+                {t("leaderboard.xpCaps")}
+              </Text>
             </View>
             <View style={styles.myRankStatDivider} />
             <View style={styles.myRankStat}>
               <Text style={styles.myRankStatValue}>{myRank.totalSolved}</Text>
-              <Text style={styles.myRankStatLabel}>SOLVED</Text>
+              <Text style={styles.myRankStatLabel}>
+                {t("publicProfile.solvedCaps")}
+              </Text>
             </View>
             <View style={styles.myRankStatDivider} />
             <View style={styles.myRankStat}>
@@ -121,7 +137,9 @@ export function LeaderboardScreen() {
                 <Icon name="streak" size={15} color={colors.amber} />
                 <Text style={styles.myRankStatValue}>{myRank.streak}</Text>
               </View>
-              <Text style={styles.myRankStatLabel}>STREAK</Text>
+              <Text style={styles.myRankStatLabel}>
+                {t("publicProfile.streakCaps")}
+              </Text>
             </View>
           </View>
         </LinearGradient>
@@ -131,12 +149,7 @@ export function LeaderboardScreen() {
       <View style={styles.tabs}>
         {(["daily", "weekly", "alltime", "stars"] as Tab[]).map((tab) => {
           const active = activeTab === tab;
-          const label =
-            tab === "alltime"
-              ? "ALL TIME"
-              : tab === "stars"
-                ? "STARS"
-                : tab.toUpperCase();
+          const label = t(TAB_LABEL_KEY[tab]);
           return (
             <TouchableOpacity
               key={tab}
@@ -169,7 +182,7 @@ export function LeaderboardScreen() {
               <View key={sec.key} style={styles.dotwSection}>
                 <View style={styles.dotwHeader}>
                   <Icon name={sec.icon} size={14} color={colors.amber} />
-                  <Text style={styles.dotwLabel}>{sec.label}</Text>
+                  <Text style={styles.dotwLabel}>{t(sec.labelKey)}</Text>
                 </View>
                 {rows.length > 0 ? (
                   rows.map((r, i) => (
@@ -205,7 +218,9 @@ export function LeaderboardScreen() {
                     </SurfaceCard>
                   ))
                 ) : (
-                  <Text style={styles.dotwEmpty}>No detectives yet.</Text>
+                  <Text style={styles.dotwEmpty}>
+                    {t("leaderboard.noDetectives")}
+                  </Text>
                 )}
               </View>
             );
@@ -259,7 +274,7 @@ export function LeaderboardScreen() {
                         numberOfLines={1}
                       >
                         {entry.username}
-                        {isMe ? " (you)" : ""}
+                        {isMe ? ` ${t("leaderboard.you")}` : ""}
                       </Text>
                       {titleMeta ? (
                         <View style={styles.rowTitleRow}>
@@ -276,14 +291,20 @@ export function LeaderboardScreen() {
                             color={entry.isCorrect ? colors.green : colors.coral}
                           />
                           <Text style={styles.rowSub}>
-                            {entry.isCorrect ? "Correct" : "Wrong"}
+                            {entry.isCorrect
+                              ? t("leaderboard.correct")
+                              : t("leaderboard.wrong")}
                           </Text>
                         </View>
                       ) : (
                         <Text style={styles.rowSub}>
                           {activeTab === "weekly"
-                            ? `${entry.casesSolved} cases`
-                            : `Level ${entry.level}`}
+                            ? t("leaderboard.casesCount", {
+                                count: entry.casesSolved,
+                              })
+                            : t("leaderboard.levelCount", {
+                                level: entry.level,
+                              })}
                         </Text>
                       )}
                     </View>
@@ -297,10 +318,10 @@ export function LeaderboardScreen() {
           ) : (
             <View style={styles.empty}>
               <Icon name="trophy" size={40} color={colors.text.muted} />
-              <Text style={styles.emptyTitle}>No detectives yet</Text>
-              <Text style={styles.emptySub}>
-                Be the first to claim the top spot
+              <Text style={styles.emptyTitle}>
+                {t("leaderboard.emptyTitle")}
               </Text>
+              <Text style={styles.emptySub}>{t("leaderboard.emptySub")}</Text>
             </View>
           )}
         </ScrollView>
@@ -322,7 +343,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing[5],
     paddingBottom: spacing[4],
   },
-  headerLeft: { flex: 1, paddingRight: spacing[3] },
+  headerLeft: { flex: 1, paddingEnd: spacing[3] },
   kicker: {
     fontFamily: typography.families.mono,
     fontSize: typography.sizes.xs,

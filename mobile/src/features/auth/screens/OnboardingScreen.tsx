@@ -7,32 +7,30 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 import { colors, typography, spacing, radii, gradients, shadows } from "../../../theme";
-import { Icon, type IconName } from "../../../components/ui/Icon";
+import { Icon } from "../../../components/ui/Icon";
 import { GradientButton } from "../../../components/ui";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { track, AnalyticsEvent } from "../../../services/analytics";
 
-const SLIDES: { icon: IconName; title: string; description: string }[] = [
+const SLIDES = [
   {
     icon: "search",
-    title: "Welcome to Mystery Syndicate",
-    description:
-      "Every day a new mystery case awaits you. Investigate evidence, question suspects, and solve the crime.",
+    titleKey: "onboarding.slide1Title",
+    descriptionKey: "onboarding.slide1Desc",
   },
   {
     icon: "folder",
-    title: "Investigate & Deduce",
-    description:
-      "Inspect evidence, review witness statements, and analyze the timeline. Every clue matters.",
+    titleKey: "onboarding.slide2Title",
+    descriptionKey: "onboarding.slide2Desc",
   },
   {
     icon: "trophy",
-    title: "Compete & Progress",
-    description:
-      "Earn XP, maintain your streak, and climb the leaderboard. Can you become a Legend Detective?",
+    titleKey: "onboarding.slide3Title",
+    descriptionKey: "onboarding.slide3Desc",
   },
-];
+] as const;
 
 const ONBOARDING_KEY = "dc_onboarding_done";
 
@@ -56,6 +54,7 @@ interface Props {
 }
 
 export function OnboardingScreen({ onDone }: Props) {
+  const { t } = useTranslation();
   const [currentSlide, setCurrentSlide] = useState(0);
   const insets = useSafeAreaInsets();
   const isLast = currentSlide === SLIDES.length - 1;
@@ -86,7 +85,7 @@ export function OnboardingScreen({ onDone }: Props) {
           style={[styles.skipButton, { top: insets.top + spacing[2] }]}
           onPress={handleSkip}
         >
-          <Text style={styles.skipText}>Skip</Text>
+          <Text style={styles.skipText}>{t("onboarding.skip")}</Text>
         </TouchableOpacity>
       )}
 
@@ -100,8 +99,8 @@ export function OnboardingScreen({ onDone }: Props) {
         >
           <Icon name={slide.icon} size={56} color={colors.text.inverse} />
         </LinearGradient>
-        <Text style={styles.title}>{slide.title}</Text>
-        <Text style={styles.description}>{slide.description}</Text>
+        <Text style={styles.title}>{t(slide.titleKey)}</Text>
+        <Text style={styles.description}>{t(slide.descriptionKey)}</Text>
       </View>
 
       {/* ── Dots ── */}
@@ -116,7 +115,7 @@ export function OnboardingScreen({ onDone }: Props) {
 
       {/* ── Button ── */}
       <GradientButton
-        label={isLast ? "Let's Investigate" : "Next"}
+        label={isLast ? t("onboarding.start") : t("onboarding.next")}
         iconRight="arrowRight"
         onPress={handleNext}
         style={styles.button}
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
   skipButton: {
     position: "absolute",
     top: spacing[10],
-    right: spacing[6],
+    end: spacing[6],
   },
   skipText: {
     fontFamily: typography.families.mono,

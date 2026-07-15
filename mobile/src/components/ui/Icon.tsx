@@ -1,4 +1,5 @@
 import React from "react";
+import { I18nManager, StyleSheet } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { colors } from "../../theme";
 
@@ -31,6 +32,7 @@ export const ICONS = {
   home: { lib: "ion", icon: "home" },
   shop: { lib: "ion", icon: "cart" },
   back: { lib: "ion", icon: "chevron-back" },
+  forward: { lib: "ion", icon: "chevron-forward" },
   clock: { lib: "ion", icon: "time" },
   target: { lib: "ion", icon: "locate" },
   medal: { lib: "ion", icon: "medal" },
@@ -60,9 +62,23 @@ export const ICONS = {
   masks: { lib: "material", icon: "drama-masks" },
   menu: { lib: "ion", icon: "menu" },
   logout: { lib: "ion", icon: "log-out-outline" },
+  globe: { lib: "ion", icon: "globe-outline" },
 } satisfies Record<string, IconEntry>;
 
 export type IconName = keyof typeof ICONS;
+
+// Directional icons that must mirror horizontally in RTL layouts so back/forward
+// affordances point the right way. Media-style icons (e.g. play) intentionally
+// stay put. Never pass a custom `transform` to these names — the flip owns it.
+const AUTO_FLIP: ReadonlySet<IconName> = new Set<IconName>([
+  "back",
+  "forward",
+  "arrowRight",
+]);
+
+const flipStyle = StyleSheet.create({
+  mirror: { transform: [{ scaleX: -1 }] },
+});
 
 interface Props {
   name: IconName;
@@ -73,15 +89,19 @@ interface Props {
 
 export function Icon({ name, size = 20, color = colors.text.primary, style }: Props) {
   const entry = ICONS[name];
+  const mergedStyle =
+    I18nManager.isRTL && AUTO_FLIP.has(name)
+      ? [flipStyle.mirror, style]
+      : style;
   if (entry.lib === "material") {
     return (
       <MaterialCommunityIcons
         name={entry.icon}
         size={size}
         color={color}
-        style={style}
+        style={mergedStyle}
       />
     );
   }
-  return <Ionicons name={entry.icon} size={size} color={color} style={style} />;
+  return <Ionicons name={entry.icon} size={size} color={color} style={mergedStyle} />;
 }

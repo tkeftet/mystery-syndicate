@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing[2],
     paddingBottom: spacing[4],
   },
-  left: { flex: 1, paddingRight: spacing[3] },
+  left: { flex: 1, paddingEnd: spacing[3] },
   kicker: {
     fontFamily: typography.families.mono,
     fontSize: 10,

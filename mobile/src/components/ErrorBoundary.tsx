@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { colors, typography, spacing, radii } from "../theme";
 import { Icon } from "./ui/Icon";
 import { captureException } from "../services/monitoring";
+import i18n from "../i18n";
 
 interface Props {
   children: React.ReactNode;
@@ -36,12 +37,22 @@ export class ErrorBoundary extends React.Component<Props, State> {
     return (
       <View style={styles.container}>
         <Icon name="warning" size={48} color={colors.coral} />
-        <Text style={styles.title}>Something went wrong</Text>
+        {/* defaultValue keeps the fallback usable if the crash happened before i18n init */}
+        <Text style={styles.title}>
+          {i18n.t("errors.somethingWrong", {
+            defaultValue: "Something went wrong",
+          })}
+        </Text>
         <Text style={styles.message}>
-          The app hit an unexpected error. Try again — your progress is safe.
+          {i18n.t("errors.errorDesc", {
+            defaultValue:
+              "The app hit an unexpected error. Try again — your progress is safe.",
+          })}
         </Text>
         <TouchableOpacity style={styles.button} onPress={this.reset} activeOpacity={0.85}>
-          <Text style={styles.buttonText}>Try Again</Text>
+          <Text style={styles.buttonText}>
+            {i18n.t("errors.tryAgain", { defaultValue: "Try Again" })}
+          </Text>
         </TouchableOpacity>
       </View>
     );
