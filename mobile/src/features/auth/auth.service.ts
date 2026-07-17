@@ -21,10 +21,11 @@ export async function registerApi(
 }
 
 export async function loginApi(
-  email: string,
+  identifier: string,
   password: string,
 ): Promise<AuthResponse> {
-  const { data } = await apiClient.post("/auth/login", { email, password });
+  // `identifier` is a username or an email.
+  const { data } = await apiClient.post("/auth/login", { identifier, password });
   return data.data;
 }
 

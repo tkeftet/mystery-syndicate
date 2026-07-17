@@ -16,6 +16,7 @@
     "loginSubtitle": "سجّل الدخول لحل قضية اليوم",
     "sessionExpired": "انتهت صلاحية جلستك. يرجى تسجيل الدخول مرة أخرى.",
     "emailPlaceholder": "البريد الإلكتروني",
+    "identifierPlaceholder": "اسم المستخدم أو البريد الإلكتروني",
     "passwordPlaceholder": "كلمة المرور",
     "usernamePlaceholder": "اسم المستخدم",
     "signIn": "تسجيل الدخول",

@@ -281,11 +281,25 @@ export function HomeScreen() {
         </View>
       </LinearGradient>
 
-      {/* ── Weekly Mega Case banner (fixed) ── */}
-      <MegaCaseBanner />
+      {/* ── Everything below the streak scrolls: mega/daily banners, tabs, content ── */}
+      <ScrollView
+        style={styles.tabScroll}
+        contentContainerStyle={styles.tabContent}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.amber}
+            colors={[colors.amber]}
+          />
+        }
+      >
+        {/* ── Weekly Mega Case banner ── */}
+        <MegaCaseBanner />
 
-      {/* ── Daily Login banner (fixed) ── */}
-      {dailyLogin && (
+        {/* ── Daily Login banner ── */}
+        {dailyLogin && (
         <TouchableOpacity
           activeOpacity={0.85}
           style={styles.dailyBanner}
@@ -315,7 +329,7 @@ export function HomeScreen() {
         </TouchableOpacity>
       )}
 
-      {/* ── Section Tabs (fixed) ── */}
+      {/* ── Section Tabs ── */}
       <View style={styles.tabs}>
         {(
           [
@@ -369,21 +383,8 @@ export function HomeScreen() {
         })}
       </View>
 
-      {/* ── Active tab content (only this scrolls) ── */}
-      <ScrollView
-        style={styles.tabScroll}
-        contentContainerStyle={styles.tabContent}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={colors.amber}
-            colors={[colors.amber]}
-          />
-        }
-      >
-        {/* ── Today ── */}
+      {/* ── Active tab content ── */}
+      {/* ── Today ── */}
         {tab === "daily" &&
           (loadingToday ? (
             <View style={styles.loadingCard}>

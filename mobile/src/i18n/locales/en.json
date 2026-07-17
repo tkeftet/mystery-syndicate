@@ -16,6 +16,7 @@
     "loginSubtitle": "Sign in to solve today's case",
     "sessionExpired": "Your session expired. Please sign in again.",
     "emailPlaceholder": "Email",
+    "identifierPlaceholder": "Username or email",
     "passwordPlaceholder": "Password",
     "usernamePlaceholder": "Username",
     "signIn": "Sign In",

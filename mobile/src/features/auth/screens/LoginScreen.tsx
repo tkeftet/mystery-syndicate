@@ -28,7 +28,7 @@ export function LoginScreen({ navigation }: Props) {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { setAuth } = useAuthStore();
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ export function LoginScreen({ navigation }: Props) {
   }, []);
 
   async function handleLogin() {
-    if (!email || !password) {
+    if (!identifier || !password) {
       setError(t("auth.fillAllFields"));
       return;
     }
@@ -54,11 +54,11 @@ export function LoginScreen({ navigation }: Props) {
 
     try {
       const { user, accessToken, refreshToken } = await loginApi(
-        email,
+        identifier.trim(),
         password,
       );
       await setAuth(user, accessToken, refreshToken);
-      track(AnalyticsEvent.USER_LOGGED_IN, { method: "email" });
+      track(AnalyticsEvent.USER_LOGGED_IN, { method: "identifier" });
     } catch (err: any) {
       setError(err?.response?.data?.error?.message ?? t("auth.loginFailed"));
     } finally {
@@ -116,12 +116,13 @@ export function LoginScreen({ navigation }: Props) {
       <View style={styles.form}>
         <TextInput
           style={styles.input}
-          placeholder={t("auth.emailPlaceholder")}
+          placeholder={t("auth.identifierPlaceholder")}
           placeholderTextColor={colors.text.muted}
-          value={email}
-          onChangeText={setEmail}
+          value={identifier}
+          onChangeText={setIdentifier}
           autoCapitalize="none"
-          keyboardType="email-address"
+          autoCorrect={false}
+          keyboardType="default"
         />
         <TextInput
           style={styles.input}

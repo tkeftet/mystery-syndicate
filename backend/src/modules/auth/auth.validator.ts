@@ -17,16 +17,34 @@ export const registerSchema = z.object({
     .max(100),
 });
 
-export const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-});
+// Login accepts a username OR an email in `identifier`. `email` is still read as
+// a fallback so older app builds (which posted `{ email }`) keep working.
+export const loginSchema = z
+  .object({
+    identifier: z.string().trim().optional(),
+    email: z.string().trim().optional(),
+    password: z.string().min(1, "Password is required"),
+  })
+  .transform((d) => ({
+    identifier: (d.identifier ?? d.email ?? "").trim(),
+    password: d.password,
+  }))
+  .refine((d) => d.identifier.length > 0, {
+    message: "Username or email is required",
+    path: ["identifier"],
+  });
 
 export const refreshSchema = z.object({
   refreshToken: z.string().min(1),
 });
 
-export function validate<T>(schema: z.ZodSchema<T>, data: unknown): T {
+// `any` for the schema's INPUT type so schemas with a `.transform()` (whose
+// input differs from output, e.g. loginSchema) are accepted; the return type is
+// still the schema's inferred OUTPUT.
+export function validate<Output>(
+  schema: z.ZodType<Output, z.ZodTypeDef, any>,
+  data: unknown,
+): Output {
   const result = schema.safeParse(data);
   if (!result.success) {
     const message = result.error.issues[0]?.message ?? "Validation failed";

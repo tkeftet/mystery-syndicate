@@ -36,8 +36,11 @@ export async function register(
   email: string,
   password: string,
 ) {
+  // Match how email is stored (lowercased) so a case-variant duplicate gives the
+  // friendly "already in use" message instead of a raw unique-index error.
+  const normalizedEmail = email.trim().toLowerCase();
   const existing = await User.findOne({
-    $or: [{ email }, { username }],
+    $or: [{ email: normalizedEmail }, { username }],
   });
 
   if (existing) {
@@ -49,7 +52,7 @@ export async function register(
 
   const user = await User.create({
     username,
-    email,
+    email: normalizedEmail,
     passwordHash: password, // hashed by pre-save hook
   });
 
@@ -61,11 +64,16 @@ export async function register(
 
 // ── Login ────────────────────────────────────────────────────────────────────
 
-export async function login(email: string, password: string) {
-  const user = await User.findOne({ email });
+export async function login(identifier: string, password: string) {
+  // `identifier` is a username or an email. Usernames match [a-zA-Z0-9_]+ (no
+  // "@"), emails are stored lowercased, so an $or over both is unambiguous.
+  const id = identifier.trim();
+  const user = await User.findOne({
+    $or: [{ email: id.toLowerCase() }, { username: id }],
+  });
 
   if (!user || !(await user.comparePassword(password))) {
-    throw new UnauthorizedError("Invalid email or password");
+    throw new UnauthorizedError("Invalid username/email or password");
   }
 
   if (user.isBanned) {

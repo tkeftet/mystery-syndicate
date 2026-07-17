@@ -49,9 +49,9 @@ export async function loginController(
   next: NextFunction,
 ) {
   try {
-    const { email, password } = validate(loginSchema, req.body);
+    const { identifier, password } = validate(loginSchema, req.body);
     const { user, accessToken, refreshToken } = await authService.login(
-      email,
+      identifier,
       password,
     );
 

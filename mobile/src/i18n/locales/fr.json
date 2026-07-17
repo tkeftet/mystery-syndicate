@@ -16,6 +16,7 @@
     "loginSubtitle": "Connectez-vous pour résoudre l'affaire du jour",
     "sessionExpired": "Votre session a expiré. Veuillez vous reconnecter.",
     "emailPlaceholder": "E-mail",
+    "identifierPlaceholder": "Nom d'utilisateur ou e-mail",
     "passwordPlaceholder": "Mot de passe",
     "usernamePlaceholder": "Nom d'utilisateur",
     "signIn": "Se connecter",
