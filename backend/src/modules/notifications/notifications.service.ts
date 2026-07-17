@@ -5,6 +5,7 @@ import {
 } from "expo-server-sdk";
 import { User } from "../users/user.model";
 import { Case } from "../cases/case.model";
+import { DEFAULT_LANG, resolveLocalized } from "../../shared/localized";
 import { logger } from "../../utils/logger";
 
 // No access token needed for the public Expo push service. If you later enable
@@ -88,7 +89,8 @@ export async function notifyNewCase(): Promise<void> {
   logger.info(`notifyNewCase: sending to ${tokens.length} devices.`);
   await sendToTokens(tokens, {
     title: "🕵️ A new case is open",
-    body: `${todayCase.title} — can you crack it today?`,
+    // Case title is localized ({en,fr,ar}); broadcast pushes use English.
+    body: `${resolveLocalized(todayCase.title, DEFAULT_LANG)} — can you crack it today?`,
     data: { type: "new_case", caseId: todayCase.id },
   });
 }

@@ -28,10 +28,12 @@ export interface ICase extends Document {
   kind: "daily" | "mega" | "chapter" | "mini";
   /** Set for mega cases — links back to the owning Event. */
   eventId?: string;
-  /** Mega/chapter cases let players also pick motive + weapon; these are the choices. */
+  /** Mega/chapter cases let players also pick motive + weapon; these are the choices.
+   * Options are localizable for display; scoring resolves the solution to the
+   * caller's language before comparing (see events/seasons services). */
   megaOptions?: {
-    motives: string[];
-    weapons: string[];
+    motives: LocalizedString[];
+    weapons: LocalizedString[];
   };
   // ── Story Arc (chapter) fields ─────────────────────────────────────────────
   /** Set for chapters — links back to the owning Season. */
@@ -83,9 +85,10 @@ export interface ICase extends Document {
   }>;
   solution: {
     suspectId: string;
-    // motive/weapon stay plain strings — mega/chapter scoring string-compares them.
-    motive: string;
-    weapon?: string;
+    // motive/weapon are localizable; mega/chapter scoring resolves them to the
+    // caller's language before string-comparing against the submitted option.
+    motive: LocalizedString;
+    weapon?: LocalizedString;
     timelineEventId: string;
     explanation: LocalizedString;
   };
@@ -122,8 +125,8 @@ const caseSchema = new Schema<ICase>(
     },
     eventId: { type: String },
     megaOptions: {
-      motives: [{ type: String }],
-      weapons: [{ type: String }],
+      motives: [Schema.Types.Mixed],
+      weapons: [Schema.Types.Mixed],
     },
     seasonId: { type: String },
     chapterNumber: { type: Number },
@@ -190,8 +193,8 @@ const caseSchema = new Schema<ICase>(
     ],
     solution: {
       suspectId: { type: String, required: true },
-      motive: { type: String, required: true },
-      weapon: { type: String },
+      motive: LocalizedText,
+      weapon: LocalizedText,
       timelineEventId: { type: String, required: true },
       explanation: LocalizedText,
     },

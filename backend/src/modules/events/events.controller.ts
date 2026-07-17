@@ -1,6 +1,10 @@
 import type { Response, NextFunction } from "express";
 import type { AuthRequest } from "../auth";
+import { resolveLang, localizeDeep } from "../../shared/localized";
 import * as service from "./events.service";
+
+// Event/case reads return RAW ({en,fr,ar}); the app resolves per language. Only
+// the submit response (a transient mutation result) is resolved server-side.
 
 export async function listEventsController(
   _req: AuthRequest,
@@ -61,13 +65,14 @@ export async function submitController(
 ) {
   try {
     const { suspectId, motive, weapon, timelineEventId } = req.body ?? {};
-    const result = await service.submitEvent(req.userId!, req.params.eventId, {
-      suspectId,
-      motive,
-      weapon,
-      timelineEventId,
-    });
-    res.json({ success: true, data: result });
+    const lang = resolveLang(req);
+    const result = await service.submitEvent(
+      req.userId!,
+      req.params.eventId,
+      { suspectId, motive, weapon, timelineEventId },
+      lang,
+    );
+    res.json({ success: true, data: localizeDeep(result, lang) });
   } catch (err) {
     next(err);
   }

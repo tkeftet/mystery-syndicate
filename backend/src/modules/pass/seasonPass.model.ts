@@ -1,4 +1,8 @@
 import mongoose, { Document, Schema } from "mongoose";
+import type { LocalizedString } from "../../shared/localized";
+
+// title/subtitle/description are localizable ({ en, fr?, ar? }); returned raw and resolved by the app per language. Stored as Mixed.
+const LocalizedText = { type: Schema.Types.Mixed };
 
 export type PassStatus = "upcoming" | "active" | "completed" | "archived";
 export type RewardTier = "common" | "rare" | "epic" | "legendary";
@@ -17,9 +21,9 @@ export interface PassReward {
 }
 
 export interface ISeasonPass extends Document {
-  title: string;
-  subtitle: string;
-  description: string;
+  title: LocalizedString;
+  subtitle: LocalizedString;
+  description: LocalizedString;
   coverImage: string;
   bannerImage: string;
   seasonTheme: string;
@@ -40,9 +44,9 @@ export interface ISeasonPass extends Document {
 
 const seasonPassSchema = new Schema<ISeasonPass>(
   {
-    title: { type: String, required: true },
-    subtitle: { type: String, default: "" },
-    description: { type: String, default: "" },
+    title: LocalizedText,
+    subtitle: LocalizedText,
+    description: LocalizedText,
     coverImage: { type: String, default: "" },
     bannerImage: { type: String, default: "" },
     seasonTheme: { type: String, default: "" },

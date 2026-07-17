@@ -85,16 +85,44 @@ function validateCase(c: any, i: number): string[] {
   const sol = c?.solution;
   if (!sol) errs.push(at(`missing "solution"`));
   else {
-    // motive stays a plain string (mega/chapter scoring compares it directly);
-    // explanation is localizable.
-    for (const f of ["suspectId", "motive", "timelineEventId"]) {
-      if (!sol[f]) errs.push(at(`solution missing "${f}"`));
+    // suspectId/timelineEventId are plain id strings; motive/explanation are
+    // localizable (plain string or { en, fr?, ar? }).
+    for (const f of ["suspectId", "timelineEventId"]) {
+      if (!sol[f] || typeof sol[f] !== "string") errs.push(at(`solution missing "${f}"`));
     }
+    if (!okText(sol.motive)) errs.push(at(`solution missing "motive"`));
     if (!okText(sol.explanation)) errs.push(at(`solution missing "explanation"`));
     if (sol.suspectId && !suspects.some((s: any) => s.id === sol.suspectId))
       errs.push(at(`solution.suspectId "${sol.suspectId}" doesn't match any suspect`));
     if (sol.timelineEventId && !timeline.some((t: any) => t.id === sol.timelineEventId))
       errs.push(at(`solution.timelineEventId "${sol.timelineEventId}" doesn't match any timeline event`));
+  }
+
+  // Mega/chapter cases offer motive + weapon choices; each option is localizable
+  // and the solution values must appear among them (after resolving to English).
+  const kindNeedsOptions = kind === "mega" || kind === "chapter";
+  if (kindNeedsOptions || c?.megaOptions) {
+    const mo = c?.megaOptions;
+    const motives = Array.isArray(mo?.motives) ? mo.motives : [];
+    const weapons = Array.isArray(mo?.weapons) ? mo.weapons : [];
+    if (kindNeedsOptions && motives.length < 2)
+      errs.push(at(`megaOptions.motives needs at least 2 choices for kind "${kind}"`));
+    if (motives.some((m: any) => !okText(m)))
+      errs.push(at(`megaOptions.motives has an empty choice`));
+    if (weapons.some((w: any) => !okText(w)))
+      errs.push(at(`megaOptions.weapons has an empty choice`));
+    // The solution's motive/weapon must be one of the offered options (English).
+    const enOf = (v: any) => resolveLocalized(v, "en").trim().toLowerCase();
+    if (sol?.motive && motives.length > 0) {
+      const solM = enOf(sol.motive);
+      if (!motives.some((m: any) => enOf(m) === solM))
+        errs.push(at(`solution.motive isn't among megaOptions.motives`));
+    }
+    if (sol?.weapon && weapons.length > 0) {
+      const solW = enOf(sol.weapon);
+      if (!weapons.some((w: any) => enOf(w) === solW))
+        errs.push(at(`solution.weapon isn't among megaOptions.weapons`));
+    }
   }
   return errs;
 }

@@ -1,4 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose";
+import type { LocalizedString } from "../../shared/localized";
+
+// name/description are localizable ({ en, fr?, ar? }); the API resolves them
+// returned raw and resolved by the app per language. Stored as Mixed.
+const LocalizedText = { type: Schema.Types.Mixed };
 
 export type AchievementCategory =
   | "cases"
@@ -27,8 +32,8 @@ export const RARITY_POINTS: Record<AchievementRarity, number> = {
 
 export interface IAchievement extends Document {
   key: string;
-  name: string;
-  description: string;
+  name: LocalizedString;
+  description: LocalizedString;
   icon: string;
   category: AchievementCategory;
   rarity: AchievementRarity;
@@ -51,8 +56,8 @@ export interface IAchievement extends Document {
 const achievementSchema = new Schema<IAchievement>(
   {
     key: { type: String, required: true, unique: true },
-    name: { type: String, required: true },
-    description: { type: String, default: "" },
+    name: LocalizedText,
+    description: LocalizedText,
     icon: { type: String, default: "trophy" },
     category: {
       type: String,

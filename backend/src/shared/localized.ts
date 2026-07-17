@@ -7,11 +7,11 @@
  * available value) so English-only cases keep working unchanged and partially
  * translated cases degrade gracefully.
  *
- * IMPORTANT: only *display* fields are localized here. Answer-bearing option
- * strings (`megaOptions.motives/weapons`) and `solution.motive/weapon` are left
- * as-is because mega/chapter scoring string-compares the submitted motive/weapon
- * against the stored solution — localizing them would require an index/id-based
- * submission contract (see PROJECT_CONTEXT.md).
+ * `megaOptions.motives/weapons` are localized for DISPLAY too, so the accusation
+ * chips render in the caller's language. Scoring stays correct because the
+ * events/seasons services resolve `solution.motive/weapon` to the same language
+ * (via the request's Accept-Language) before string-comparing the submitted
+ * option — see those services. `solution` itself is normally stripped on reads.
  */
 
 export const SUPPORTED_LANGS = ["en", "fr", "ar"] as const;
@@ -107,6 +107,16 @@ export function localizeCase<T extends Record<string, any>>(c: T, lang: Lang): T
       time: L(t.time),
       description: L(t.description),
     }));
+  }
+
+  // Mega/chapter accusation options — localized for display. The matching
+  // solution.motive/weapon are resolved to the same language at scoring time.
+  if (c.megaOptions && typeof c.megaOptions === "object") {
+    out.megaOptions = {
+      ...c.megaOptions,
+      motives: mapLocalizedArray(c.megaOptions.motives, lang),
+      weapons: mapLocalizedArray(c.megaOptions.weapons, lang),
+    };
   }
 
   // Solution is stripped on most reads (.select("-solution")); localize only its

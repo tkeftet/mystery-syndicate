@@ -5,19 +5,26 @@ import {
   getEventLeaderboardApi,
   getMyParticipationApi,
 } from "./events.service";
+import { useContentLang, selectLocalized } from "../../i18n/localizeContent";
 
+// Event content arrives raw ({en,fr,ar}); `select` resolves it to the current
+// language so switching is instant (no refetch).
 export function useEvents() {
+  const lang = useContentLang();
   return useQuery({
     queryKey: ["events"],
     queryFn: listEventsApi,
+    select: selectLocalized(lang),
     staleTime: 60_000,
   });
 }
 
 export function useEvent(eventId?: string) {
+  const lang = useContentLang();
   return useQuery({
     queryKey: ["event", eventId],
     queryFn: () => getEventApi(eventId as string),
+    select: selectLocalized(lang),
     enabled: !!eventId,
   });
 }

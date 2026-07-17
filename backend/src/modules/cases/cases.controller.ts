@@ -1,15 +1,16 @@
 import type { Response, NextFunction } from "express";
 import type { AuthRequest } from "../auth";
 import * as casesService from "./cases.service";
-import { resolveLang } from "../../shared/localized";
+
+// Case content is returned RAW ({en,fr,ar}); the app resolves it per language.
 
 export async function getTodayCaseController(
-  req: AuthRequest,
+  _req: AuthRequest,
   res: Response,
   next: NextFunction,
 ) {
   try {
-    const case_ = await casesService.getTodayCase(resolveLang(req));
+    const case_ = await casesService.getTodayCase();
     res.json({ success: true, data: case_ });
   } catch (err) {
     next(err);
@@ -17,12 +18,12 @@ export async function getTodayCaseController(
 }
 
 export async function getTodayMinisController(
-  req: AuthRequest,
+  _req: AuthRequest,
   res: Response,
   next: NextFunction,
 ) {
   try {
-    const cases = await casesService.getTodayMinis(resolveLang(req));
+    const cases = await casesService.getTodayMinis();
     res.json({ success: true, data: cases });
   } catch (err) {
     next(err);
@@ -35,7 +36,7 @@ export async function getCaseByIdController(
   next: NextFunction,
 ) {
   try {
-    const case_ = await casesService.getCaseById(req.params.id, resolveLang(req));
+    const case_ = await casesService.getCaseById(req.params.id);
     res.json({ success: true, data: case_ });
   } catch (err) {
     next(err);
@@ -48,7 +49,7 @@ export async function getRecentCasesController(
   next: NextFunction,
 ) {
   try {
-    const cases = await casesService.getRecentCases(req.userId!, resolveLang(req));
+    const cases = await casesService.getRecentCases(req.userId!);
     res.json({ success: true, data: cases });
   } catch (err) {
     next(err);

@@ -4,7 +4,10 @@ import * as service from "./challenges.service";
 
 export async function listController(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    res.json({ success: true, data: await service.getChallenges(req.userId!) });
+    // Challenge title/description are returned RAW ({en,fr,ar}); the app resolves
+    // them per language on render.
+    const data = await service.getChallenges(req.userId!);
+    res.json({ success: true, data });
   } catch (err) {
     next(err);
   }

@@ -5,6 +5,7 @@ import { Friendship } from "../friends/friendship.model";
 import { grantXpAndCoins } from "../investigations/investigations.service";
 import { sendToTokens } from "../notifications";
 import { NotFoundError, ValidationError } from "../../shared/errors/AppError";
+import { DEFAULT_LANG, resolveLocalized } from "../../shared/localized";
 import { logger } from "../../utils/logger";
 
 const DAY_MS = 86400000;
@@ -244,6 +245,11 @@ async function notifyOnce(
 export async function processPassLifecycle() {
   const now = new Date();
 
+  // Pass title is localized ({en,fr,ar}); pushes go out in English (the push
+  // language is unknown per recipient at broadcast time).
+  const titleOf = (p: { title: unknown }) =>
+    resolveLocalized(p.title as any, DEFAULT_LANG);
+
   const toActivate = await SeasonPass.find({
     status: "upcoming",
     startDate: { $lte: now },
@@ -255,7 +261,7 @@ export async function processPassLifecycle() {
       p,
       "started",
       "🎟️ New season has begun!",
-      `"${p.title}" is live — earn Season XP and climb the reward track.`,
+      `"${titleOf(p)}" is live — earn Season XP and climb the reward track.`,
     );
   }
 
@@ -270,7 +276,7 @@ export async function processPassLifecycle() {
       p,
       "ended",
       "🏁 Season complete",
-      `"${p.title}" has ended. Check your final rank and rewards.`,
+      `"${titleOf(p)}" has ended. Check your final rank and rewards.`,
     );
   }
 
@@ -282,14 +288,14 @@ export async function processPassLifecycle() {
         p,
         "final_week",
         "⏳ Final week!",
-        `One week left in "${p.title}" — finish your reward track.`,
+        `One week left in "${titleOf(p)}" — finish your reward track.`,
       );
     if (msLeft <= DAY_MS)
       await notifyOnce(
         p,
         "last_day",
         "🚨 Last day!",
-        `"${p.title}" ends today. Claim your rewards before it's gone.`,
+        `"${titleOf(p)}" ends today. Claim your rewards before it's gone.`,
       );
   }
 }

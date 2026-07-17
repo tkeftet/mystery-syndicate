@@ -10,13 +10,17 @@ import { connectDatabase } from "../config/database";
 import { Challenge } from "../modules/challenges/challenge.model";
 import { logger } from "../utils/logger";
 
+// Every title/description is stored trilingual ({ en, fr, ar }); the API returns
+// it raw and the mobile app resolves the current language on render.
+const tl = (en: string, fr: string, ar: string) => ({ en, fr, ar });
+
 const CHALLENGES = [
   // ── Daily ──
   {
     key: "daily_solve_case",
     period: "daily",
-    title: "On the Case",
-    description: "Solve today's case.",
+    title: tl("On the Case", "Sur l'affaire", "على القضية"),
+    description: tl("Solve today's case.", "Résolvez l'affaire du jour.", "حُل قضية اليوم."),
     metric: "case_solved",
     target: 1,
     rewardSeasonXp: 50,
@@ -26,8 +30,8 @@ const CHALLENGES = [
   {
     key: "daily_mini_3",
     period: "daily",
-    title: "Quick Thinker",
-    description: "Solve 3 quick mini cases.",
+    title: tl("Quick Thinker", "Esprit vif", "سريع البديهة"),
+    description: tl("Solve 3 quick mini cases.", "Résolvez 3 mini-affaires rapides.", "حُل 3 قضايا قصيرة سريعة."),
     metric: "mini_solved",
     target: 3,
     rewardSeasonXp: 60,
@@ -37,8 +41,8 @@ const CHALLENGES = [
   {
     key: "daily_no_hint",
     period: "daily",
-    title: "No Help Needed",
-    description: "Solve a case correctly without using a hint.",
+    title: tl("No Help Needed", "Sans aucune aide", "بلا أي مساعدة"),
+    description: tl("Solve a case correctly without using a hint.", "Résolvez correctement une affaire sans utiliser d'indice.", "حُل قضية بشكل صحيح دون استخدام أي تلميح."),
     metric: "no_hint_solve",
     target: 1,
     rewardSeasonXp: 40,
@@ -49,8 +53,8 @@ const CHALLENGES = [
   {
     key: "weekly_solve_7",
     period: "weekly",
-    title: "Seven Days, Seven Cases",
-    description: "Solve 7 cases this week.",
+    title: tl("Seven Days, Seven Cases", "Sept jours, sept affaires", "سبعة أيام، سبع قضايا"),
+    description: tl("Solve 7 cases this week.", "Résolvez 7 affaires cette semaine.", "حُل 7 قضايا هذا الأسبوع."),
     metric: "case_solved",
     target: 7,
     rewardSeasonXp: 200,
@@ -60,8 +64,8 @@ const CHALLENGES = [
   {
     key: "weekly_mega",
     period: "weekly",
-    title: "Mega Detective",
-    description: "Complete this week's Mega Case.",
+    title: tl("Mega Detective", "Méga détective", "المحقق الكبير"),
+    description: tl("Complete this week's Mega Case.", "Terminez la Méga Affaire de la semaine.", "أكمل القضية الكبرى لهذا الأسبوع."),
     metric: "mega_completed",
     target: 1,
     rewardSeasonXp: 250,
@@ -72,8 +76,8 @@ const CHALLENGES = [
   {
     key: "monthly_chapters_6",
     period: "monthly",
-    title: "Story So Far",
-    description: "Complete 6 Story Arc chapters this season.",
+    title: tl("Story So Far", "L'histoire en marche", "الحكاية حتى الآن"),
+    description: tl("Complete 6 Story Arc chapters this season.", "Terminez 6 chapitres de la saga cette saison.", "أكمل 6 فصول من القصة هذا الموسم."),
     metric: "chapter_completed",
     target: 6,
     rewardSeasonXp: 500,
@@ -83,8 +87,8 @@ const CHALLENGES = [
   {
     key: "monthly_solve_30",
     period: "monthly",
-    title: "Relentless",
-    description: "Solve 30 cases this month.",
+    title: tl("Relentless", "Infatigable", "بلا هوادة"),
+    description: tl("Solve 30 cases this month.", "Résolvez 30 affaires ce mois-ci.", "حُل 30 قضية هذا الشهر."),
     metric: "case_solved",
     target: 30,
     rewardSeasonXp: 800,

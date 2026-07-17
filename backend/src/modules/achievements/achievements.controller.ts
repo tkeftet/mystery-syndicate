@@ -4,7 +4,10 @@ import * as service from "./achievements.service";
 
 export async function listController(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    res.json({ success: true, data: await service.getAchievements(req.userId!) });
+    // Achievement name/description are returned RAW ({en,fr,ar}); the app
+    // resolves them per language on render.
+    const data = await service.getAchievements(req.userId!);
+    res.json({ success: true, data });
   } catch (err) {
     next(err);
   }

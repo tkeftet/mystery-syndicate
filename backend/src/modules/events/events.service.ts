@@ -11,19 +11,22 @@ import { recordAchievementEvent } from "../achievements";
 import { addAgencyContribution } from "../agencies";
 import { sendToTokens } from "../notifications";
 import { NotFoundError, ValidationError } from "../../shared/errors/AppError";
+import { type Lang, DEFAULT_LANG, resolveLocalized } from "../../shared/localized";
 import { logger } from "../../utils/logger";
 
 // ── Reads ────────────────────────────────────────────────────────────────────
 
 /** Events players should see: upcoming, active, and recently completed. */
 export async function listEvents() {
+  // .lean() so the controller can localize title/description via localizeDeep.
   return Event.find({ status: { $ne: "archived" } })
     .sort({ startDate: -1 })
-    .limit(20);
+    .limit(20)
+    .lean();
 }
 
 export async function getEvent(eventId: string) {
-  const event = await Event.findById(eventId);
+  const event = await Event.findById(eventId).lean();
   if (!event) throw new NotFoundError("Event");
   return event;
 }
@@ -89,6 +92,9 @@ export async function submitEvent(
   userId: string,
   eventId: string,
   accusation: EventAccusation,
+  // The client submits the motive/weapon option in its display language; resolve
+  // the stored (localized) solution to the same language before comparing.
+  lang: Lang = DEFAULT_LANG,
 ) {
   const event = await Event.findById(eventId);
   if (!event) throw new NotFoundError("Event");
@@ -118,9 +124,11 @@ export async function submitEvent(
     Math.floor((completedAt.getTime() - participation.startedAt.getTime()) / 1000),
   );
 
+  const solMotive = resolveLocalized(sol.motive, lang);
+  const solWeapon = sol.weapon ? resolveLocalized(sol.weapon, lang) : "";
   const suspectOk = accusation.suspectId === sol.suspectId;
-  const motiveOk = norm(accusation.motive) === norm(sol.motive);
-  const weaponOk = !!sol.weapon && norm(accusation.weapon) === norm(sol.weapon);
+  const motiveOk = norm(accusation.motive) === norm(solMotive);
+  const weaponOk = !!solWeapon && norm(accusation.weapon) === norm(solWeapon);
   const timelineOk = accusation.timelineEventId === sol.timelineEventId;
 
   const target = event.targetCompletionSec || 1800;
@@ -306,29 +314,33 @@ export async function distributeRewards(eventId: string) {
 
 // ── Lifecycle + notifications ────────────────────────────────────────────────
 
+// Event title is localized ({en,fr,ar}); pushes broadcast in English (the push
+// language is unknown per recipient at broadcast time).
+const evTitle = (e: IEvent) => resolveLocalized(e.title, DEFAULT_LANG);
+
 const NOTIF_COPY: Record<
   string,
   (e: IEvent) => { title: string; body: string }
 > = {
   soon: (e) => ({
     title: "🎟️ Mega Case starts soon!",
-    body: `"${e.title}" begins in under an hour. Get ready, detective.`,
+    body: `"${evTitle(e)}" begins in under an hour. Get ready, detective.`,
   }),
   live: (e) => ({
     title: "🚨 Mega Case is LIVE",
-    body: `"${e.title}" is open — solve it and climb the event leaderboard!`,
+    body: `"${evTitle(e)}" is open — solve it and climb the event leaderboard!`,
   }),
   "24h": (e) => ({
     title: "⏳ 24 hours left",
-    body: `"${e.title}" ends tomorrow. Don't miss your shot at the rewards.`,
+    body: `"${evTitle(e)}" ends tomorrow. Don't miss your shot at the rewards.`,
   }),
   last: (e) => ({
     title: "⌛ Last chance!",
-    body: `"${e.title}" ends in a few hours — submit before it's too late.`,
+    body: `"${evTitle(e)}" ends in a few hours — submit before it's too late.`,
   }),
   ended: (e) => ({
     title: "🏁 Mega Case finished",
-    body: `"${e.title}" has ended. Check the leaderboard and your rewards!`,
+    body: `"${evTitle(e)}" has ended. Check the leaderboard and your rewards!`,
   }),
 };
 

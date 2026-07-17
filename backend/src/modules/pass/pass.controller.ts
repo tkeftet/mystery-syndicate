@@ -4,7 +4,10 @@ import * as service from "./pass.service";
 
 export async function hubController(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    res.json({ success: true, data: await service.getHub(req.userId!) });
+    // Pass title/subtitle/description are returned RAW ({en,fr,ar}); the app
+    // resolves them per language on render.
+    const data = await service.getHub(req.userId!);
+    res.json({ success: true, data });
   } catch (err) {
     next(err);
   }
@@ -12,7 +15,8 @@ export async function hubController(req: AuthRequest, res: Response, next: NextF
 
 export async function rewardsController(req: AuthRequest, res: Response, next: NextFunction) {
   try {
-    res.json({ success: true, data: await service.getRewards(req.userId!) });
+    const data = await service.getRewards(req.userId!);
+    res.json({ success: true, data });
   } catch (err) {
     next(err);
   }

@@ -11,6 +11,7 @@ import { recordAchievementEvent } from "../achievements";
 import { addAgencyContribution } from "../agencies";
 import { sendToTokens } from "../notifications";
 import { NotFoundError, ValidationError } from "../../shared/errors/AppError";
+import { type Lang, DEFAULT_LANG, resolveLocalized } from "../../shared/localized";
 import { logger } from "../../utils/logger";
 
 const DAY_MS = 86400000;
@@ -39,13 +40,15 @@ function isChapterAccessible(
 // ── Reads ────────────────────────────────────────────────────────────────────
 
 export async function listSeasons() {
+  // .lean() so the controller can localize title/subtitle/description.
   return Season.find({ status: { $ne: "archived" } })
     .sort({ startDate: -1 })
-    .limit(20);
+    .limit(20)
+    .lean();
 }
 
 export async function getSeason(seasonId: string) {
-  const season = await Season.findById(seasonId);
+  const season = await Season.findById(seasonId).lean();
   if (!season) throw new NotFoundError("Season");
   return season;
 }
@@ -147,7 +150,11 @@ export async function startChapter(
   }
 
   await startInvestigation(userId, chapter.id);
-  return { chapter, alreadyCompleted: progress.completedChapters.includes(chapterNumber) };
+  // Return a plain object so the controller can localize chapter text via localizeDeep.
+  return {
+    chapter: chapter.toObject(),
+    alreadyCompleted: progress.completedChapters.includes(chapterNumber),
+  };
 }
 
 // ── Play: submit a chapter ───────────────────────────────────────────────────
@@ -178,6 +185,7 @@ export async function submitChapter(
   seasonId: string,
   chapterNumber: number,
   accusation: ChapterAccusation,
+  lang: Lang = DEFAULT_LANG,
 ) {
   const season = await Season.findById(seasonId);
   if (!season) throw new NotFoundError("Season");
@@ -208,7 +216,9 @@ export async function submitChapter(
     : 0;
 
   const suspectOk = accusation.suspectId === sol.suspectId;
-  const motiveOk = norm(accusation.motive) === norm(sol.motive);
+  // Options are shown to the player in their language, so resolve the solution
+  // motive to the same language before comparing the submitted string.
+  const motiveOk = norm(accusation.motive) === norm(resolveLocalized(sol.motive, lang));
   const timelineOk = accusation.timelineEventId === sol.timelineEventId;
   const noAssists = hintsUsed === 0 && adHelpsUsed === 0;
 
@@ -361,6 +371,10 @@ async function notifySeasonOnce(
 export async function processSeasonLifecycle() {
   const now = new Date();
 
+  // Season title is localized ({en,fr,ar}); pushes broadcast in English (the
+  // push language is unknown per recipient at broadcast time).
+  const sTitle = (s: ISeason) => resolveLocalized(s.title, DEFAULT_LANG);
+
   const toActivate = await Season.find({
     status: "upcoming",
     startDate: { $lte: now },
@@ -372,7 +386,7 @@ export async function processSeasonLifecycle() {
       s,
       "live",
       "🎬 New season has begun!",
-      `"${s.title}" — Chapter 1 is live. Start the investigation.`,
+      `"${sTitle(s)}" — Chapter 1 is live. Start the investigation.`,
     );
   }
 
@@ -387,7 +401,7 @@ export async function processSeasonLifecycle() {
       s,
       "ended",
       "🏁 Season finished",
-      `"${s.title}" has ended. See where you placed on the season leaderboard.`,
+      `"${sTitle(s)}" has ended. See where you placed on the season leaderboard.`,
     );
   }
 
@@ -400,7 +414,7 @@ export async function processSeasonLifecycle() {
           s,
           `chapter_${n}`,
           "📖 A new chapter is unlocked",
-          `Chapter ${n} of "${s.title}" is now available. What happens next?`,
+          `Chapter ${n} of "${sTitle(s)}" is now available. What happens next?`,
         );
       }
     }
@@ -413,7 +427,7 @@ export async function processSeasonLifecycle() {
         s,
         "finale_soon",
         "🔥 Season finale tomorrow",
-        `The final chapter of "${s.title}" unlocks tomorrow. The mastermind will be revealed.`,
+        `The final chapter of "${sTitle(s)}" unlocks tomorrow. The mastermind will be revealed.`,
       );
     }
     if (s.endDate.getTime() - now.getTime() <= DAY_MS) {
@@ -421,7 +435,7 @@ export async function processSeasonLifecycle() {
         s,
         "ending_soon",
         "⏳ Season ending soon",
-        `"${s.title}" closes in under 24h — finish your chapters before it ends.`,
+        `"${sTitle(s)}" closes in under 24h — finish your chapters before it ends.`,
       );
     }
   }

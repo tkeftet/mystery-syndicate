@@ -89,6 +89,9 @@ export async function setAppLanguage(
 
   const shouldBeRTL = isRTLLanguage(code);
   if (shouldBeRTL === I18nManager.isRTL) {
+    // Same writing direction (e.g. en <-> fr): no reload needed. Content is
+    // stored raw ({en,fr,ar}) and resolved on render (see localizeContent), so
+    // components re-render into the new language instantly — no refetch.
     return "changed";
   }
 

@@ -3,6 +3,7 @@ import { UserAchievement } from "./userAchievement.model";
 import { User } from "../users/user.model";
 import { grantXpAndCoins } from "../../shared/userRewards";
 import { sendToTokens } from "../notifications";
+import { type LocalizedString, DEFAULT_LANG, resolveLocalized } from "../../shared/localized";
 import { logger } from "../../utils/logger";
 
 /**
@@ -59,7 +60,7 @@ async function grantAchievementReward(
   userId: string,
   def: {
     key: string;
-    name: string;
+    name: LocalizedString;
     rewardXp: number;
     rewardCoins: number;
     rewardBadge?: string;
@@ -85,7 +86,8 @@ async function grantAchievementReward(
     if (user?.pushToken) {
       await sendToTokens([user.pushToken], {
         title: "🏆 Achievement unlocked!",
-        body: def.name,
+        // Push language is unknown at grant time; fall back to English.
+        body: resolveLocalized(def.name, DEFAULT_LANG),
         data: { type: "achievement", key: def.key },
       });
     }

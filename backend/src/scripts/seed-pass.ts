@@ -66,11 +66,20 @@ async function run() {
     return;
   }
 
+  // title/subtitle/description are stored trilingual ({ en, fr, ar }); the API
+  // returns them raw and the mobile app resolves the current language on render.
   const pass = await SeasonPass.create({
-    title: "The Crimson Conspiracy",
-    subtitle: "Season 1",
-    description:
-      "A shadow network pulls the city's strings. Earn Season XP across every case to climb 100 levels of rewards before the trail goes cold.",
+    title: {
+      en: "The Crimson Conspiracy",
+      fr: "La Conspiration écarlate",
+      ar: "المؤامرة القرمزية",
+    },
+    subtitle: { en: "Season 1", fr: "Saison 1", ar: "الموسم الأول" },
+    description: {
+      en: "A shadow network pulls the city's strings. Earn Season XP across every case to climb 100 levels of rewards before the trail goes cold.",
+      fr: "Un réseau de l'ombre tire les ficelles de la ville. Gagnez de l'XP de saison sur chaque affaire pour gravir 100 niveaux de récompenses avant que la piste ne refroidisse.",
+      ar: "شبكة خفية تحرّك خيوط المدينة. اجمع نقاط خبرة الموسم من كل قضية لتتسلق 100 مستوى من المكافآت قبل أن يبرد الأثر.",
+    },
     seasonTheme: "crimson",
     startDate: new Date(now.getTime() - 1 * DAY), // active now
     endDate: new Date(now.getTime() + 29 * DAY), // ~30-day season
@@ -83,7 +92,7 @@ async function run() {
   });
 
   logger.info(
-    `Seeded Season Pass "${pass.title}" — ${TOTAL_LEVELS} levels, ${pass.rewards.length} rewards.`,
+    `Seeded Season Pass "${(pass.title as { en: string }).en}" — ${TOTAL_LEVELS} levels, ${pass.rewards.length} rewards.`,
   );
   await mongoose.disconnect();
 }

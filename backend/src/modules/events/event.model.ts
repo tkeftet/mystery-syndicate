@@ -1,4 +1,9 @@
 import mongoose, { Document, Schema } from "mongoose";
+import type { LocalizedString } from "../../shared/localized";
+
+// title/description are localizable ({ en, fr?, ar? }); returned raw and resolved
+// by the app per language. Stored as Mixed.
+const LocalizedText = { type: Schema.Types.Mixed };
 
 export type EventStatus = "upcoming" | "active" | "completed" | "archived";
 export type EventDifficulty = "easy" | "medium" | "hard" | "expert";
@@ -15,8 +20,8 @@ export interface RewardConfig {
 }
 
 export interface IEvent extends Document {
-  title: string;
-  description: string;
+  title: LocalizedString;
+  description: LocalizedString;
   image: string;
   /** The mega Case (Case.kind === "mega") that holds the actual investigation. */
   caseId: string;
@@ -39,8 +44,8 @@ export interface IEvent extends Document {
 
 const eventSchema = new Schema<IEvent>(
   {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
+    title: LocalizedText,
+    description: LocalizedText,
     image: { type: String, default: "" },
     caseId: { type: String, required: true },
     startDate: { type: Date, required: true },

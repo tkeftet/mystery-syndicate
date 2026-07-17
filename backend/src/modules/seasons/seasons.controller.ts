@@ -9,7 +9,10 @@ export async function listSeasonsController(
   next: NextFunction,
 ) {
   try {
-    res.json({ success: true, data: await service.listSeasons() });
+    // Reads return RAW ({en,fr,ar}); the app resolves per language. Only the
+    // chapter start/submit mutation results are resolved server-side below.
+    const data = await service.listSeasons();
+    res.json({ success: true, data });
   } catch (err) {
     next(err);
   }
@@ -21,7 +24,8 @@ export async function getSeasonController(
   next: NextFunction,
 ) {
   try {
-    res.json({ success: true, data: await service.getSeason(req.params.seasonId) });
+    const data = await service.getSeason(req.params.seasonId);
+    res.json({ success: true, data });
   } catch (err) {
     next(err);
   }
@@ -34,8 +38,7 @@ export async function seasonMapController(
 ) {
   try {
     const data = await service.getSeasonMap(req.userId!, req.params.seasonId);
-    // Chapter title/cliffhanger come from Case docs and may be localized.
-    res.json({ success: true, data: localizeDeep(data, resolveLang(req)) });
+    res.json({ success: true, data });
   } catch (err) {
     next(err);
   }
@@ -78,7 +81,7 @@ export async function startChapterController(
       req.params.seasonId,
       Number(req.params.n),
     );
-    res.json({ success: true, data });
+    res.json({ success: true, data: localizeDeep(data, resolveLang(req)) });
   } catch (err) {
     next(err);
   }
@@ -91,13 +94,15 @@ export async function submitChapterController(
 ) {
   try {
     const { suspectId, motive, timelineEventId } = req.body ?? {};
+    const lang = resolveLang(req);
     const data = await service.submitChapter(
       req.userId!,
       req.params.seasonId,
       Number(req.params.n),
       { suspectId, motive, timelineEventId },
+      lang,
     );
-    res.json({ success: true, data: localizeDeep(data, resolveLang(req)) });
+    res.json({ success: true, data: localizeDeep(data, lang) });
   } catch (err) {
     next(err);
   }
